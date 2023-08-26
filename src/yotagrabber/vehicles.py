@@ -6,6 +6,8 @@ import sys
 import uuid
 from functools import cache
 from secrets import randbelow
+from time import sleep
+from timeit import default_timer as timer
 
 import pandas as pd
 import requests
@@ -20,13 +22,19 @@ MODEL = os.environ.get("MODEL")
 
 
 @cache
-def get_vehicles_query(coast="west"):
+def get_vehicles_query(zone="west"):
     """Read vehicles query from a file."""
     with open(f"{config.BASE_DIRECTORY}/graphql/vehicles.graphql", "r") as fileh:
         query = fileh.read()
 
+    zip_codes = {
+        "west": "84101",  # Salt Lake City
+        "central": "73007",  # Oklahoma City
+        "east": "27608",  # Raleigh
+    }
+
     # Replace certain place holders in the query with values.
-    zip_code = "90210" if coast == "west" else "10010"
+    zip_code = zip_codes[zone]
     query = query.replace("ZIPCODE", zip_code)
     query = query.replace("MODELCODE", MODEL)
     query = query.replace("DISTANCEMILES", str(5823 + randbelow(1000)))
@@ -56,7 +64,12 @@ def query_toyota(page_number, query, headers):
         timeout=15,
     )
 
-    result = resp.json()["data"]["locateVehiclesByZip"]
+    try:
+        result = resp.json()["data"]["locateVehiclesByZip"]
+    except requests.exceptions.JSONDecodeError:
+        print(resp.headers)
+        print(resp.text)
+        return None
 
     if not result or "vehicleSummary" not in result:
         print(resp.text)
@@ -71,32 +84,54 @@ def get_all_pages():
     page_number = 1
 
     # Read the query.
-    west_coast_query = get_vehicles_query()
-    east_coast_query = get_vehicles_query(coast="east")
+    west_query = get_vehicles_query(zone="west")
+    central_query = get_vehicles_query(zone="central")
+    east_query = get_vehicles_query(zone="east")
 
     # Get headers by bypassing the WAF.
+    print("Bypassing WAF")
     headers = wafbypass.WAFBypass().run()
+
+    # Start a timer.
+    timer_start = timer()
 
     # Set a last run counter.
     last_run_counter = 0
 
     while True:
+        # Toyota's API won't return any vehicles past past 40.
+        if page_number > 40:
+            break
+
+        # The WAF bypass expires every 5 minutes, so we refresh about every 4 minutes.
+        elapsed_time = timer() - timer_start
+        if elapsed_time > 4 * 60:
+            print("  >>> Refreshing WAF bypass >>>\n")
+            headers = wafbypass.WAFBypass().run()
+            timer_start = timer()
+
         # Get a page of vehicles.
         print(f"Getting page {page_number} of {MODEL} vehicles")
-        west_result = query_toyota(page_number, west_coast_query, headers)
-        east_result = query_toyota(page_number, east_coast_query, headers)
 
-        # Stop if we received no more results.
-        if west_result:
+        west_result = query_toyota(page_number, west_query, headers)
+        if west_result and "vehicleSummary" in west_result:
+            print("West:    ", len(west_result["vehicleSummary"]))
             df = pd.concat([df, pd.json_normalize(west_result["vehicleSummary"])])
 
-        if east_result:
+        central_result = query_toyota(page_number, central_query, headers)
+        if central_result and "vehicleSummary" in central_result:
+            print("Central: ", len(central_result["vehicleSummary"]))
+            df = pd.concat([df, pd.json_normalize(central_result["vehicleSummary"])])
+
+        east_result = query_toyota(page_number, east_query, headers)
+        if east_result and "vehicleSummary" in east_result:
+            print("East:    ", len(east_result["vehicleSummary"]))
             df = pd.concat([df, pd.json_normalize(east_result["vehicleSummary"])])
 
         # Drop any duplicate VINs.
         df.drop_duplicates(subset=["vin"], inplace=True)
 
-        print(f"Found {len(df)} vehicles so far.\n")
+        print(f"Found {len(df)} (+{len(df)-last_run_counter}) vehicles so far.\n")
 
         # If we didn't find more cars from the previous run, we've found them all.
         if len(df) == last_run_counter:
@@ -105,6 +140,8 @@ def get_all_pages():
 
         last_run_counter = len(df)
         page_number += 1
+
+        sleep(10)
         continue
 
     return df
@@ -149,7 +186,7 @@ def update_vehicles():
         "holdStatus": "Hold Status",
         "year": "Year",
         "drivetrain.code": "Drivetrain",
-        "options": "Options",
+        # "options": "Options",
     }
 
     with open(f"output/models.json", "r") as fileh:
@@ -174,7 +211,7 @@ def update_vehicles():
                 "dealerMarketingName",
                 # "dealerWebsite",
                 "Dealer State",
-                "options",
+                # "options",
             ]
         ]
         .copy(deep=True)
@@ -213,14 +250,16 @@ def update_vehicles():
     # )
     # df.drop(columns=["media"], inplace=True)
 
-    df["Options"] = df["Options"].apply(extract_marketing_long_names)
+    # df["Options"] = df["Options"].apply(extract_marketing_long_names)
+
+    # Add the drivetrain to the model name to reduce complexity.
+    df["Model"] = df["Model"] + " " + df["Drivetrain"]
 
     df = df[
         [
             "Year",
             "Model",
             "Color",
-            "Drivetrain",
             "Base MSRP",
             "Total MSRP",
             "Selling Price",
@@ -234,7 +273,7 @@ def update_vehicles():
             # "Dealer Website",
             "Dealer State",
             # "Image",
-            "Options",
+            # "Options",
         ]
     ]
 
