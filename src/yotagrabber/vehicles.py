@@ -186,7 +186,7 @@ def update_vehicles():
         "holdStatus": "Hold Status",
         "year": "Year",
         "drivetrain.code": "Drivetrain",
-        # "options": "Options",
+        "options": "Options",
     }
 
     with open(f"output/models.json", "r") as fileh:
@@ -211,7 +211,7 @@ def update_vehicles():
                 "dealerMarketingName",
                 # "dealerWebsite",
                 "Dealer State",
-                # "options",
+                "options",
             ]
         ]
         .copy(deep=True)
@@ -250,7 +250,7 @@ def update_vehicles():
     # )
     # df.drop(columns=["media"], inplace=True)
 
-    # df["Options"] = df["Options"].apply(extract_marketing_long_names)
+    df["Options"] = df["Options"].apply(extract_marketing_long_names)
 
     # Add the drivetrain to the model name to reduce complexity.
     df["Model"] = df["Model"] + " " + df["Drivetrain"]
@@ -273,13 +273,14 @@ def update_vehicles():
             # "Dealer Website",
             "Dealer State",
             # "Image",
-            # "Options",
+            "Options",
         ]
     ]
 
     # Write the data to a file.
     df.sort_values(by=["VIN"], inplace=True)
     df.to_csv(f"output/{MODEL}.csv", index=False)
+    return df
 
 
 def extract_marketing_long_names(options_raw):

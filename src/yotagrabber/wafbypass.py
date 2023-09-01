@@ -1,6 +1,19 @@
 # Bypass the AWS WAF in front of the GraphQL endpoint.
-from playwright.sync_api import sync_playwright
+from playwright.sync_api import sync_playwright, TimeoutError as PlaywrightTimeoutError
+from inputimeout import inputimeout, TimeoutOccurred
 
+
+def getUserInput(promptStr, sleepTime):
+    # Outputs the prompt if not null, and waits for a user input (with an ending CR which is not returned with the result) for the sleepTime
+    # returns a tuple (timedOut, userInput) where timedOut is True if timed out before input, otherwise userInput has the user entry
+    # without the CR
+    userInput = ""
+    timedOut = False
+    try:
+        userInput = inputimeout(prompt=promptStr, timeout=(sleepTime))
+    except TimeoutOccurred:
+        timedOut = True
+    return (timedOut, userInput)
 
 class WAFBypass:
     """Bypass the AWS WAF in front of the GraphQL endpoint."""
@@ -15,17 +28,25 @@ class WAFBypass:
 
     def get_headers(self) -> None:
         """Run a browser to get valid headers for a WAF bypass."""
-        with sync_playwright() as playwright:
-            browser = playwright.firefox.launch(headless=True)
-            context = browser.new_context(viewport={"width": 1920, "height": 1080})
-            page = context.new_page()
-            page.on("request", self.intercept_request)
-            page.goto("https://www.toyota.com/search-inventory/")
-            page.get_by_placeholder("ZIP Code").click()
-            page.get_by_placeholder("ZIP Code").fill("90210")
-            page.get_by_placeholder("ZIP Code").press("Enter")
-            page.wait_for_load_state("networkidle")
-            browser.close()
+        while True:
+            try:
+                with sync_playwright() as playwright:
+                    browser = playwright.firefox.launch(headless=True)
+                    context = browser.new_context(viewport={"width": 1920, "height": 1080})
+                    page = context.new_page()
+                    page.on("request", self.intercept_request)
+                    page.goto("https://www.toyota.com/search-inventory/")
+                    page.get_by_placeholder("ZIP Code").click()
+                    page.get_by_placeholder("ZIP Code").fill("90210")
+                    page.get_by_placeholder("ZIP Code").press("Enter")
+                    page.wait_for_load_state("networkidle")
+                    browser.close()
+                break
+            except PlaywrightTimeoutError as inst:
+                print("Error: WAFBypass.get_headers exception", str(inst))
+                sleepTime = 60* 10
+                print("Waiting time ", sleepTime, "secs before retrying WAF Bypass")
+                getUserInput("Enter Cr to terminate wait early", sleepTime)
 
     def run(self):
         """Return the valid headers to bypass the WAF."""
