@@ -1,0 +1,4 @@
+C:\Users\GregG\AppData\Local\Programs\venv\Scripts\activate
+cd C:\Users\GregG\Documents\GitHub\yotagrabber\src
+set MODEL=rav4prime
+py searchForVehicles.py SearchVehicles_config.yaml
