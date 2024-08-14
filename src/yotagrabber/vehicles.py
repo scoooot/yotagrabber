@@ -4,6 +4,7 @@ import json
 import os
 import sys
 import uuid
+import random
 from functools import cache
 from secrets import randbelow
 from time import sleep
@@ -57,34 +58,50 @@ def query_toyota(page_number, query, headers):
     # Replace the page number in the query
     query = query.replace("PAGENUMBER", str(page_number))
 
-    # Make request.
-    json_post = {"query": query}
-    url = "https://api.search-inventory.toyota.com/graphql"
-    resp = requests.post(
-        url,
-        json=json_post,
-        headers=headers,
-        timeout=15,
-    )
-    if DEBUG_ENABLED:
-        if resp is None:
-            print("query resp is None")
-        else:
-            print("query request headers: ", repr(resp.request.headers))
-            print("query request.body: " + str(resp.request.body))
-            print("query resp", repr (resp.headers), repr(resp))
-
-    try:
-        result = resp.json()["data"]["locateVehiclesByZip"]
-    except requests.exceptions.JSONDecodeError:
-        print ("Exception occurred with query")
-        print("resp.headers", resp.headers)
-        print("resp.text", resp.text)
-        return None
+    tryCount = 4
+    result = None
+    # TODO: still getting many query failures even with this retry method (goes through all retires withuot success)
+    # and not sure why?  Printed resp.text does not seem to contain any readable ascii text.
+    while tryCount:
+        # Make request.
+        json_post = {"query": query}
+        url = "https://api.search-inventory.toyota.com/graphql"
+        resp = requests.post(
+            url,
+            json=json_post,
+            headers=headers,
+            timeout=15,
+        )
+        if DEBUG_ENABLED:
+            if resp is None:
+                print("query resp is None")
+            else:
+                print("query request headers: ", repr(resp.request.headers))
+                print("query request.body: " + str(resp.request.body))
+                print("query resp", repr (resp.headers), repr(resp))
+    
+        try:
+            result = resp.json()["data"]["locateVehiclesByZip"]
+            if result and ("vehicleSummary" in result):
+              print(result["pagination"])
+              break
+        except (requests.exceptions.JSONDecodeError) as inst:
+            print ("Exception occurred with accessing json response:", str(type(inst)) + " "  + str(inst))
+            print("resp.status_code", resp.status_code)
+            print("resp.headers", resp.headers)
+            #print("resp.text", resp.text)
+            #print("resp.content", resp.content)
+            #return None
+        tryCount -= 1
+        print("Trying query again for page number: " + str(page_number),  ", tryCount = " + str(tryCount))
+        tm = 7 + (6 * random.random())
+        print("sleeping", tm, " secs")
+        sleep(tm)
 
     if not result or "vehicleSummary" not in result:
         print("Result is None, or vehicleSummary field not present in results")
-        print("resp.text", resp.text)
+        if resp is not None:
+          print("resp.text", resp.text)
         return None
     else:
         return result
