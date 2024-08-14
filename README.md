@@ -1,5 +1,7 @@
 # yotagrabber
 
+*Repo archived! Playing whack-a-mole with Toyota's WAF is no longer fun. Feel free to take this and keep it going if you want!*
+
 This is a work in progress to get inventory data from Toyota's GraphQL endpoints.
 I'm using the same endpoints for data on [Lexus vehicles](https://github.com/major/lexgrabber) as well.
 
