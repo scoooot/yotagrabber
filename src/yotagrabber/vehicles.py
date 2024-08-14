@@ -17,6 +17,9 @@ from yotagrabber import config, wafbypass
 # Set to True to use local data and skip requests to the Toyota website.
 USE_LOCAL_DATA_ONLY = False
 
+DEBUG_ENABLED = False
+
+
 # Get the model that we should be searching for.
 MODEL = os.environ.get("MODEL")
 
@@ -63,16 +66,25 @@ def query_toyota(page_number, query, headers):
         headers=headers,
         timeout=15,
     )
+    if DEBUG_ENABLED:
+        if resp is None:
+            print("query resp is None")
+        else:
+            print("query request headers: ", repr(resp.request.headers))
+            print("query request.body: " + str(resp.request.body))
+            print("query resp", repr (resp.headers), repr(resp))
 
     try:
         result = resp.json()["data"]["locateVehiclesByZip"]
     except requests.exceptions.JSONDecodeError:
-        print(resp.headers)
-        print(resp.text)
+        print ("Exception occurred with query")
+        print("resp.headers", resp.headers)
+        print("resp.text", resp.text)
         return None
 
     if not result or "vehicleSummary" not in result:
-        print(resp.text)
+        print("Result is None, or vehicleSummary field not present in results")
+        print("resp.text", resp.text)
         return None
     else:
         return result
@@ -147,12 +159,12 @@ def get_all_pages():
     return df
 
 
-def update_vehicles():
+def update_vehicles(useLocalData = False):
     """Generate a curated database of vehicles."""
     if not MODEL:
         sys.exit("Set the MODEL environment variable first")
 
-    df = read_local_data() if USE_LOCAL_DATA_ONLY else get_all_pages()
+    df = read_local_data() if (USE_LOCAL_DATA_ONLY or useLocalData) else get_all_pages()
 
     # Stop here if there are no vehicles to list.
     if df.empty:
@@ -212,6 +224,8 @@ def update_vehicles():
                 # "dealerWebsite",
                 "Dealer State",
                 "options",
+                "eta.currFromDate",
+                "eta.currToDate",
             ]
         ]
         .copy(deep=True)
@@ -268,6 +282,8 @@ def update_vehicles():
             "Shipping Status",
             "Pre-Sold",
             "Hold Status",
+            "eta.currFromDate",
+            "eta.currToDate",
             "VIN",
             "Dealer",
             # "Dealer Website",
