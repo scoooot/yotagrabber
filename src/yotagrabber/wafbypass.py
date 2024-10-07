@@ -17,6 +17,8 @@ def getUserInput(promptStr, sleepTime):
 
 class WAFBypass:
     """Bypass the AWS WAF in front of the GraphQL endpoint."""
+    def __init__(self, model):
+        self.model = model
 
     def intercept_request(self, request):
         """Find the GraphQL request and save the headers."""
@@ -35,10 +37,8 @@ class WAFBypass:
                     context = browser.new_context(viewport={"width": 1920, "height": 1080})
                     page = context.new_page()
                     page.on("request", self.intercept_request)
-                    page.goto("https://www.toyota.com/search-inventory/")
-                    page.get_by_placeholder("ZIP Code").click()
-                    page.get_by_placeholder("ZIP Code").fill("90210")
-                    page.get_by_placeholder("ZIP Code").press("Enter")
+                    page.goto("https://www.toyota.com/search-inventory/model/" + self.model + "/?zipcode=90210")
+                    #print("https://www.toyota.com/search-inventory/model/" + self.model + "/?zipcode=90210")
                     page.wait_for_load_state("networkidle")
                     browser.close()
                 break
