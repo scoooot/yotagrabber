@@ -9,7 +9,7 @@ resultsFileName: '.\SearchVehiclesResults.txt',
 # Time delay before next search  = minWaitTimeBetweenSearches + (random number between 0 and 1 * maxRandomAdderTimeBetweenSearches)
 # !!! Note that by hitting the return key you can end any current wait and immediately proceed
 # !!! Hitting Ctrl-C terminates the program
-minWaitTimeBetweenSearches: 43200, # 60 * 60 * 12 secs
+minWaitTimeBetweenSearches: 21600, # 60 * 60 * 6 secs
 maxRandomAdderTimeBetweenSearches: 1800, # 60*30 secs
 
 
