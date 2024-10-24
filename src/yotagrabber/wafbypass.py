@@ -19,6 +19,7 @@ class WAFBypass:
     """Bypass the AWS WAF in front of the GraphQL endpoint."""
     def __init__(self, model):
         self.model = model
+        self.valid_headers = None
 
     def intercept_request(self, request):
         """Find the GraphQL request and save the headers."""
@@ -32,6 +33,7 @@ class WAFBypass:
         """Run a browser to get valid headers for a WAF bypass."""
         while True:
             try:
+                self.valid_headers = None
                 with sync_playwright() as playwright:
                     browser = playwright.firefox.launch(headless=True)
                     context = browser.new_context(viewport={"width": 1920, "height": 1080})
@@ -41,13 +43,18 @@ class WAFBypass:
                     #print("https://www.toyota.com/search-inventory/model/" + self.model + "/?zipcode=90210")
                     page.wait_for_load_state("networkidle")
                     browser.close()
-                break
+                if self.valid_headers is not None:
+                    break
+                else:
+                    print("Error: WAFBypass.get_headers was None")
+                    sleepTime = 60* 10
+                    print("Waiting time ", sleepTime, "secs before retrying WAF Bypass")
+                    getUserInput("Enter Cr to terminate wait early", sleepTime)
             except PlaywrightTimeoutError as inst:
                 print("Error: WAFBypass.get_headers exception", str(inst))
                 sleepTime = 60* 10
                 print("Waiting time ", sleepTime, "secs before retrying WAF Bypass")
                 getUserInput("Enter Cr to terminate wait early", sleepTime)
-
     def run(self):
         """Return the valid headers to bypass the WAF."""
         self.get_headers()
