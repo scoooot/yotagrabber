@@ -1109,8 +1109,8 @@ def outputSearchResultsToUser(matchCriteria, dfMatches, lastUserMatchesDf):
         with open(Path(resultsFileName), 'a+') as f1:
             with open(currentMatchesFileName, 'r') as f2:
                 f1.write(f2.read())
-        if addedUnitTo:
-            # only notify user via text and emails if we added something to the list compared to the prior list
+        if addedUnitTo or modifiedUnitTo:
+            # only notify user via text and emails if we added/modified something to the list compared to the prior list
             notifyRemoteUserOfMatches(currentMatchesFileName)
     if not dfMatches.empty:
         # This section is for terminal output and sounding the computer alarm for matches
