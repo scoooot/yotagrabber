@@ -37,7 +37,7 @@ import numpy as np
 from yotagrabber import vehicles
 
 # Version
-searchForVehiclesVersionStr = "Ver 1.0.0 Aug 27 2023"  #
+searchForVehiclesVersionStr = "Ver 1.2.0 Nov 8 2024"  #
 
 class userMatchCriteria:
     def __init__(self):
@@ -835,8 +835,10 @@ def outputSearchingInfoToUser(matchCriteria):
     print("Username:", username)
 
 def getNamesOfModifiedFieldsIntoString (details1, details2):
-    # returns the names of the modified fields (fields whose value changed between details1 and details)
+    # returns the names of the modified fields (fields whose value changed between details1 and details) as well as the 
+    # the current value and prior value of the field
     # Assumes both passed details have the exact same field names and are not empty
+    # details1 has the current values and details2 has the prior values
     global debugEnabled
     #if debugEnabled:
     #    print("detailsAreTheSame details1", details1)
@@ -861,7 +863,7 @@ def getNamesOfModifiedFieldsIntoString (details1, details2):
                 for index2 in details2.index:
                     for column1 in details1:
                         if details1.at[index1, column1] != details2.at[index2, column1]:
-                            namesOfModifiedFieldsString += column1 + " | "
+                            namesOfModifiedFieldsString += column1 + " :: " + str(details2.at[index2, column1]) + " --> " +  str(details1.at[index1, column1]) + " || "
                             #if debugEnabled:
                             #    print("getNamesOfModifiedFieldsIntoString index1, column1, index2, details1.at[index1, column1], details2.at[index2, column1]", index1, column1, index2, details1.at[index1, column1], details2.at[index2, column1])
                     break
@@ -1092,7 +1094,6 @@ def outputSearchResultsToUser(matchCriteria, dfMatches, lastUserMatchesDf):
                 elif modedUnit:
                     addedString = ":,   ***MODED"  # Use word Moded to easily see what was modified out of all the matches
                     namesOfModifiedFieldsString = getNamesOfModifiedFieldsIntoString(dfMatches.loc[[detailsCurIndex]], lastUserMatchesDf.loc[[detailsPreviousIndex]]) 
-                    # TODO  Get the list of the field names in this entry where a change occured so can pass to printUnitDetails to be printed at the end of the Unit Details to easily see what fields changed
                 printUnitDetails(dateTimeWithTimeZoneStr + addedString, dfMatches.loc[[detailsCurIndex]], f, printIt = False, suppressFixedUnitDetailsPrefix = False, sanitizeStrings = True, namesOfModifiedFieldsString = namesOfModifiedFieldsString)  #  use ":, " to make ultra edit filtering of non Went Unavailable strings easier
         if outputResultsMethod == outputChangedSearchResultsOnChange:
             # also print units that disappeared
@@ -1136,9 +1137,8 @@ def outputSearchResultsToUser(matchCriteria, dfMatches, lastUserMatchesDf):
             elif modedUnit:
                 addedString = ":, ***MODED"  # Use word Moded to easily see what was modified out of all the matches
                 namesOfModifiedFieldsString = getNamesOfModifiedFieldsIntoString(dfMatches.loc[[detailsCurIndex]], lastUserMatchesDf.loc[[detailsPreviousIndex]]) 
-                # TODO  Get the list of the field names in this entry where a change occured so can pass to printUnitDetails to be printed at the end of the Unit Details to easily see what fields changed
             printUnitDetails(dateTimeWithTimeZoneStr + addedString, dfMatches.loc[[detailsCurIndex]], fileHandle = 0 , printIt = True, suppressFixedUnitDetailsPrefix = False, sanitizeStrings = True, namesOfModifiedFieldsString = namesOfModifiedFieldsString )  #  use ":, " to make ultra edit filtering of non Went Unavailable strings easier
-        if computerSoundNotificationFileName and (matchesFoundEvent in soundNotificationEvents) and addedUnitTo:
+        if computerSoundNotificationFileName and (matchesFoundEvent in soundNotificationEvents) and (addedUnitTo or modifiedUnitTo):
             notifyWithSound()
     else:
         print("No matches found")
