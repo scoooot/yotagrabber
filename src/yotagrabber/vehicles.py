@@ -189,7 +189,7 @@ def update_vehicles(useLocalData = False):
         return
 
     # Write the raw data to a file.
-    if not USE_LOCAL_DATA_ONLY:
+    if (not USE_LOCAL_DATA_ONLY) and (not useLocalData):
         df.sort_values("vin", inplace=True)
         df.to_parquet(f"output/{MODEL}_raw.parquet", index=False)
 
