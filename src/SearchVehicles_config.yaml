@@ -12,6 +12,20 @@ resultsFileName: '.\SearchVehiclesResults.txt',
 minWaitTimeBetweenSearches: 21600, # 60 * 60 * 6 secs
 maxRandomAdderTimeBetweenSearches: 1800, # 60*30 secs
 
+# userMatchCriteriaFilterFileName - The file name of a python (must have .py ending extension) file that contains two functions.
+# def filterDataFrame (df):  
+#    where df is the passed panda data frame to be filtered to meet the desired user match criteria and the function return value 
+#    is the filtered data frame (leaving df unchanged)
+# 
+# def criteriaPrintableString ():  
+#    returns a printable string containing the user match criteria.  This can be the panda expression used to do the filtering
+#    or whatever indicates the filtering that was done. 
+#
+# See Example_UserMatchCriteriaFilter.py for an example of this file.
+# userMatchCriteriaFilterFileName config item must be present and the file must exist otherwise a config file error is issued.
+# 
+userMatchCriteriaFilterFileName: '.\XSE_PP_CloseToIowa_UserMatchCriteriaFilter.py',
+
 
 # outputResultsMethod -  Determines how unfiltered match results are output to the running history file, and user notifications.
 # Default is outputAllSearchResultsOnChange when commented out.

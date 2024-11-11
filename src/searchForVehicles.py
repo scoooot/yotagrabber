@@ -32,34 +32,30 @@ from twilio.rest import Client as TwillioClient
 import shutil
 import pandas as pd
 import numpy as np
+import importlib.util
 
 
 from yotagrabber import vehicles
 
 # Version
-searchForVehiclesVersionStr = "Ver 1.2.0 Nov 8 2024"  #
+searchForVehiclesVersionStr = "Ver 1.2.1 Nov 10 2024"  #
 
 class userMatchCriteria:
     def __init__(self):
         pass
     def filterDataFrame(self, df):
-        # XSE model and Not Pre-Sold and Hold stauts is blank or available, and dealer state is IA and options contain Premium Package and Weather Package
         if debugEnabled:
             print("userMatchCriteria.filterDataFrame df is \n ", df)
             print("userMatchCriteria.filterDataFrame df.columns", df.columns)
             self.print("")
-        dfFiltered = df[(df["Model"].str.contains("XSE")) & (df["Pre-Sold"] == False) & (df["Hold Status"].isin(["Available", None, "", "DealerHold"])) & ((df["Markup"] <= 1000) & ((df["Selling Price"].isin([None])) | (df["Selling Price"] <= (df["Total MSRP"] + 1000)) )) & (df["Dealer State"].isin(["IA", "IL", "IN", "MO", "WI", "MN", "KS", "NE", "ND"])) & ( df["Options"].str.contains("Premium Package") & df["Options"].str.contains("Weather Package"))]
-        #dfFiltered = df[(df["Model"].str.contains("XSE")) & (df["Pre-Sold"] == False) & (df["Hold Status"].isin(["Available", None, "", "DealerHold"])) & ((df["Markup"] <= 1000)& (df["Selling Price"].isin([None]))) & (df["Dealer State"].isin(["IA", "IL", "MO", "WI", "MN", "KS", "NE", "ND"])) & ( df["Options"].str.contains("Premium Package") & df["Options"].str.contains("Weather Package"))]
-        ## debug temp begin 
-        #dfFiltered = df[(df['Model'].str.contains("XSE")) & (df['Pre-Sold'] == False)  & (df['Dealer State'] == "IA")]
-        # debug temp end 
+        dfFiltered = userMatchCriteriaFilterModule.filterDataFrame(df)
         if debugEnabled:
             print("userMatchCriteria.filterDataFrame dfFiltered is \n", dfFiltered)
         return dfFiltered
     def criteriaPrintableString(self):
         # returns a string of the printed criteria
         criteriaStr = ""
-        criteriaStr += 'Match criteria is: df[(df["Model"].str.contains("XSE")) & (df["Pre-Sold"] == False) & (df["Hold Status"].isin(["Available", None, "", "DealerHold"])) & ((df["Markup"] <= 1000) & ((df["Selling Price"].isin([None])) | (df["Selling Price"] <= (df["Total MSRP"] + 1000)) )) & (df["Dealer State"].isin(["IA", "IL", "IN", "MO", "WI", "MN", "KS", "NE", "ND"])) & ( df["Options"].str.contains("Premium Package") & df["Options"].str.contains("Weather Package"))]'
+        criteriaStr += userMatchCriteriaFilterModule.criteriaPrintableString()
         return criteriaStr
     def print(self, prefix, fileHandle = 0, toConsole = True):
         # prints the criteria to a file and or console with the given prefix
@@ -113,6 +109,7 @@ resultsFileName = "" #invalid
 
 username = "" #invalid
 
+userMatchCriteriaFilterFileName = "" #invalid
 
 emailingMethod =  -1 # invalid
 textingMethod =  -1 # invalid
@@ -149,6 +146,15 @@ minSleepTime = 1.0  #  secs between post, get sends
 minRandomTimeScaler = 1.0  #  secs between post, get sends
 
 lastUserMatchesDf = pd.DataFrame() # empty dataframe
+
+userMatchCriteriaFilterModule = ""
+
+def import_from_path(module_name, file_path):
+    spec = importlib.util.spec_from_file_location(module_name, file_path)
+    module = importlib.util.module_from_spec(spec)
+    sys.modules[module_name] = module
+    spec.loader.exec_module(module)
+    return module
 
 def stringsToStringAddingLineFeedDelimiters(listOfStrings):
     # combines the passed list of strings in order into a single string adding Line feed delimiters between the strings, and returns that combined string
@@ -197,6 +203,7 @@ class configParameterInfo:
 configParametersInfo = {
 "username": configParameterInfo(),
 "resultsFileName": configParameterInfo(),
+"userMatchCriteriaFilterFileName": configParameterInfo(),
 "minWaitTimeBetweenSearches": configParameterInfo(),
 "maxRandomAdderTimeBetweenSearches": configParameterInfo(),
 "debugEnabled": configParameterInfo(),
@@ -231,6 +238,7 @@ configNotificationEventMap = {"programStartUpEvent": programStartUpEvent, "progr
 def parseConfigFile(fileName):
     global username
     global resultsFileName
+    global userMatchCriteriaFilterFileName
     global minWaitTimeBetweenSearches
     global maxRandomAdderTimeBetweenSearches
     global debugEnabled
@@ -280,6 +288,8 @@ def parseConfigFile(fileName):
                             username = paramsDic[paramName]
                         elif paramName == "resultsFileName":
                             resultsFileName = paramsDic[paramName]
+                        elif paramName == "userMatchCriteriaFilterFileName":
+                            userMatchCriteriaFilterFileName = paramsDic[paramName]
                         elif paramName == "minWaitTimeBetweenSearches":
                             minWaitTimeBetweenSearches = paramsDic[paramName]
                         elif paramName == "maxRandomAdderTimeBetweenSearches":
@@ -373,6 +383,9 @@ def parseConfigFile(fileName):
                         configOk = False
                     elif not resultsFileName:
                         print("Error: parseConfigFile: resultsFileName missing or blank in config file")
+                        configOk = False
+                    elif (not userMatchCriteriaFilterFileName) or not(Path(userMatchCriteriaFilterFileName).is_file()):
+                        print("Error: parseConfigFile: userMatchCriteriaFilterFileName file does not exist. File name is:", userMatchCriteriaFilterFileName )
                         configOk = False
                     elif (not authenticationAuthorizationPath) and (emailingMethod == emailMessagingWithGmailAndCredsMethod):
                         print("Error: parseConfigFile: authenticationAuthorizationPath missing or invalid in config file but needed when emailingMethod specified use of credentials")
@@ -1151,6 +1164,8 @@ def searchForVehicles(args):
     global resultsFileName
     global searchForVehiclesVersionStr
     global lastUserMatchesDf
+    global userMatchCriteriaFilterModule
+    global userMatchCriteriaFilterFileName
     try:
         print("Search for Vehicles program", searchForVehiclesVersionStr)
         done = False
@@ -1163,6 +1178,8 @@ def searchForVehicles(args):
         else:
             print("Error: Config file name missing as first arguement in command line")
             raise SystemExit
+        # import the match criteria filter file
+        userMatchCriteriaFilterModule = import_from_path("userMatchCriteriaFilter_Module", userMatchCriteriaFilterFileName)
         logToResultsFile("--------------------------------------------------------------------------", printIt = False, timestamp = False)        
         logToResultsFile("Started Up Search For Vehicles program " + searchForVehiclesVersionStr + " ------------------------------------------", printIt = False)        
         notificationsInitialization()
