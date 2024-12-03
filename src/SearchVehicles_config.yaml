@@ -214,7 +214,7 @@ textOnlyMatchesNotification: True,
 # If you don't have a gmail account , you will need to create one.  Then create a google developers project and enable the gmail app for it,
 # then create OAuth 2.0 Client IDs credentials for this project using the credentials page, during that creation select the scopes for the
 # gmail app to sending email only to limit the access to email (thus can't read any received emails or see contacts).  This consent
-# authorizaton can be edited at anytime to change scopes, etc.
+# authorizaton can be edited at anytime to change scopes, etc (using the OAuth consent screen , and click on the Edit button).
 # Then download the credentials.json file
 # The credentials.json file contains the project ID, project name, client ID (an ID for you), client secret (for secure access).
 # When you run the python search for matching timeshare unit exchanges program it will request credentials from the gmail app.
