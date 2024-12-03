@@ -161,3 +161,4 @@ cython_debug/
 *.bak
 # OAuth  credentials
 credentials.json
+*.token.json
