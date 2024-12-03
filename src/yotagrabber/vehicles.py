@@ -24,6 +24,7 @@ DEBUG_ENABLED = False
 # Get the model that we should be searching for.
 MODEL = os.environ.get("MODEL")
 
+forceQueryRspFailureTest = 0 # set to > 0 to perform tests related to forcing a query response failure to test query request retry
 
 @cache
 def get_vehicles_query(zone="west"):
@@ -54,7 +55,7 @@ def read_local_data():
 
 def query_toyota(page_number, query, headers):
     """Query Toyota for a list of vehicles."""
-
+    global forceQueryRspFailureTest
     # Replace the page number in the query
     query = query.replace("PAGENUMBER", str(page_number))
 
@@ -79,12 +80,20 @@ def query_toyota(page_number, query, headers):
                 print("query request headers: ", repr(resp.request.headers))
                 print("query request.body: " + str(resp.request.body))
                 print("query resp", repr (resp.headers), repr(resp))
-    
         try:
             result = resp.json()["data"]["locateVehiclesByZip"]
             if result and ("vehicleSummary" in result):
-              print(result["pagination"])
-              break
+                print(result["pagination"])
+                if (forceQueryRspFailureTest > 0) and (forceQueryRspFailureTest < 20):
+                    forceFail = False
+                    if forceQueryRspFailureTest in [2,3,10]:
+                        print("Test forcing query page response failure, forceQueryRspFailureTest = ", forceQueryRspFailureTest)
+                        forceFail = True
+                    forceQueryRspFailureTest += 1
+                    if not forceFail:
+                        break
+                else:
+                    break
         except (requests.exceptions.JSONDecodeError) as inst:
             print ("Exception occurred with accessing json response:", str(type(inst)) + " "  + str(inst))
             print("resp.status_code", resp.status_code)

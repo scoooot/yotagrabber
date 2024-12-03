@@ -1,0 +1,10 @@
+Search for Vehicles program Ver 1.0.0 Aug 27 2023
+Refreshing remote notifications authorization/authentication token
+outputResultsMethod: outputAllSearchResultsOnChange
+Match criteria is: df[(df["Model"].str.contains("XSE")) & (df["Pre-Sold"] == False) & (df["Hold Status"].isin(["Available", None, "", "DealerHold"])) & ((df["Markup"] <= 1000) & ((df["Selling Price"].isin([None])) | (df["Selling Price"] <= (df["Total MSRP"] + 1000)) )) & (df["Dealer State"].isin(["IA", "IL", "IN", "MO", "WI", "MN", "KS", "NE", "ND"])) & ( df["Options"].str.contains("Premium Package") & df["Options"].str.contains("Weather Package"))]
+Username: ghgemmer
+outputResultsMethod: outputAllSearchResultsOnChange
+Match criteria is: df[(df["Model"].str.contains("XSE")) & (df["Pre-Sold"] == False) & (df["Hold Status"].isin(["Available", None, "", "DealerHold"])) & ((df["Markup"] <= 1000) & ((df["Selling Price"].isin([None])) | (df["Selling Price"] <= (df["Total MSRP"] + 1000)) )) & (df["Dealer State"].isin(["IA", "IL", "IN", "MO", "WI", "MN", "KS", "NE", "ND"])) & ( df["Options"].str.contains("Premium Package") & df["Options"].str.contains("Weather Package"))]
+Username: ghgemmer
+Collecting list of vehicles to run match criteria against
+Bypassing WAF
