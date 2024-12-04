@@ -8,10 +8,6 @@
     "title":"Camry"
   },
   {
-    "modelCode":"camryhybrid",
-    "title":"Camry Hybrid"
-  },
-  {
     "modelCode":"corolla",
     "title":"Corolla"
   },
@@ -60,6 +56,10 @@
     "title":"Highlander Hybrid"
   },
   {
+    "modelCode":"landcruiser",
+    "title":"Land Cruiser"
+  },
+  {
     "modelCode":"mirai",
     "title":"Mirai"
   },
@@ -80,6 +80,10 @@
     "title":"RAV4 Hybrid"
   },
   {
+    "modelCode":"rav4pluginhybrid",
+    "title":"RAV4 Plug-in Hybrid"
+  },
+  {
     "modelCode":"rav4prime",
     "title":"RAV4 Prime"
   },
@@ -96,8 +100,16 @@
     "title":"Tacoma"
   },
   {
+    "modelCode":"tacomahybrid",
+    "title":"Tacoma i-FORCE MAX"
+  },
+  {
     "modelCode":"toyotacrown",
     "title":"Toyota Crown"
+  },
+  {
+    "modelCode":"toyotacrownsignia",
+    "title":"Toyota Crown Signia"
   },
   {
     "modelCode":"tundra",

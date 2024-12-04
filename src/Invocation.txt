@@ -1,4 +1,6 @@
 C:\Users\GregG\AppData\Local\Programs\venv\Scripts\activate
 cd C:\Users\GregG\Documents\GitHub\yotagrabber\src
 set MODEL=rav4prime
+rem For 2025 and on rav4pluginhybrid is used instead of rav4prime
+rem set MODEL=rav4pluginhybrid
 py searchForVehicles.py SearchVehicles_config.yaml
