@@ -36,13 +36,17 @@ class WAFBypass:
                 self.valid_headers = None
                 with sync_playwright() as playwright:
                     browser = playwright.firefox.launch(headless=True)
-                    context = browser.new_context(viewport={"width": 1920, "height": 1080})
-                    page = context.new_page()
-                    page.on("request", self.intercept_request)
-                    page.goto("https://www.toyota.com/search-inventory/model/" + self.model + "/?zipcode=90210")
-                    #print("https://www.toyota.com/search-inventory/model/" + self.model + "/?zipcode=90210")
-                    page.wait_for_load_state("networkidle")
-                    browser.close()
+                    try:
+                        context = browser.new_context(viewport={"width": 1920, "height": 1080})
+                        page = context.new_page()
+                        page.on("request", self.intercept_request)
+                        page.goto("https://www.toyota.com/search-inventory/model/" + self.model + "/?zipcode=90210")
+                        #print("https://www.toyota.com/search-inventory/model/" + self.model + "/?zipcode=90210")
+                        page.wait_for_load_state("networkidle", timeout=60000)
+                    except PlaywrightTimeoutError as inst:
+                        print("Error: WAFBypass.get_headers exception in code going to inventory page for the model", str(inst))
+                    finally:
+                        browser.close()
                 if self.valid_headers is not None:
                     break
                 else:
