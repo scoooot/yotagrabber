@@ -17,7 +17,7 @@ def getUserInput(promptStr, sleepTime):
 
 class WAFBypass:
     """Bypass the AWS WAF in front of the GraphQL endpoint."""
-    def __init__(self, model):
+    def __init__(self, model="rav4hybrid"):
         self.model = model
         self.valid_headers = None
 
