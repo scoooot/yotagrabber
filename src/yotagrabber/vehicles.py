@@ -128,7 +128,7 @@ def get_all_pages():
 
     # Get headers by bypassing the WAF.
     print("Bypassing WAF")
-    headers = wafbypass.WAFBypass(MODEL).run()
+    headers = wafbypass.WAFBypass().run()
 
     # Start a timer.
     timer_start = timer()
@@ -145,7 +145,7 @@ def get_all_pages():
         elapsed_time = timer() - timer_start
         if elapsed_time > 4 * 60:
             print("  >>> Refreshing WAF bypass >>>\n")
-            headers = wafbypass.WAFBypass(MODEL).run()
+            headers = wafbypass.WAFBypass().run()
             timer_start = timer()
 
         # Get a page of vehicles.

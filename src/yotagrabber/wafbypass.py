@@ -17,8 +17,7 @@ def getUserInput(promptStr, sleepTime):
 
 class WAFBypass:
     """Bypass the AWS WAF in front of the GraphQL endpoint."""
-    def __init__(self, model="rav4hybrid"):
-        self.model = model
+    def __init__(self):
         self.valid_headers = None
 
     def intercept_request(self, request):
@@ -40,11 +39,11 @@ class WAFBypass:
                         context = browser.new_context(viewport={"width": 1920, "height": 1080})
                         page = context.new_page()
                         page.on("request", self.intercept_request)
-                        page.goto("https://www.toyota.com/search-inventory/model/" + self.model + "/?zipcode=90210")
-                        #print("https://www.toyota.com/search-inventory/model/" + self.model + "/?zipcode=90210")
+                        page.goto("https://www.toyota.com/search-inventory/model/" + "rav4hybrid" + "/?zipcode=90210")
+                        #print("https://www.toyota.com/search-inventory/model/" + "rav4hybrid" + "/?zipcode=90210")
                         page.wait_for_load_state("networkidle", timeout=60000)
                     except PlaywrightTimeoutError as inst:
-                        print("Error: WAFBypass.get_headers exception in code going to inventory page for the model", str(inst))
+                        print("Error: WAFBypass.get_headers: exception in code going to inventory page: ", str(inst))
                     finally:
                         browser.close()
                 if self.valid_headers is not None:
