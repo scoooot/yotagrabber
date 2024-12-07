@@ -62,7 +62,7 @@ jobs:
       - name: Store models image data in artifact
         uses: actions/upload-artifact@v3
         with:
-          name: "output"
+          name: "models log output"
           path: "output/models.log"
 
       - name: Commit and push if it changed
