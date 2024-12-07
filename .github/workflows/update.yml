@@ -55,7 +55,7 @@ jobs:
         if: steps.playwright-cache.outputs.cache-hit != 'true'
 
       - name: Get the latest models
-        run: poetry run update_models
+        run: poetry run update_models >> $GITHUB_OUTPUT
         env:
           PYTHONUNBUFFERED: 1
 
