@@ -55,9 +55,15 @@ jobs:
         if: steps.playwright-cache.outputs.cache-hit != 'true'
 
       - name: Get the latest models
-        run: poetry run update_models >> $GITHUB_OUTPUT
+        run: poetry run update_models >> output/models.log  || exit 0
         env:
           PYTHONUNBUFFERED: 1
+          
+      - name: Store models image data in artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: "output"
+          path: "output/models.log"
 
       - name: Commit and push if it changed
         run: |-
