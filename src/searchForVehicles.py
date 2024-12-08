@@ -1193,7 +1193,7 @@ def searchForVehicles(args):
             # get dataframe of all vehicles in US (this also writes them out to a .csv file)
             # Possibly as an enhancement can pass an optional zipcode and miles radius to search to reduce the search time and results
             print("Collecting list of vehicles to run match criteria against")
-            df = vehicles.update_vehicles()
+            df = vehicles.update_vehicles_and_return_df()
             if df is not None:
                 #replace nan with None in the DataFrame to ease computations later on 
                 df = df.replace({np.nan: None})

@@ -185,8 +185,8 @@ def get_all_pages():
     return df
 
 
-def update_vehicles(useLocalData = False):
-    """Generate a curated database of vehicles."""
+def update_vehicles_and_return_df(useLocalData = False):
+    """Generate a curated database file for the given vehicle model environment variable, as well as returning that database as a dataframe as the function return value."""
     if not MODEL:
         sys.exit("Set the MODEL environment variable first")
 
@@ -324,6 +324,12 @@ def update_vehicles(useLocalData = False):
     df.to_csv(f"output/{MODEL}.csv", index=False)
     return df
 
+def update_vehicles(useLocalData = False):
+    """Generate a curated database file for the given vehicle model environment variable."""
+    # This function is used to generate the inventory database file for the given vehicle model,
+    # but it has no return statement so that the correct system exit code applies 
+    # (success is 0 anything else is failed) when called by "poetry run update_vehicles".
+    update_vehicles_and_return_df(useLocalData = useLocalData)
 
 def extract_marketing_long_names(options_raw):
     """extracts `marketingName` from `Options` col"""
