@@ -15,5 +15,9 @@ and then runs a specified match criteria against that looking for specific vehic
 that match criteria the program notifies the user via any user specified combination of sound, email, text.
 
 
-I do not currently run the scripts to update and post the model inventory csv data files at this time.
+I do not currently run the github workflow to update and post the model inventory csv data files at this time.
+I have been trying to get that github workflow to run for this but it seems like the main problem is that
+github is having problems communicating with the toyota website by either being blocked sometimes, or getting connection failures/forced closures, or continuous response timeouts.
+Possibly the website has been in the past seeing too much traffic from github and is throttling it or blocking it sometimes.
+I don't seem to have these problems when running these updates on my desktop for just a few vehicle models. 
 
