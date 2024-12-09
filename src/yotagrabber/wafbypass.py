@@ -39,8 +39,9 @@ class WAFBypass:
                         context = browser.new_context(viewport={"width": 1920, "height": 1080})
                         page = context.new_page()
                         page.on("request", self.intercept_request)
-                        page.goto("https://www.toyota.com/search-inventory/model/" + "rav4hybrid" + "/?zipcode=90210")
-                        #print("https://www.toyota.com/search-inventory/model/" + "rav4hybrid" + "/?zipcode=90210")
+                        # pick a model that usually doesn't have much inventory to reduce response time and web page load time
+                        page.goto("https://www.toyota.com/search-inventory/model/" + "corollahatchback" + "/?zipcode=90210")
+                        #print("https://www.toyota.com/search-inventory/model/" + "corollahatchback" + "/?zipcode=90210")
                         page.wait_for_load_state("networkidle", timeout=60000)
                     except PlaywrightTimeoutError as inst:
                         print("Error: WAFBypass.get_headers: exception in code going to inventory page: ", str(inst))

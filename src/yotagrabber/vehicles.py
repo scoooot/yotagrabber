@@ -67,46 +67,48 @@ def query_toyota(page_number, query, headers):
         # Make request.
         json_post = {"query": query}
         url = "https://api.search-inventory.toyota.com/graphql"
-        resp = requests.post(
-            url,
-            json=json_post,
-            headers=headers,
-            timeout=15,
-        )
-        if DEBUG_ENABLED:
-            if resp is None:
-                print("query resp is None")
-            else:
-                print("query request headers: ", repr(resp.request.headers))
-                print("query request.body: " + str(resp.request.body))
-                print("query resp", repr (resp.headers), repr(resp))
         try:
-            result = resp.json()["data"]["locateVehiclesByZip"]
-            if result and ("vehicleSummary" in result):
-                print(result["pagination"])
-                if (forceQueryRspFailureTest > 0) and (forceQueryRspFailureTest < 20):
-                    forceFail = False
-                    if forceQueryRspFailureTest in [2,3,10]:
-                        print("Test forcing query page response failure, forceQueryRspFailureTest = ", forceQueryRspFailureTest)
-                        forceFail = True
-                    forceQueryRspFailureTest += 1
-                    if not forceFail:
-                        break
+            resp = requests.post(
+                url,
+                json=json_post,
+                headers=headers,
+                timeout=20,
+            )
+            if DEBUG_ENABLED:
+                if resp is None:
+                    print("query resp is None")
                 else:
-                    break
-        except (requests.exceptions.JSONDecodeError) as inst:
-            print ("Exception occurred with accessing json response:", str(type(inst)) + " "  + str(inst))
-            print("resp.status_code", resp.status_code)
-            print("resp.headers", resp.headers)
-            #print("resp.text", resp.text)
-            #print("resp.content", resp.content)
-            #return None
+                    print("query request headers: ", repr(resp.request.headers))
+                    print("query request.body: " + str(resp.request.body))
+                    print("query resp", repr (resp.headers), repr(resp))
+            try:
+                result = resp.json()["data"]["locateVehiclesByZip"]
+                if result and ("vehicleSummary" in result):
+                    print(result["pagination"])
+                    if (forceQueryRspFailureTest > 0) and (forceQueryRspFailureTest < 20):
+                        forceFail = False
+                        if forceQueryRspFailureTest in [2,3,10]:
+                            print("Test forcing query page response failure, forceQueryRspFailureTest = ", forceQueryRspFailureTest)
+                            forceFail = True
+                        forceQueryRspFailureTest += 1
+                        if not forceFail:
+                            break
+                    else:
+                        break
+            except (requests.exceptions.JSONDecodeError) as inst:
+                print ("query_toyota: Exception occurred with accessing json response:", str(type(inst)) + " "  + str(inst))
+                print("resp.status_code", resp.status_code)
+                print("resp.headers", resp.headers)
+                #print("resp.text", resp.text)
+                #print("resp.content", resp.content)
+                #return None
+        except (requests.exceptions.ReadTimeout) as inst:
+            print ("query_toyota: Exception occurred :", str(type(inst)) + " "  + str(inst))
         tryCount -= 1
         print("Trying query again for page number: " + str(page_number),  ", tryCount = " + str(tryCount))
         tm = 7 + (6 * random.random())
         print("sleeping", tm, " secs")
         sleep(tm)
-
     if not result or "vehicleSummary" not in result:
         print("Result is None, or vehicleSummary field not present in results")
         if resp is not None:
