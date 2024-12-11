@@ -336,12 +336,12 @@ def update_vehicles(useLocalData = False):
 def extract_marketing_long_names(options_raw):
     """extracts `marketingName` from `Options` col"""
     options = set()
-    for item in options_raw:
-        if item.get("marketingName"):
-            options.add(item.get("marketingName"))
-        elif item.get("marketingLongName"):
-            options.add(item.get("marketingLongName"))
-        else:
-            continue
-
+    if options_raw:
+        for item in options_raw:
+            if item.get("marketingName"):
+                options.add(item.get("marketingName"))
+            elif item.get("marketingLongName"):
+                options.add(item.get("marketingLongName"))
+            else:
+                continue
     return " | ".join(sorted(options))
