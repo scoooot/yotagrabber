@@ -55,7 +55,6 @@ function Get-VehicleInventoryForModels {
         git add output
         $timestamp = Get-Date
         git commit -m "Updating models list: $timestamp"
-        # Sometimes there are leftover .pyc files.
         git status
         git pull --rebase
         git push
