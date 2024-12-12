@@ -1,6 +1,56 @@
-C:\Users\GregG\AppData\Local\Programs\venv\Scripts\activate
+-For desktop operation in a cmd.exe window (i.e. not using github workflow on the github servers)
+remember to first setup a virtual environment for python just for use for running the inventory and models programs since
+you will be possibly installing python packages in conflict with whatever python packages you normally run
+Then the virtual environment is activated as shown by the activate command below.
+
+C:\Users\GregG\AppData\Local\Programs\yotagrabber_venv\Scripts\activate
 cd C:\Users\GregG\Documents\GitHub\yotagrabber\src
 set MODEL=rav4prime
 rem For 2025 and on rav4pluginhybrid is used instead of rav4prime
 rem set MODEL=rav4pluginhybrid
+rem either py or python as the first word below
 py searchForVehicles.py SearchVehicles_config.yaml
+
+--------------------------------------------------------------
+
+If you are running in a Windows Power shell then use the following
+
+Set-ExecutionPolicy -ExecutionPolicy Bypass -Scope Process -Force
+C:\Users\GregG\AppData\Local\Programs\yotagrabber_venv\Scripts\activate.ps1
+cd C:\Users\GregG\Documents\GitHub\yotagrabber\src
+$env:MODEL = 'rav4prime'
+# For 2025 and on rav4pluginhybrid is used instead of rav4prime
+# $env:MODEL = 'rav4pluginhybrid'
+# either py or python as the first word below
+py searchForVehicles.py SearchVehicles_config.yaml
+
+Note that to deactivate the virtual environment in Power Shell simply use the following command (no ps1 extension)
+deactivate
+
+--------------------------------------------------------------------
+For running the Get-ToyotaInventory.ps1 script you need to supply two parameters       
+$DirectoryToRunIn,
+$PythonVENVPowershellActivateScript
+
+To schedule this script to be run as a job use the following in a PowerShell adjusted to whatever schedule you want.
+Keep in mind that to much traffic to the toyota website could cause the website to block you or throttle you so 
+in general requesting no more than once a day is recommended.
+# use default options
+$jobOptionsToUse = New-ScheduledJobOption -RunElevated
+$jobTriggersToUse = New-JobTrigger -Weekly -DaysOfWeek Monday, Wednesday, Friday -At "23:00"
+$DirectoryToRunIn  = "directory you want the script to run in"
+$PythonVENVPowershellActivateScript = "ps1 activate script name including path that activates the python virtual environment to be used for the run"
+Set-ExecutionPolicy -ExecutionPolicy Bypass -Scope Process -Force
+Register-ScheduledJob -Name "GetToyotaModelsAndInventory" -FilePath "ps1 script name including path you want to run as a job" -Trigger $jobTriggersToUse -ScheduledJobOption $jobOptionsToUse -ArgumentList $DirectoryToRunIn, $PythonVENVPowershellActivateScript
+
+You can also force that scheduled job to start right away using
+Start-Job -DefinitionName "GetToyotaModelsAndInventory" 
+
+and then use
+Receive-Job -Name "GetToyotaModelsAndInventory" -Keep
+to see the console output of that running job up to that point.  
+Leaving off the -Keep will not retain all the output but ony show you the output since the last Receive-Job was run
+after the last Receive-Job was run.
+
+Note that if you terminate the job prematurely you need to manually run
+Stop-Transcript
