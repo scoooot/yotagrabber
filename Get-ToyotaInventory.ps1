@@ -12,7 +12,7 @@ function Get-VehicleInventoryForModels {
         $PythonVENVPowershellActivateScript
     )
     $logfile = $DirectoryToRunIn + "\output\InventoryRun.log"
-    Start-Transcript -path $logfile
+    Start-Transcript -Append -path $logfile
     cd $DirectoryToRunIn
     Set-ExecutionPolicy -ExecutionPolicy Bypass -Scope Process -Force
     .$PythonVENVPowershellActivateScript

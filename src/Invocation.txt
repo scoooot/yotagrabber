@@ -32,6 +32,9 @@ For running the Get-ToyotaInventory.ps1 script you need to supply two parameters
 $DirectoryToRunIn,
 $PythonVENVPowershellActivateScript
 
+To just run the script
+C:\Users\GregG\Documents\GitHub\yotagrabber\Get-ToyotaInventory.ps1 $DirectoryToRunIn $PythonVENVPowershellActivateScript
+
 To schedule this script to be run as a job use the following in a PowerShell adjusted to whatever schedule you want.
 Keep in mind that to much traffic to the toyota website could cause the website to block you or throttle you so 
 in general requesting no more than once a day is recommended.
