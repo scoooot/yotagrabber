@@ -14,6 +14,7 @@ function Get-VehicleInventoryForModels {
     $logfile = $DirectoryToRunIn + "\output\InventoryRun.log"
     Start-Transcript -Append -path $logfile
     cd $DirectoryToRunIn
+    $env:PYTHONUNBUFFERED = 1
     Set-ExecutionPolicy -ExecutionPolicy Bypass -Scope Process -Force
     .$PythonVENVPowershellActivateScript
     # break out of this for testing by uncommenting the following

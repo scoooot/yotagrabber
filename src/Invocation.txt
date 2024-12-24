@@ -2,11 +2,14 @@
 remember to first setup a virtual environment for python just for use for running the inventory and models programs since
 you will be possibly installing python packages in conflict with whatever python packages you normally run
 Then the virtual environment is activated as shown by the activate command below.
+Note that you need this virtual environment regardless of running the searchForVehicles.py or the Get-ToyotaInventory.ps1 powershell script
 
 C:\Users\GregG\AppData\Local\Programs\yotagrabber_venv\Scripts\activate
 cd C:\Users\GregG\Documents\GitHub\yotagrabber\src
 set MODEL=rav4prime
 rem For 2025 and on rav4pluginhybrid is used instead of rav4prime
+rem To use rav4prime you need to manually modify the models.json file to add the rav4prime entry by hand 
+rem othewise the vehicles.py won't recognize that as a valid model since that is no longer listed as a model
 rem set MODEL=rav4pluginhybrid
 rem either py or python as the first word below
 py searchForVehicles.py SearchVehicles_config.yaml
@@ -20,6 +23,8 @@ C:\Users\GregG\AppData\Local\Programs\yotagrabber_venv\Scripts\activate.ps1
 cd C:\Users\GregG\Documents\GitHub\yotagrabber\src
 $env:MODEL = 'rav4prime'
 # For 2025 and on rav4pluginhybrid is used instead of rav4prime
+# To use rav4prime you need to manually modify the models.json file to add the rav4prime entry by hand 
+# othewise the vehicles.py won't recognize that as a valid model since that is no longer listed as a model
 # $env:MODEL = 'rav4pluginhybrid'
 # either py or python as the first word below
 py searchForVehicles.py SearchVehicles_config.yaml
@@ -29,10 +34,11 @@ deactivate
 
 --------------------------------------------------------------------
 For running the Get-ToyotaInventory.ps1 script you need to supply two parameters       
-$DirectoryToRunIn,
-$PythonVENVPowershellActivateScript
+$DirectoryToRunIn  = "directory you want the script to run in"
+$PythonVENVPowershellActivateScript = "ps1 activate script name including path that activates the python virtual environment to be used for the run"
 
 To just run the script
+Set-ExecutionPolicy -ExecutionPolicy Bypass -Scope Process -Force
 C:\Users\GregG\Documents\GitHub\yotagrabber\Get-ToyotaInventory.ps1 $DirectoryToRunIn $PythonVENVPowershellActivateScript
 
 To schedule this script to be run as a job use the following in a PowerShell adjusted to whatever schedule you want.
@@ -55,5 +61,5 @@ to see the console output of that running job up to that point.
 Leaving off the -Keep will not retain all the output but ony show you the output since the last Receive-Job was run
 after the last Receive-Job was run.
 
-Note that if you terminate the job prematurely you need to manually run
+Note that if you terminate the job prematurely you may need to manually run
 Stop-Transcript
