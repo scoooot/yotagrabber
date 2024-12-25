@@ -15,7 +15,7 @@ function Get-VehicleInventoryForModels {
     # Note that the console output is redirected to the log file so you want see it as it is running unless
     # you use some linux like tail function, like the power shell 
     # Get-Content -Path filename -Tail 0 -Wait in another window to output the logfile contents as it is appended.
-    $logfile = $DirectoryToRunIn + "\output\InventoryRun.log"
+    $logfile = $DirectoryToRunIn + "\output\InventoryRunlog.txt"
     Get-VehicleInventoryForModelsA -DirectoryToRunIn $DirectoryToRunIn -PythonVENVPowershellActivateScript $PythonVENVPowershellActivateScript  *>> $logfile
 }
 

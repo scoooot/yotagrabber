@@ -70,5 +70,5 @@ This output redirect to the logfile was added inside the Get-ToyotaInventory.ps1
 
 If you want to see the output at the same time then you can open another power shell window and
 enter the following commands that outputs to the console the contents of that log file as it grows
-$logfile = "the directory you wanted the script to run in"  + "\output\InventoryRun.log"
+$logfile = "the directory you wanted the script to run in"  + "\output\InventoryRunlog.txt"
 Get-Content -Path $logfile -Tail 0 -Wait
