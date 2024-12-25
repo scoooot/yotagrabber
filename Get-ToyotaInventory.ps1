@@ -11,8 +11,20 @@ function Get-VehicleInventoryForModels {
         $DirectoryToRunIn,
         $PythonVENVPowershellActivateScript
     )
+    # Use the following to log all console output as it is consistent in doing this over the inconsistent Start-Transcript
+    # Note that the console output is redirected to the log file so you want see it as it is running unless
+    # you use some linux like tail function, like the power shell 
+    # Get-Content -Path filename -Tail 0 -Wait in another window to output the logfile contents as it is appended.
     $logfile = $DirectoryToRunIn + "\output\InventoryRun.log"
-    Start-Transcript -Append -path $logfile
+    Get-VehicleInventoryForModelsA -DirectoryToRunIn $DirectoryToRunIn -PythonVENVPowershellActivateScript $PythonVENVPowershellActivateScript  *>> $logfile
+}
+
+
+function Get-VehicleInventoryForModelsA {
+    param (
+        $DirectoryToRunIn,
+        $PythonVENVPowershellActivateScript
+    )
     cd $DirectoryToRunIn
     $env:PYTHONUNBUFFERED = 1
     Set-ExecutionPolicy -ExecutionPolicy Bypass -Scope Process -Force
@@ -61,7 +73,6 @@ function Get-VehicleInventoryForModels {
         git push
     }
     
-    Stop-Transcript
 }
 
 Get-VehicleInventoryForModels -DirectoryToRunIn $args[0] -PythonVENVPowershellActivateScript $args[1]

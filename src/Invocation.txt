@@ -60,6 +60,15 @@ Receive-Job -Name "GetToyotaModelsAndInventory" -Keep
 to see the console output of that running job up to that point.  
 Leaving off the -Keep will not retain all the output but ony show you the output since the last Receive-Job was run
 after the last Receive-Job was run.
+Othewise you can can use the Get-Content -Path $logfile -Tail 0 -Wait as described below
 
-Note that if you terminate the job prematurely you may need to manually run
-Stop-Transcript
+!!!!Note:  The power shell Start-Transcript command logging does not seem to consistently capture all the output to the console.
+Tried a few things suggested in internet searches regarding the transcript command but none seemed to work consistently (even the tee object didn't work for me).
+However, did find in one internet search that if just use the power shell redirect output   *> or *>> (for append) filename  ,  
+then all the output was consistently sent to that filename, however you can't see any output on the console of course when using this.
+This output redirect to the logfile was added inside the Get-ToyotaInventory.ps1 so is automatically performed.
+
+If you want to see the output at the same time then you can open another power shell window and
+enter the following commands that outputs to the console the contents of that log file as it grows
+$logfile = "the directory you wanted the script to run in"  + "\output\InventoryRun.log"
+Get-Content -Path $logfile -Tail 0 -Wait
