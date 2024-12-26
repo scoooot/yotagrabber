@@ -20,4 +20,7 @@ I have been trying to get that github workflow to run for this but it seems like
 github is having problems communicating with the toyota website by either being blocked sometimes, or getting connection failures/forced closures, or continuous response timeouts.
 Possibly the website has been in the past seeing too much traffic from github and is throttling it or blocking it sometimes.
 I don't seem to have these problems when running these updates on my desktop for just a few vehicle models. 
+To that end I have a power shell script, Get-ToyotaInventory.ps1 that when scheduled as a job does the same thing as the github workflow
+(short of the adding the resulting found inventory to the git repository yet) and runs from the desktop.
+See Invocation.txt as to how to invoke the various programs.
 

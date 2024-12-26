@@ -124,24 +124,23 @@ def get_all_pages():
     """Get all pages of results for a query to Toyota."""
     df = pd.DataFrame()
     page_number = 1
-
-    # Read the query.
-    alaska_query = get_vehicles_query(zone="alaska")
-    hawaii_query = get_vehicles_query(zone="hawaii")
-    west_query = get_vehicles_query(zone="west")
-    central_query = get_vehicles_query(zone="central")
-    east_query = get_vehicles_query(zone="east")
-
+    
+    # Get the query.
+    locationsQueryObjects = {"alaska": None, "hawaii": None, "west": None, "central": None, "east": None}
+    for location in locationsQueryObjects:
+        queryObject = get_vehicles_query(zone = location)
+        locationsQueryObjects[location] = queryObject
+    
     # Get headers by bypassing the WAF.
     print("Bypassing WAF")
     headers = wafbypass.WAFBypass().run()
-
+    
     # Start a timer.
     timer_start = timer()
-
+    
     # Set a last run counter.
     last_run_counter = 0
-    
+    # Perform the queries for the model
     while True:
         
         # Toyota's API won't return any vehicles past past 40.
@@ -160,78 +159,31 @@ def get_all_pages():
             print("  >>> Refreshing WAF bypass >>>\n")
             headers = wafbypass.WAFBypass().run()
             timer_start = timer()
-
         # Get a page of vehicles.  
         # We request several different geographically spread out locales, each with a radius that
         # that reaches to anywhere in the US from that locale (including Alaska and Hawaii)
         # to get around the maximum pages the website will allow us to access for any one locale request.
         # Any one request would return all the records for the US if we could access all the pages, but the website won't let us access
-        # more than a fixed maximum number of pages for any given request, even if the response indicates there are more pages.
+        # more than 40 pages for any given request, even if the response indicates there are more pages.
         # Currently if a result has more than the current maxRecordsToGet then we will miss some vehicles
         # (and this is indicated in the log file)
         # This could be corrected by adding more spread out locales
         print(f"Getting page {page_number} of {MODEL} vehicles")
-
-        hawaii_result = query_toyota(page_number, hawaii_query, headers)
-        if hawaii_result and "vehicleSummary" in hawaii_result:
-            pages = hawaii_result["pagination"]["totalPages"]
-            records = hawaii_result["pagination"]["totalRecords"]
-            print("Hawaii:    ", len(hawaii_result["vehicleSummary"]))
-            df = pd.concat([df, pd.json_normalize(hawaii_result["vehicleSummary"])])
-        if pagesToGet > pages:
-            pagesToGet = pages
-        if recordsToGet > records:
-            recordsToGet = records
-
-        alaska_result = query_toyota(page_number, alaska_query, headers)
-        if alaska_result and "vehicleSummary" in alaska_result:
-            pages = alaska_result["pagination"]["totalPages"]
-            records = alaska_result["pagination"]["totalRecords"]
-            print("Alaska:    ", len(alaska_result["vehicleSummary"]))
-            df = pd.concat([df, pd.json_normalize(alaska_result["vehicleSummary"])])
-        if pagesToGet > pages:
-            pagesToGet = pages
-        if recordsToGet > records:
-            recordsToGet = records
-
-        west_result = query_toyota(page_number, west_query, headers)
-        if west_result and "vehicleSummary" in west_result:
-            pages = west_result["pagination"]["totalPages"]
-            records = west_result["pagination"]["totalRecords"]
-            print("West:    ", len(west_result["vehicleSummary"]))
-            df = pd.concat([df, pd.json_normalize(west_result["vehicleSummary"])])
-        if pagesToGet > pages:
-            pagesToGet = pages
-        if recordsToGet > records:
-            recordsToGet = records
-
-        central_result = query_toyota(page_number, central_query, headers)
-        if central_result and "vehicleSummary" in central_result:
-            pages = central_result["pagination"]["totalPages"]
-            records = central_result["pagination"]["totalRecords"]
-            print("Central:    ", len(central_result["vehicleSummary"]))
-            df = pd.concat([df, pd.json_normalize(central_result["vehicleSummary"])])
-        if pagesToGet > pages:
-            pagesToGet = pages
-        if recordsToGet > records:
-            recordsToGet = records
-            
-        east_result = query_toyota(page_number, east_query, headers)
-        if east_result and "vehicleSummary" in east_result:
-            pages = east_result["pagination"]["totalPages"]
-            records = east_result["pagination"]["totalRecords"]
-            print("East:    ", len(east_result["vehicleSummary"]))
-            df = pd.concat([df, pd.json_normalize(east_result["vehicleSummary"])])
-        if pagesToGet > pages:
-            pagesToGet = pages
-        if recordsToGet > records:
-            recordsToGet = records
-
+        
+        for location in locationsQueryObjects:
+            result = query_toyota(page_number, locationsQueryObjects[location], headers)
+            if result and "vehicleSummary" in result:
+                pages = result["pagination"]["totalPages"]
+                records = result["pagination"]["totalRecords"]
+                print(location + ":    ", len(result["vehicleSummary"]))
+                df = pd.concat([df, pd.json_normalize(result["vehicleSummary"])])
+            if pagesToGet > pages:
+                pagesToGet = pages
+            if recordsToGet > records:
+                recordsToGet = records
         # Drop any duplicate VINs.
         df.drop_duplicates(subset=["vin"], inplace=True)
-
         print(f"Found {len(df)} (+{len(df)-last_run_counter}) vehicles so far.\n")
-
         ## If we didn't find more cars from the previous run, we've found them all.
         #if len(df) == last_run_counter:
         if len(df) >= recordsToGet:
@@ -239,13 +191,12 @@ def get_all_pages():
             print("All vehicles found.")
             break
         elif page_number >= pagesToGet:
-            print("Error: Prematurely terminating page requests since reached total pages for this vehicle", page_number, ". All vehicles were not found!")
+            print("Error: Prematurely terminating page requests since reached total pages for this vehicle at its limit", page_number, ". All vehicles were not found!")
             break
         last_run_counter = len(df)
         page_number += 1
         sleep(10)
         continue
-
     return df
 
 
