@@ -27,27 +27,54 @@ MODEL = os.environ.get("MODEL")
 forceQueryRspFailureTest = 0 # set to > 0 to perform tests related to forcing a query response failure to test query request retry
 
 @cache
-def get_vehicles_query(zone="west"):
-    """Read vehicles query from a file."""
-    with open(f"{config.BASE_DIRECTORY}/graphql/vehicles.graphql", "r") as fileh:
-        query = fileh.read()
-
+def get_vehicle_query_Objects():
+    """Read vehicle query from a file and create the query objects."""
+    if MODEL in [ "camry", "tacoma", "tundra", "rav4hybrid", "rav4" ]:
+        # note that the tacoma is the largest number of vehicles (some 44,000 for the last 2 years), followed by tundra, camry, rav4hybrid, rav4
+        vehicleQueryZonesToUse = ["alaska", "hawaii", "west", "central", "east", "atlanta", "topLeftCornerContlUS", "portlandOregon", "bottomLeftCornerContlUS", "midCalifornia", "upperCalifornia", "topRightCornerContlUS", "midPennsylvania", "albanyNewYork", "bostonMA", "midTennessee", "bottomRightCornerContlUS", "midFlorida", "bottomCenterContlUS", "midTexas", "midArizona", "renoNevada", "topCenterContlUS" ]
+    else:
+        vehicleQueryZonesToUse = ["alaska", "hawaii", "west", "central", "east"]
     zip_codes = {
         "alaska": "99518",  # Anchorage Alaska 99518
         "hawaii": "96720",  # Hilo HI 96720
         "west": "84101",  # Salt Lake City
         "central": "73007",  # Oklahoma City
+        "midIllinois": "61614",  # Peoria, IL 61614
         "east": "27608",  # Raleigh
+        "atlanta":  "30341", # Atlanta, GA 30341
+        "topLeftCornerContlUS": "98271", # Marysville, WA 98271
+        "portlandOregon": "97232", # OR 97232
+        "bottomLeftCornerContlUS": "91911", # Chula Vista, CA 91911
+        "midCalifornia":  "94901", # San Rafael, CA 94901
+        "upperCalifornia":  "95503", # Eureka, CA 95503
+        "topRightCornerContlUS": "04730", #  Houlton, ME 04730
+        "midPennsylvania": "17044", # Lewistown, PA 17044
+        "albanyNewYork": "12230", #Albany, NY 12230
+        "bostonMA": "02116", # Boston, MA 02116
+        "midTennessee": "37211", #TN 37211
+        "midOhio": "43232", #Columbus, OH 43232
+        "richmondVA": "23249", # Richmond, VA 23249
+        "bottomRightCornerContlUS": "33033", #  Homestead, FL 33033
+        "midFlorida":  "32837", # Orlando, FL 32837
+        "bottomCenterContlUS":  "78526", # Brownsville, TX 78526
+        "midTexas":  "76116", # TX 76116
+        "midArizona":  "85014", # Phoenix, AZ 85014
+        "renoNevada":  "89502", # Reno, NV 89502
+        "topCenterContlUS":  "58701", # Minot, ND 58701
     }
-
-    # Replace certain place holders in the query with values.
-    zip_code = zip_codes[zone]
-    query = query.replace("ZIPCODE", zip_code)
-    query = query.replace("MODELCODE", MODEL)
-    query = query.replace("DISTANCEMILES", str(5823 + randbelow(1000)))
-    query = query.replace("LEADIDUUID", str(uuid.uuid4()))
-
-    return query
+    vehicleQueryObjects = {}
+    for zone in vehicleQueryZonesToUse:
+        # Replace certain place holders in the query with values.
+        with open(f"{config.BASE_DIRECTORY}/graphql/vehicles.graphql", "r") as fileh:
+            query = fileh.read()
+        zip_code = zip_codes[zone]
+        query = query.replace("ZIPCODE", zip_code)
+        query = query.replace("MODELCODE", MODEL)
+        query = query.replace("DISTANCEMILES", str(5823 + randbelow(1000)))
+        query = query.replace("LEADIDUUID", str(uuid.uuid4()))
+        vehicleQueryObjects[zone] = query
+    
+    return vehicleQueryObjects
 
 
 def read_local_data():
@@ -126,10 +153,7 @@ def get_all_pages():
     page_number = 1
     
     # Get the query.
-    locationsQueryObjects = {"alaska": None, "hawaii": None, "west": None, "central": None, "east": None}
-    for location in locationsQueryObjects:
-        queryObject = get_vehicles_query(zone = location)
-        locationsQueryObjects[location] = queryObject
+    vehicleQueryObjects = get_vehicle_query_Objects()
     
     # Get headers by bypassing the WAF.
     print("Bypassing WAF")
@@ -170,17 +194,22 @@ def get_all_pages():
         # This could be corrected by adding more spread out locales
         print(f"Getting page {page_number} of {MODEL} vehicles")
         
-        for location in locationsQueryObjects:
-            result = query_toyota(page_number, locationsQueryObjects[location], headers)
+        for queryDetailString in vehicleQueryObjects:
+            result = query_toyota(page_number, vehicleQueryObjects[queryDetailString], headers)
             if result and "vehicleSummary" in result:
                 pages = result["pagination"]["totalPages"]
                 records = result["pagination"]["totalRecords"]
-                print(location + ":    ", len(result["vehicleSummary"]))
+                print(queryDetailString + ":    ", len(result["vehicleSummary"]))
                 df = pd.concat([df, pd.json_normalize(result["vehicleSummary"])])
             if pagesToGet > pages:
                 pagesToGet = pages
             if recordsToGet > records:
                 recordsToGet = records
+            elapsed_time = timer() - timer_start
+            if elapsed_time > 4 * 60:
+                print("  >>> Refreshing WAF bypass >>>\n")
+                headers = wafbypass.WAFBypass().run()
+                timer_start = timer()
         # Drop any duplicate VINs.
         df.drop_duplicates(subset=["vin"], inplace=True)
         print(f"Found {len(df)} (+{len(df)-last_run_counter}) vehicles so far.\n")
