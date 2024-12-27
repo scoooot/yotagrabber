@@ -20,6 +20,8 @@ USE_LOCAL_DATA_ONLY = False
 
 DEBUG_ENABLED = False
 
+PAGE_FILES_DEBUG_ENABLED = False
+
 
 # Get the model that we should be searching for.
 MODEL = os.environ.get("MODEL")
@@ -31,7 +33,7 @@ def get_vehicle_query_Objects():
     """Read vehicle query from a file and create the query objects."""
     if MODEL in [ "camry", "tacoma", "tundra", "rav4hybrid", "rav4" ]:
         # note that the tacoma is the largest number of vehicles (some 44,000 for the last 2 years), followed by tundra, camry, rav4hybrid, rav4
-        vehicleQueryZonesToUse = ["alaska", "hawaii", "west", "central", "east", "atlanta", "topLeftCornerContlUS", "portlandOregon", "bottomLeftCornerContlUS", "midCalifornia", "upperCalifornia", "topRightCornerContlUS", "midPennsylvania", "albanyNewYork", "bostonMA", "midTennessee", "bottomRightCornerContlUS", "midFlorida", "bottomCenterContlUS", "midTexas", "midArizona", "renoNevada", "topCenterContlUS" ]
+        vehicleQueryZonesToUse = ["alaska", "hawaii", "west", "central", "midIllinois", "east", "atlanta", "topLeftCornerContlUS", "portlandOregon", "bottomLeftCornerContlUS", "midCalifornia", "upperCalifornia", "topRightCornerContlUS", "midPennsylvania", "rochesterNewYork", "albanyNewYork", "bostonMA", "midTennessee", "midOhio", "richmondVA", "bottomRightCornerContlUS", "panhandleFlorida", "midFlorida", "bottomCenterContlUS", "midTexas", "midArizona", "renoNevada", "topCenterContlUS" ]
     else:
         vehicleQueryZonesToUse = ["alaska", "hawaii", "west", "central", "east"]
     zip_codes = {
@@ -50,11 +52,14 @@ def get_vehicle_query_Objects():
         "topRightCornerContlUS": "04730", #  Houlton, ME 04730
         "midPennsylvania": "17044", # Lewistown, PA 17044
         "albanyNewYork": "12230", #Albany, NY 12230
+        "rochesterNewYork": "14445", # 50 Marsh Rd, East Rochester, NY 14445
         "bostonMA": "02116", # Boston, MA 02116
         "midTennessee": "37211", #TN 37211
+        "midMichigan": "48911", # Lansing, MI 48911
         "midOhio": "43232", #Columbus, OH 43232
         "richmondVA": "23249", # Richmond, VA 23249
         "bottomRightCornerContlUS": "33033", #  Homestead, FL 33033
+        "panhandleFlorida": "32547", # 777 Beal Parkway, Fort Walton Beach, FL 32547
         "midFlorida":  "32837", # Orlando, FL 32837
         "bottomCenterContlUS":  "78526", # Brownsville, TX 78526
         "midTexas":  "76116", # TX 76116
@@ -200,7 +205,11 @@ def get_all_pages():
                 pages = result["pagination"]["totalPages"]
                 records = result["pagination"]["totalRecords"]
                 print(queryDetailString + ":    ", len(result["vehicleSummary"]))
-                df = pd.concat([df, pd.json_normalize(result["vehicleSummary"])])
+                adderDfNormalized = pd.json_normalize(result["vehicleSummary"])
+                if PAGE_FILES_DEBUG_ENABLED:
+                    adderDfNormalized.to_csv(f"output/pages/{MODEL}{queryDetailString}_raw_page{page_number}.csv", index=False)
+                df = pd.concat([df, adderDfNormalized])
+                #df = pd.concat([df, pd.json_normalize(result["vehicleSummary"])])
             if pagesToGet > pages:
                 pagesToGet = pages
             if recordsToGet > records:
@@ -212,6 +221,8 @@ def get_all_pages():
                 timer_start = timer()
         # Drop any duplicate VINs.
         df.drop_duplicates(subset=["vin"], inplace=True)
+        if PAGE_FILES_DEBUG_ENABLED:
+            df.to_csv(f"output/pages/{MODEL}_raw_page{page_number}.csv", index=False)
         print(f"Found {len(df)} (+{len(df)-last_run_counter}) vehicles so far.\n")
         ## If we didn't find more cars from the previous run, we've found them all.
         #if len(df) == last_run_counter:
