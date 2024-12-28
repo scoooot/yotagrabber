@@ -33,6 +33,8 @@ function Get-VehicleInventoryForModelsA {
     # Return
     $timeout = 60*3
     # Get a list of all the current models first
+    $curDate = Get-Date
+    Write-Host $curDate
     Write-Host "Getting list of Vehicle Models"
     Get-VehicleModels
     if ($LASTEXITCODE -eq 0) {     
