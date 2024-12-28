@@ -7,6 +7,11 @@ Note that you need this virtual environment regardless of running the searchForV
 C:\Users\GregG\AppData\Local\Programs\yotagrabber_venv\Scripts\activate
 cd C:\Users\GregG\Documents\GitHub\yotagrabber\src
 set MODEL=rav4prime
+rem optionally if you want to just search about a given zipcode instead of finding all of that model in the US
+rem you can additionally specify environment variables
+rem set MODEL_SEARCH_ZIPCODE=90210
+rem set MODEL_SEARCH_RADIUS=75
+rem Note that the toyota website only allows you to access a max of 40 pages at 250 vehicles per page of the search results for a single zip code search
 rem For 2025 and on rav4pluginhybrid is used instead of rav4prime
 rem To use rav4prime you need to manually modify the models.json file to add the rav4prime entry by hand 
 rem othewise the vehicles.py won't recognize that as a valid model since that is no longer listed as a model
@@ -22,6 +27,11 @@ Set-ExecutionPolicy -ExecutionPolicy Bypass -Scope Process -Force
 C:\Users\GregG\AppData\Local\Programs\yotagrabber_venv\Scripts\activate.ps1
 cd C:\Users\GregG\Documents\GitHub\yotagrabber\src
 $env:MODEL = 'rav4prime'
+# optionally if you want to just search about a given zipcode instead of finding all of that model in the US
+# you can additionally specify environment variables
+# $env:MODEL_SEARCH_ZIPCODE = '90210'
+# $env:MODEL_SEARCH_RADIUS = '75'
+# Note that the toyota website only allows you to access a max of 40 pages at 250 vehicles per page of the search results for a single zip code search
 # For 2025 and on rav4pluginhybrid is used instead of rav4prime
 # To use rav4prime you need to manually modify the models.json file to add the rav4prime entry by hand 
 # othewise the vehicles.py won't recognize that as a valid model since that is no longer listed as a model

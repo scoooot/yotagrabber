@@ -25,60 +25,73 @@ PAGE_FILES_DEBUG_ENABLED = False
 
 # Get the model that we should be searching for.
 MODEL = os.environ.get("MODEL")
+# optional search parameters to use when want a single location search
+MODEL_SEARCH_ZIPCODE = os.environ.get("MODEL_SEARCH_ZIPCODE")
+MODEL_SEARCH_RADIUS = os.environ.get("MODEL_SEARCH_RADIUS")
 
 forceQueryRspFailureTest = 0 # set to > 0 to perform tests related to forcing a query response failure to test query request retry
 
 @cache
 def get_vehicle_query_Objects():
     """Read vehicle query from a file and create the query objects."""
-    if MODEL in [ "camry", "tacoma", "tundra", "rav4hybrid", "rav4" ]:
-        # note that the tacoma is the largest number of vehicles (some 44,000 for the last 2 years), followed by tundra, camry, rav4hybrid, rav4
-        vehicleQueryZonesToUse = ["alaska", "hawaii", "west", "central", "midIllinois", "east", "atlanta", "topLeftCornerContlUS", "portlandOregon", "bottomLeftCornerContlUS", "midCalifornia", "upperCalifornia", "topRightCornerContlUS", "midPennsylvania", "rochesterNewYork", "albanyNewYork", "bostonMA", "midTennessee", "midOhio", "richmondVA", "bottomRightCornerContlUS", "panhandleFlorida", "midFlorida", "bottomCenterContlUS", "midTexas", "midArizona", "renoNevada", "topCenterContlUS" ]
-    else:
-        vehicleQueryZonesToUse = ["alaska", "hawaii", "west", "central", "east"]
-    zip_codes = {
-        "alaska": "99518",  # Anchorage Alaska 99518
-        "hawaii": "96720",  # Hilo HI 96720
-        "west": "84101",  # Salt Lake City
-        "central": "73007",  # Oklahoma City
-        "midIllinois": "61614",  # Peoria, IL 61614
-        "east": "27608",  # Raleigh
-        "atlanta":  "30341", # Atlanta, GA 30341
-        "topLeftCornerContlUS": "98271", # Marysville, WA 98271
-        "portlandOregon": "97232", # OR 97232
-        "bottomLeftCornerContlUS": "91911", # Chula Vista, CA 91911
-        "midCalifornia":  "94901", # San Rafael, CA 94901
-        "upperCalifornia":  "95503", # Eureka, CA 95503
-        "topRightCornerContlUS": "04730", #  Houlton, ME 04730
-        "midPennsylvania": "17044", # Lewistown, PA 17044
-        "albanyNewYork": "12230", #Albany, NY 12230
-        "rochesterNewYork": "14445", # 50 Marsh Rd, East Rochester, NY 14445
-        "bostonMA": "02116", # Boston, MA 02116
-        "midTennessee": "37211", #TN 37211
-        "midMichigan": "48911", # Lansing, MI 48911
-        "midOhio": "43232", #Columbus, OH 43232
-        "richmondVA": "23249", # Richmond, VA 23249
-        "bottomRightCornerContlUS": "33033", #  Homestead, FL 33033
-        "panhandleFlorida": "32547", # 777 Beal Parkway, Fort Walton Beach, FL 32547
-        "midFlorida":  "32837", # Orlando, FL 32837
-        "bottomCenterContlUS":  "78526", # Brownsville, TX 78526
-        "midTexas":  "76116", # TX 76116
-        "midArizona":  "85014", # Phoenix, AZ 85014
-        "renoNevada":  "89502", # Reno, NV 89502
-        "topCenterContlUS":  "58701", # Minot, ND 58701
-    }
     vehicleQueryObjects = {}
-    for zone in vehicleQueryZonesToUse:
-        # Replace certain place holders in the query with values.
+    if (MODEL_SEARCH_ZIPCODE is not None) and (MODEL_SEARCH_RADIUS is not None) and MODEL_SEARCH_ZIPCODE and MODEL_SEARCH_RADIUS:
+        # single zipcode and radius search specified
         with open(f"{config.BASE_DIRECTORY}/graphql/vehicles.graphql", "r") as fileh:
             query = fileh.read()
-        zip_code = zip_codes[zone]
-        query = query.replace("ZIPCODE", zip_code)
+        query = query.replace("ZIPCODE", MODEL_SEARCH_ZIPCODE)
         query = query.replace("MODELCODE", MODEL)
-        query = query.replace("DISTANCEMILES", str(5823 + randbelow(1000)))
+        query = query.replace("DISTANCEMILES", MODEL_SEARCH_RADIUS)
         query = query.replace("LEADIDUUID", str(uuid.uuid4()))
-        vehicleQueryObjects[zone] = query
-    
+        vehicleQueryObjects["SingleZipCode_" + MODEL_SEARCH_ZIPCODE + "_RadiusMiles_" + MODEL_SEARCH_RADIUS] = query        
+    else:
+        if MODEL in [ "camry", "tacoma", "tundra", "rav4hybrid", "rav4" ]:
+            # note that the tacoma is the largest number of vehicles (some 44,000 for the last 2 years), followed by tundra, camry, rav4hybrid, rav4
+            vehicleQueryZonesToUse = ["alaska", "hawaii", "west", "central", "midIllinois", "east", "atlanta", "topLeftCornerContlUS", "portlandOregon", "bottomLeftCornerContlUS", "midCalifornia", "upperCalifornia", "topRightCornerContlUS", "midPennsylvania", "rochesterNewYork", "albanyNewYork", "bostonMA", "midTennessee", "midOhio", "richmondVA", "bottomRightCornerContlUS", "panhandleFlorida", "midFlorida", "bottomCenterContlUS", "midTexas", "midArizona", "renoNevada", "topCenterContlUS" ]
+        else:
+            vehicleQueryZonesToUse = ["alaska", "hawaii", "west", "central", "east"]
+        zip_codes = {
+            "alaska": "99518",  # Anchorage Alaska 99518
+            "hawaii": "96720",  # Hilo HI 96720
+            "west": "84101",  # Salt Lake City
+            "central": "73007",  # Oklahoma City
+            "midIllinois": "61614",  # Peoria, IL 61614
+            "east": "27608",  # Raleigh
+            "atlanta":  "30341", # Atlanta, GA 30341
+            "topLeftCornerContlUS": "98271", # Marysville, WA 98271
+            "portlandOregon": "97232", # OR 97232
+            "bottomLeftCornerContlUS": "91911", # Chula Vista, CA 91911
+            "midCalifornia":  "94901", # San Rafael, CA 94901
+            "upperCalifornia":  "95503", # Eureka, CA 95503
+            "topRightCornerContlUS": "04730", #  Houlton, ME 04730
+            "midPennsylvania": "17044", # Lewistown, PA 17044
+            "albanyNewYork": "12230", #Albany, NY 12230
+            "rochesterNewYork": "14445", # 50 Marsh Rd, East Rochester, NY 14445
+            "bostonMA": "02116", # Boston, MA 02116
+            "midTennessee": "37211", #TN 37211
+            "midMichigan": "48911", # Lansing, MI 48911
+            "midOhio": "43232", #Columbus, OH 43232
+            "richmondVA": "23249", # Richmond, VA 23249
+            "bottomRightCornerContlUS": "33033", #  Homestead, FL 33033
+            "panhandleFlorida": "32547", # 777 Beal Parkway, Fort Walton Beach, FL 32547
+            "midFlorida":  "32837", # Orlando, FL 32837
+            "bottomCenterContlUS":  "78526", # Brownsville, TX 78526
+            "midTexas":  "76116", # TX 76116
+            "midArizona":  "85014", # Phoenix, AZ 85014
+            "renoNevada":  "89502", # Reno, NV 89502
+            "topCenterContlUS":  "58701", # Minot, ND 58701
+        }
+        for zone in vehicleQueryZonesToUse:
+            # Replace certain place holders in the query with values.
+            with open(f"{config.BASE_DIRECTORY}/graphql/vehicles.graphql", "r") as fileh:
+                query = fileh.read()
+            zip_code = zip_codes[zone]
+            query = query.replace("ZIPCODE", zip_code)
+            query = query.replace("MODELCODE", MODEL)
+            query = query.replace("DISTANCEMILES", str(5823 + randbelow(1000)))
+            query = query.replace("LEADIDUUID", str(uuid.uuid4()))
+            vehicleQueryObjects[zone] = query
+        
     return vehicleQueryObjects
 
 
