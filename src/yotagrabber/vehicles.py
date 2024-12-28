@@ -12,7 +12,7 @@ from timeit import default_timer as timer
 
 import pandas as pd
 import requests
-
+from collections.abc import Iterable
 from yotagrabber import config, wafbypass
 
 # Set to True to use local data and skip requests to the Toyota website.
@@ -276,7 +276,10 @@ def update_vehicles_and_return_df(useLocalData = False):
     ]
     dealers.rename(columns={"state": "Dealer State"}, inplace=True)
     df["dealerCd"] = df["dealerCd"].apply(pd.to_numeric)
-    df = df.merge(dealers, left_on="dealerCd", right_on="dealerId")
+    df = df.merge(dealers, left_on="dealerCd", right_on="dealerId", how='left')  
+    # how = 'left' will keep vehicle entry even if can't find dealer code for it, so state will show up as blank or NAN.  
+    # Without the how = 'left' any row we can't find the matching dealer code in dealers would be removed from df which we don't want.
+    # Note that we still have the dealer name and VIN to find the car externally manually.
 
     renames = {
         "vin": "VIN",
@@ -329,8 +332,8 @@ def update_vehicles_and_return_df(useLocalData = False):
     # Remove the model name (like 4Runner) from the model column (like TRD Pro).
     df["Model"] = df["Model"].str.replace(f"{title} ", "")
 
-    # Clean up missing colors and colors with extra tags.
-    df = df[df["Color"].notna()]
+    # Clean up colors with extra tags.
+    # df = df[df["Color"].notna()]  # don't remove entries with missing color as still want to see those vehicles.
     df["Color"] = df["Color"].str.replace(" [extra_cost_color]", "", regex=False)
 
     # Calculate the dealer price + markup.
@@ -402,7 +405,7 @@ def update_vehicles(useLocalData = False):
 def extract_marketing_long_names(options_raw):
     """extracts `marketingName` from `Options` col"""
     options = set()
-    if options_raw:
+    if isinstance(options_raw, Iterable):
         for item in options_raw:
             if item.get("marketingName"):
                 options.add(item.get("marketingName"))
