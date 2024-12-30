@@ -82,3 +82,17 @@ If you want to see the output at the same time then you can open another power s
 enter the following commands that outputs to the console the contents of that log file as it grows
 $logfile = "the directory you wanted the script to run in"  + "\output\InventoryRunlog.txt"
 Get-Content -Path $logfile -Tail 0 -Wait
+
+--------------------------------------------------------
+For updating the dealers.csv that vehicles.py uses to find the state a dealerId is in (the graphql only has the dealerId
+, which is a number, and not the dealer state and some other dealer detail, for it) run the following
+py dealers.py ".\yotagrabber\data\dealers.csv" ".\yotagrabber\data\zipcodes.txt" 
+Note that this can take a few hours to run as it spreads out its request over time so as to not
+overwhelm the toyota website.
+If after getting a models inventory you find the state field is blank for some entries it is because the
+dealers.csv file does not have that dealers dealerId in it.
+You can determine the zipcodes for the missing entries and then add those to the zipcodes.txt file,
+as well as putting them in a missingZipcodes.txt file
+Then you can run
+py dealers.py ".\yotagrabber\data\dealers.csv" ".\yotagrabber\data\missingZipcodes.txt" 
+to update the dealers.csv with those dealers for those missing zipcodes
