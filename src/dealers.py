@@ -88,11 +88,27 @@ def updateDealers(dealerFileName, zipCodeFileName):
         # TODO add in retries
         zipCodeWithLeadingZeroes = ("0" * (5 - len(zipCode))) + zipCode
         print("Getting dealers for/near zipcode",zipCodeWithLeadingZeroes, ", at zipcode list index:", indx )
-        resp = requests.get(
-                "https://www.toyota.com/service/tcom/locateDealer/zipCode/" + zipCodeWithLeadingZeroes,
-                timeout=20,
-        )
-        result = resp.json()
+        tryCount = 1
+        result = None
+        while True:
+            try:
+                resp = requests.get(
+                        "https://www.toyota.com/service/tcom/locateDealer/zipCode/" + zipCodeWithLeadingZeroes,
+                        timeout=20,
+                )
+                result = resp.json()
+                break
+            except (requests.exceptions.JSONDecodeError) as inst:
+                print ("updateDealers: Exception occurred with accessing json response:", str(type(inst)) + " "  + str(inst))
+                print("resp.status_code", resp.status_code)
+                print("resp.headers", resp.headers)
+                result = None
+                # retry
+                if tryCount <= 0:
+                    break
+                tryCount -= 1
+                interruptibleSleep(4)
+                print("Retrying request, tryCount = ", tryCount)
         if (result is not None) and result and ("dealers" in result):
             df = pd.DataFrame.from_dict(result["dealers"])
             df = df[["code", "dealerId", "name", "url", "regionId", "state", "lat", "long"]]

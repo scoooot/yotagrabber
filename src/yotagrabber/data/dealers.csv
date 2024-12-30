@@ -1201,64 +1201,16 @@ code,dealerId,name,url,regionId,state,lat,long
 48046,48046,Mark Toyota of Plover,https://www.marktoyota.com,21,WI,44.45289,-89.52055
 48066,48066,Rhinelander Toyota,https://www.rhinelandertoyota.com,21,WI,45.656976,-89.383027
 48027,48027,Markquart Toyota,https://www.markquarttoyota.com,21,WI,44.870127,-91.425717
-04044,04044,Larry H. Miller Toyota Corona,https://www.lhmtoyotacorona.com,11,CA,33.878384,-117.599106
-04388,04388,Toyota of Riverside,https://www.toyotaofriverside.com,11,CA,33.930282,-117.410872
-04101,04101,Crown Toyota,https://www.crowntoyota.com,11,CA,34.052119,-117.546812
-04247,04247,Toyota of Orange,https://www.toyotaoforange.com,11,CA,33.811122,-117.83594
-04543,04543,Tustin Toyota,https://www.tustintoyota.com,11,CA,33.726358,-117.800865
-04713,04713,Santa Margarita Toyota,https://www.santamargaritatoyota.com,11,CA,33.632709,-117.606751
-04284,04284,Claremont Toyota,https://www.claremonttoyota.com,11,CA,34.081083,-117.724546
-04638,04638,AutoNation Toyota Irvine,https://www.autonationtoyotairvine.com,11,CA,33.640481,-117.736842
-04079,04079,Toyota of Anaheim,https://www.toyotaofanaheim.com,11,CA,33.852505,-117.941912
-04115,04115,Puente Hills Toyota,https://www.puentehillstoyota.com,11,CA,33.999618,-117.933456
-04356,04356,Toyota Place,https://www.toyotaplace.com,11,CA,33.766636,-117.959798
-04109,04109,Toyota of Glendora,https://www.toyotaofglendora.com,11,CA,34.117854,-117.826725
-04061,04061,Toyota of San Bernardino,https://www.toyotasb.com,11,CA,34.073592,-117.299363
-04211,04211,Envision Toyota of West Covina,https://www.toyotawestcovina.com,11,CA,34.070892,-117.906441
-04640,04640,AutoNation Toyota Buena Park,https://www.autonationtoyotabuenapark.com,11,CA,33.866837,-117.997129
-04137,04137,South Coast Toyota,https://www.southcoasttoyota.com,11,CA,33.645263,-117.918475
-04108,04108,Beach Cities Toyota Westminster,https://www.beachcitiestoyotawestminster.com,11,CA,33.740382,-117.98926
-04197,04197,Toyota of Whittier,https://www.toyotaofwhittier.com,11,CA,33.952436,-118.013411
-04359,04359,Moss Bros. Toyota,https://www.mossbrostoyotamorenovalley.com,11,CA,33.936418,-117.177692
-04087,04087,Toyota of Huntington Beach,https://www.toyotaofhb.com,11,CA,33.687844,-117.988985
-04333,04333,Toyota of Redlands,https://www.toyotaofredlands.com,11,CA,34.064502,-117.196296
-04279,04279,Capistrano Valley Toyota,https://www.capovalleytoyota.com,11,CA,33.476708,-117.674391
-04136,04136,Longo Toyota,https://www.longotoyota.com,11,CA,34.069226,-118.023705
-04285,04285,Envision Toyota of Norwalk,https://www.norwalktoyota.com,11,CA,33.916434,-118.089192
-04636,04636,AutoNation Toyota Cerritos,https://www.autonationtoyotacerritos.com,11,CA,33.861891,-118.099421
-04080,04080,Penske Toyota,https://www.pensketoyotadowney.com,11,CA,33.933314,-118.119847
-04726,04726,West Coast Toyota of Long Beach,https://www.westcoasttoyotalb.com,11,CA,33.804587,-118.152444
-04236,04236,Toyota of Hemet,https://www.toyotahemet.com,11,CA,33.741601,-117.030352
-04283,04283,Toyota of Pasadena,https://www.toyotapasadena.com,11,CA,34.150086,-118.075645
-04033,04033,Cabe Toyota Long Beach,https://www.cabetoyota.com,11,CA,33.809038,-118.189678
-04308,04308,Wondries Toyota,https://www.wondriestoyota.com,11,CA,34.09172,-118.139042
-04819,04819,Temecula Valley Toyota,https://www.tvtoyota.com,11,CA,33.515729,-117.156196
-04210,04210,Fletcher Jones Toyota of Carson,https://www.toyotacarson.com,11,CA,33.824426,-118.249488
-04739,04739,Toyota of Downtown LA,https://www.toyotaofdowntownla.com,11,CA,34.033649,-118.272743
-04159,04159,South Bay Toyota,https://www.southbaytoyota.com,11,CA,33.863338,-118.308931
-04649,04649,Toyota of Glendale,https://www.toyotaofglendale.com,11,CA,34.130207,-118.254733
-04748,04748,DCH Toyota of Torrance,https://www.torrancetoyota.com,11,CA,33.795652,-118.337747
-04102,04102,Toyota of Hollywood,https://www.hollywoodtoyota.com,11,CA,34.101528,-118.321183
-04094,04094,Bob Smith Toyota,https://www.bobsmithtoyota.com,11,CA,34.231604,-118.251556
-04508,04508,Manhattan Beach Toyota,https://www.manhattanbeachtoyota.com,11,CA,33.889706,-118.395578
-04772,04772,Culver City Toyota,https://www.culvercitytoyota.com,11,CA,34.025498,-118.39131
-04263,04263,Valley Hi Toyota,https://www.valleyhitoyota.com,11,CA,34.517518,-117.31895
-04154,04154,Toyota of North Hollywood,https://www.northhollywoodtoyota.com,11,CA,34.153856,-118.367637
-04315,04315,Marina del Rey Toyota,https://www.marinadelreytoyota.com,11,CA,33.983406,-118.441489
-04297,04297,Keyes Toyota,https://www.keyestoyota.com,11,CA,34.176716,-118.449146
-04303,04303,Toyota Santa Monica,https://www.toyotasantamonica.com,11,CA,34.022997,-118.486887
-04013,04013,Hamer Toyota,https://www.hamertoyota.com,11,CA,34.271476,-118.4677
-04244,04244,Northridge Toyota,https://www.northridgetoyota.com,11,CA,34.235252,-118.560235
-04662,04662,Frontier Toyota,https://www.frontiertoyota.com,11,CA,34.418263,-118.549957
-04737,04737,Toyota of Lancaster,https://www.toyotaoflancaster.com,11,CA,34.670263,-118.152551
-04118,04118,Toyota of Santa Barbara,https://www.toyotaofsantabarbara.com,11,CA,34.435356,-119.821038
-04734,04734,Toyota of Lompoc,https://www.toyotaoflompoc.com,11,CA,34.639415,-120.455984
-04344,04344,Ventura Toyota,https://www.venturatoyota.com,11,CA,34.246782,-119.202545
-04990,04990,DCH Toyota of Oxnard,https://www.toyotaofoxnard.com,11,CA,34.228452,-119.153011
-04290,04290,Toyota of Santa Maria,https://www.toyotasm.com,11,CA,34.929318,-120.419655
-04228,04228,Simi Valley Toyota,https://www.simivalleytoyota.com,11,CA,34.27858,-118.778449
-04167,04167,Thousand Oaks Toyota,https://www.totoyota.com,11,CA,34.1742,-118.843368
-04076,04076,Toyota of The Desert,https://www.toyotaofthedesert.com,11,CA,33.78456,-116.473677
-04282,04282,Toyota of Escondido,https://www.toyotaescondido.com,11,CA,33.133405,-117.084564
-04135,04135,I-10 Toyota,https://www.i-10toyota.com,11,CA,33.757,-116.288214
-04222,04222,Toyota Carlsbad,https://www.toyotacarlsbad.com,11,CA,33.132685,-117.326399
+4044,4044,Larry H. Miller Toyota Corona,https://www.lhmtoyotacorona.com,11,CA,33.878384,-117.599106
+4101,4101,Crown Toyota,https://www.crowntoyota.com,11,CA,34.052119,-117.546812
+4115,4115,Puente Hills Toyota,https://www.puentehillstoyota.com,11,CA,33.999618,-117.933456
+4197,4197,Toyota of Whittier,https://www.toyotaofwhittier.com,11,CA,33.952436,-118.013411
+4236,4236,Toyota of Hemet,https://www.toyotahemet.com,11,CA,33.741601,-117.030352
+4210,4210,Fletcher Jones Toyota of Carson,https://www.toyotacarson.com,11,CA,33.824426,-118.249488
+4244,4244,Northridge Toyota,https://www.northridgetoyota.com,11,CA,34.235252,-118.560235
+4662,4662,Frontier Toyota,https://www.frontiertoyota.com,11,CA,34.418263,-118.549957
+4118,4118,Toyota of Santa Barbara,https://www.toyotaofsantabarbara.com,11,CA,34.435356,-119.821038
+6054,6054,Crabtree Toyota,https://www.crabtreetoyota.com,16,CT,41.56905,-73.098733
+20150,20150,Koch Route 2 Toyota,https://www.kochrt2toyota.com,17,MA,42.518608,-71.69445
+20151,20151,AutoFair Toyota of Tewksbury,https://www.AutoFairToyota.com,17,MA,42.620139,-71.25589
+20149,20149,Parkway Toyota of Boston,https://www.parkwaytoyotaboston.com,17,MA,42.265918,-71.168648
