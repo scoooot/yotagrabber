@@ -77,10 +77,12 @@ def updateDealers(dealerFileName, zipCodeFileName):
         zipCodesToUpdateDealers = readInZipCodes(zipCodeFileName)
     if Path(dealerFileName).is_file():
         print("Reading in existing Dealer csv", dealerFileName)
-        dealers = pd.read_csv(dealerFileName)
-        # force code and dealerId fields to be ints as vehicles.py expects this.
-        dealers["code"] = dealers["code"].apply(pd.to_numeric)
-        dealers["dealerId"] = dealers["dealerId"].apply(pd.to_numeric)
+        # leave the code and dealerId fields as strings (since they are unquoted)
+        dealers = pd.read_csv(dealerFileName, dtype = { 'code': 'str', 'dealerId': 'str'})
+        if False:
+            # force code and dealerId fields to be ints as vehicles.py expects this.
+            dealers["code"] = dealers["code"].apply(pd.to_numeric)
+            dealers["dealerId"] = dealers["dealerId"].apply(pd.to_numeric)
     else:
         dealers = pd.DataFrame()
     indx = 0
@@ -110,11 +112,13 @@ def updateDealers(dealerFileName, zipCodeFileName):
                 interruptibleSleep(4)
                 print("Retrying request, tryCount = ", tryCount)
         if (result is not None) and result and ("dealers" in result):
-            df = pd.DataFrame.from_dict(result["dealers"])
+            #df = pd.DataFrame.from_dict(result["dealers"])
+            df = pd.json_normalize(result["dealers"])
             df = df[["code", "dealerId", "name", "url", "regionId", "state", "lat", "long"]]
-            # force the code and dealerId fields to ints as the vehicles.py expects that type (i.e. leading 0s are removed)
-            df["code"] = df["code"].apply(pd.to_numeric)
-            df["dealerId"] = df["dealerId"].apply(pd.to_numeric)
+            if False:
+                # force the code and dealerId fields to ints as the vehicles.py expects that type (i.e. leading 0s are removed)
+                df["code"] = df["code"].apply(pd.to_numeric)
+                df["dealerId"] = df["dealerId"].apply(pd.to_numeric)
             #print(df)
             #print("type(df['code'][0])", type(df["code"][0]))
             #print("type(df['lat'][0])", type(df["lat"][0]))

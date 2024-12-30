@@ -270,7 +270,7 @@ def update_vehicles_and_return_df(useLocalData = False):
         df.sort_values("vin", inplace=True)
         df.to_parquet(f"output/{MODEL}_raw.parquet", index=False)
 
-    # Add dealer data.
+    # Add dealer data.  Note that without a dtype parameter the line below will automatically convert unquoted dealerId field to numeric thus removing any leading 0s the dealerId has 
     dealers = pd.read_csv(f"{config.BASE_DIRECTORY}/data/dealers.csv")[
         ["dealerId", "state"]
     ]
