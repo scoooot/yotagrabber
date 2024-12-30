@@ -1,10 +1,12 @@
 # Updates the dealer info in teh dealers.csv file
 
 import random
+import numpy as np
 from inputimeout import inputimeout, TimeoutOccurred
 import sys
 import json
 import os.path
+from pathlib import Path
 import ssl
 import requests.exceptions
 import requests
@@ -27,31 +29,65 @@ def interruptibleSleep(sleepTime):
     #    print("Interruptible Sleep time was 0")
     return wasInterrupted
 
-
-def updateDealers(dealerFileName, zipCodeFileName):
-    print("This program takes the passed csv file and creates a new output csv file with added suffix .updated.csv") 
-    print("that contains the contents of the passed csv file and dealer info for any new dealer found, not already in the csv file")
-    print("for the set of zipcodes it is passed")
-    print("Warning !!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
-    print("When the set of zipcodes is very large, (possibly 42,000), this program will take a long time to run")
-    print("The program takes approx 4 seconds for each zipcode and every 100 zip codes an additional 30 seconds")
-    print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
-    print("Reading in zipcodes to get dealer info for from file", zipCodeFileName)
-    zipCodesToUpdateDealers = []
-    with open(zipCodeFileName, "r") as fileh:
+def readInZipCodes(fileName):
+    # reads in and returns a list of zipCodes
+    zipCodes = []
+    with open(fileName, "r") as fileh:
         for zip in fileh:
             zip = zip.strip(" \n\r")
             if zip:
                 if (len(zip) <= 5) and zip.isdecimal():
-                    zipCodesToUpdateDealers.append(zip)
+                    zipCodes.append(zip)
                 else:
                     print("Ignoring Invalid zip code '" + zip + "'")
-    print("Reading in existing Dealer csv", dealerFileName)
-    dealers = pd.read_csv(dealerFileName)
-    num = 0
+    return zipCodes
+
+def writeZipCodes(zipCodes, startIndex, fileName):
+    with open(fileName, "w") as fileh:
+        listLen = len(zipCodes)
+        indx = startIndex
+        while indx < listLen:
+            # write out to file
+            fileh.write(str(zipCodes[indx])+ "\n")
+            indx += 1
+
+def updateDealers(dealerFileName, zipCodeFileName):
+    print("This program updates the passed dealer file (or creates that file if not present)") 
+    print("with any new dealers found, that are not already in that file, during the search ")
+    print("of the remaining zip codes to look for dealers for, out of the zip code file")
+    print("The remaining zip codes to search are in file <zipCodeFileName>.remainingToSearch.txt",)
+    print("and that is an intermediate file the program creates and periodically updates to tell it what")
+    print("remaining zip codes it needs to search for (out of the zip code file) in case the program is prematurely terminated")
+    print("The program, if terminated before finishing, can be run again and will continue the search from the remaining zip codes.")
+    print("Thus, if that remaining zip code file is present the program, when started, will start from that, otherwise it will start from")
+    print("the zip code file.")
+    print("The dealer file is also updated right before and in sync with the remaining zip code file is updated, again, in case the program is prematurely terminated")
+    print("Once we have gone through all the zip codes, the remaining zip codes file will be deleted by the program")
+    print("If needed you can manually delete the remaining zip codes file if you want to completely start over again.")
+    print("Warning !!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+    print("When the set of zipcodes is very large, (possibly 42,000), this program will take a long time to run")
+    print("The program takes approx 4 seconds for each zipcode and every 100 zip codes an additional 30 seconds")
+    print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+    remainingZipCodeFileName = zipCodeFileName + ".remainingToSearch.txt"
+    if Path(remainingZipCodeFileName).is_file():
+        print("Reading in REMAINING zip codes from file:", remainingZipCodeFileName)
+        zipCodesToUpdateDealers = readInZipCodes(remainingZipCodeFileName)
+    else:
+        print("Reading in zip codes from file:", zipCodeFileName)
+        zipCodesToUpdateDealers = readInZipCodes(zipCodeFileName)
+    if Path(dealerFileName).is_file():
+        print("Reading in existing Dealer csv", dealerFileName)
+        dealers = pd.read_csv(dealerFileName)
+        # force code and dealerId fields to be ints as vehicles.py expects this.
+        dealers["code"] = dealers["code"].apply(pd.to_numeric)
+        dealers["dealerId"] = dealers["dealerId"].apply(pd.to_numeric)
+    else:
+        dealers = pd.DataFrame()
+    indx = 0
     for zipCode in zipCodesToUpdateDealers:
+        # TODO add in retries
         zipCodeWithLeadingZeroes = ("0" * (5 - len(zipCode))) + zipCode
-        print("Getting dealers for/near zipcode",zipCodeWithLeadingZeroes )
+        print("Getting dealers for/near zipcode",zipCodeWithLeadingZeroes, ", at zipcode list index:", indx )
         resp = requests.get(
                 "https://www.toyota.com/service/tcom/locateDealer/zipCode/" + zipCodeWithLeadingZeroes,
                 timeout=20,
@@ -60,16 +96,23 @@ def updateDealers(dealerFileName, zipCodeFileName):
         if (result is not None) and result and ("dealers" in result):
             df = pd.DataFrame.from_dict(result["dealers"])
             df = df[["code", "dealerId", "name", "url", "regionId", "state", "lat", "long"]]
+            # force the code and dealerId fields to ints as the vehicles.py expects that type (i.e. leading 0s are removed)
+            df["code"] = df["code"].apply(pd.to_numeric)
+            df["dealerId"] = df["dealerId"].apply(pd.to_numeric)
             #print(df)
+            #print("type(df['code'][0])", type(df["code"][0]))
+            #print("type(df['lat'][0])", type(df["lat"][0]))
             dealers = pd.concat([dealers, df])
             dealers.drop_duplicates(subset=["code"], inplace=True)
         else:
             print("Error: Failed getting dealers near zipcode.  Response is not json format or does not contain a 'dealers' field.  ZipCode checked was", zipCodeWithLeadingZeroes)
-        num += 1
-        if (num % 100) == 0:
+        indx +=1
+        if (indx % 50) == 0:
             # Since the number of zipCodesToUpdateDealers could be very large,  i.e. 42000, 
-            # we periodically update the output csv with what we have so far in case we are terminated
-            dealers.to_csv(dealerFileName + ".updated.csv", index=False)
+            # we periodically update the output csv with what we have so far in case we are prematurely terminated
+            print("Saving results up to this point to dealers file and remaining zip codes file")
+            dealers.to_csv(dealerFileName, index=False)
+            writeZipCodes(zipCodesToUpdateDealers, indx, remainingZipCodeFileName)
             # delay a longer period of time so we don't swamp the toyota website
             sleepTime = 30
             print("Sleeping", sleepTime)
@@ -78,7 +121,10 @@ def updateDealers(dealerFileName, zipCodeFileName):
         # and we don't want to swamp the toyota website otherwise our connection could be closed/denied or worse
         # we could be blacklisted for some period of time
         interruptibleSleep(4)
-    dealers.to_csv(dealerFileName + ".updated.csv", index=False)
+    dealers.to_csv(dealerFileName, index=False)
+    # delete the remaining zip codes file.
+    Path(remainingZipCodeFileName).unlink(missing_ok=True)
+    print("------------> UPDATE OF DEALERS COMPLETED <--------------")
 if __name__ == "__main__":
     import sys
     # pass dealer file name
