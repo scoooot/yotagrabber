@@ -7,8 +7,9 @@ Contains updates due to Toyota website changes and graphql field changes.
 
 Additionally, added higher level search program searchForVehicles.py that can notify the user via any combination of sound, email, text
 whenever changes in the inventory data occur for a specified match criteria.  This allows a user to be alerted whenever what
-they are looking for has changed and then look at the attached log file to view the changes.  That program uses a config YAML file that can specify how often to search, 
-sound file options, texting options, email options, how changes are reported, log file options, etc.  
+they are looking for has changed and then look at the attached log file to view the changes.  That program uses a config YAML file that 
+can specify how often to search, the match filter criteria filename, sound file options, texting options, email options, how changes are reported, log file options, etc.
+See SearchVehicles-Example_config.yaml for all the configuration items that can be set
 
 searchForVehicles.py runs the vehicles.py update_vehicles() method to collect an inventory of all vehicles in the US for a desired model
 and then runs a specified match criteria against that looking for specific vehicles.  Whenever any inventory changes occur for

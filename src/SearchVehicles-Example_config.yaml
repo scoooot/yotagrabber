@@ -16,6 +16,9 @@ maxRandomAdderTimeBetweenSearches: 1800, # 60*30 secs
 # def filterDataFrame (df):  
 #    where df is the passed panda data frame to be filtered to meet the desired user match criteria and the function return value 
 #    is the filtered data frame (leaving df unchanged)
+#    The dataframe column names are shown in any of the model csv files in the output directory
+#    The syntax for filtering/selection is that for a pandas dataframe, so see online pandas documentation for further detail.
+#    See Example_UserMatchCriteriaFilter.py for an example of the filtering syntax.
 # 
 # def criteriaPrintableString ():  
 #    returns a printable string containing the user match criteria.  This can be the panda expression used to do the filtering
