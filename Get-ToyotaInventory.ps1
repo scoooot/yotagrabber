@@ -34,7 +34,7 @@ function Get-VehicleInventoryForModelsA {
     $timeout = 60*3
     # Get a list of all the current models first
     $curDate = Get-Date
-    Write-Host $curDate
+    Write-Host "Started Power Shell Inventory search at" $curDate
     Write-Host "Getting list of Vehicle Models"
     Get-VehicleModels
     if ($LASTEXITCODE -eq 0) {     
