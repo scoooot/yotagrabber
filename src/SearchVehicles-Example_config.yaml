@@ -220,9 +220,9 @@ textOnlyMatchesNotification: True,
 # authorizaton can be edited at anytime to change scopes, etc (using the OAuth consent screen , and click on the Edit button).
 # Then download the credentials.json file
 # The credentials.json file contains the project ID, project name, client ID (an ID for you), client secret (for secure access).
-# When you run the python search for matching timeshare unit exchanges program it will request credentials from the gmail app.
+# When you run the python search for matching vehicles it will request credentials from the gmail app.
 # If it is the first time is has requested these (i.e. token.json does not exist in authenticationAuthorizationPath), it will cause the project to send 
-# a permission request to the user (to the device the program was started on) asking the user to allow the timeshare exhange search program to have gmail send privileges. 
+# a permission request to the user (to the device the program was started on) asking the user to allow the search vehicles inventory program to have gmail send privileges. 
 # See https://developers.google.com/workspace/guides/create-project for creating a google developers project (google cloud project)
 # See https://developers.google.com/workspace/guides/enable-apis for enabling the gmail google API for this project.
 # See https://developers.google.com/workspace/guides/configure-oauth-consent, and https://developers.google.com/workspace/guides/auth-overview 

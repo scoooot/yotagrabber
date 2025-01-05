@@ -63,16 +63,9 @@ function Get-VehicleInventoryForModelsA {
         Write-Host "Sleeping $timeout seconds before next operation"
         Start-Sleep -Seconds $timeout
     }
-    # TODO: Now commit this to the repository Or possibly instead place on google drive (no history).
     if ( 1 -eq 0) {
-        git config user.name "Greg Gemmer"
-        git config user.email "ghgemmer@gmail.com"
-        git add output
-        $timestamp = Get-Date
-        git commit -m "Updating models list: $timestamp"
-        git status
-        git pull --rebase
-        git push
+        # TODO: Upload the inventory files to google drive.
+        py upload-files.py "..\output"  "Vehicle_Inventory"  "..\inventory_credentials.json"
     }
     
 }

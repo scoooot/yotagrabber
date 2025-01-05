@@ -244,7 +244,7 @@ def get_all_pages():
             print("All vehicles found.")
             break
         elif page_number >= pagesToGet:
-            print("Error: Prematurely terminating page requests since reached total pages for this vehicle at its limit", page_number, ". All vehicles were not found!")
+            print("Error: Reached total pages for this vehicle (or page limit) of", page_number, ". All vehicles were not found! , missing ", recordsToGet - len(df), "vehicles")
             break
         last_run_counter = len(df)
         page_number += 1
