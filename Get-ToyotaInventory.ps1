@@ -65,7 +65,7 @@ function Get-VehicleInventoryForModelsA {
     }
     if ( 1 -eq 0) {
         # TODO: Upload the inventory files to google drive.
-        py upload-files.py "..\output"  "Vehicle_Inventory"  "..\inventory_credentials.json"
+        py src\upload-files.py ".\output"  "Vehicle_Inventory"  "inventory_credentials.json"
     }
     
 }
