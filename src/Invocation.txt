@@ -83,10 +83,20 @@ enter the following commands that outputs to the console the contents of that lo
 $logfile = "the directory you wanted the script to run in"  + "\output\InventoryRunlog.txt"
 Get-Content -Path $logfile -Tail 0 -Wait
 
+The program upload-files.py does the upload of the inventory files to a google drive, however
+I currently have this disabled in the power shell script, so if you want to use that you must enable it there. Also to use that
+you must use google developers to enable your google drive to be accessed via that, and must create credentials to be used
+for that access.  This is the same as what must be done if you use gmail as the sender source for the email option when running searchForVehicles.py
+upload-files.py takes 3 command line parameters which are directory where the inventory files are, googleDriveFolderName where
+the inventory files are to be placed on the google drive, and the credentialsFileName for accessing the google drive.
+
+
 --------------------------------------------------------
 For updating the dealers.csv that vehicles.py uses to find the state a dealerId is in (the graphql only has the dealerId
 , which is a number, and not the dealer state and some other dealer detail, for it) run the following
+
 py dealers.py ".\yotagrabber\data\dealers.csv" ".\yotagrabber\data\zipcodes.txt" 
+
 Note that this can take a few hours to run as it spreads out its request over time so as to not
 overwhelm the toyota website.
 If after getting a models inventory you find the state field is blank for some entries it is because the
