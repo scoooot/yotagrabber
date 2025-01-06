@@ -9,28 +9,32 @@ function Get-VehicleModels {
 function Get-VehicleInventoryForModels {
     param (
         $DirectoryToRunIn,
-        $PythonVENVPowershellActivateScript
+        $PythonVENVPowershellActivateScript,
+        $uploadInventory = "",
+        $credentialsFileName = ""
     )
     # Use the following to log all console output as it is consistent in doing this over the inconsistent Start-Transcript
     # Note that the console output is redirected to the log file so you want see it as it is running unless
     # you use some linux like tail function, like the power shell 
     # Get-Content -Path filename -Tail 0 -Wait in another window to output the logfile contents as it is appended.
     $logfile = $DirectoryToRunIn + "\output\InventoryRunlog.txt"
-    Get-VehicleInventoryForModelsA -DirectoryToRunIn $DirectoryToRunIn -PythonVENVPowershellActivateScript $PythonVENVPowershellActivateScript  *>> $logfile
+    Get-VehicleInventoryForModelsA -DirectoryToRunIn $DirectoryToRunIn -PythonVENVPowershellActivateScript $PythonVENVPowershellActivateScript -uploadInventory $uploadInventory -credentialsFileName $credentialsFileName  *>> $logfile
 }
 
 
 function Get-VehicleInventoryForModelsA {
     param (
         $DirectoryToRunIn,
-        $PythonVENVPowershellActivateScript
+        $PythonVENVPowershellActivateScript,
+        $uploadInventory = "",
+        $credentialsFileName = ""
     )
+    #Write-Host "uploadInventory is " $uploadInventory
+    #Write-Host "credentialsFileName is " $credentialsFileName
     cd $DirectoryToRunIn
     $env:PYTHONUNBUFFERED = 1
     Set-ExecutionPolicy -ExecutionPolicy Bypass -Scope Process -Force
     .$PythonVENVPowershellActivateScript
-    # break out of this for testing by uncommenting the following
-    # Return
     $timeout = 60*3
     # Get a list of all the current models first
     $curDate = Get-Date
@@ -55,19 +59,27 @@ function Get-VehicleInventoryForModelsA {
             Write-Host "Sleeping $timeout seconds before next operation"
             Start-Sleep -Seconds $timeout
         }
-        
+        if ($uploadInventory -eq "upload") {
+            if ($credentialsFileName -eq "") {
+                $credentialsFileName = "inventory_credentials.json"
+            }
+            py src\upload-files.py ".\output"  "Vehicle_Inventory"  $credentialsFileName
+        }
     }
     else
     {
         Write-Host "Error: Failed to get list of Vehicle Models"
-        Write-Host "Sleeping $timeout seconds before next operation"
-        Start-Sleep -Seconds $timeout
-    }
-    if ( 1 -eq 0) {
-        # TODO: Upload the inventory files to google drive.
-        py src\upload-files.py ".\output"  "Vehicle_Inventory"  "inventory_credentials.json"
     }
     
 }
 
-Get-VehicleInventoryForModels -DirectoryToRunIn $args[0] -PythonVENVPowershellActivateScript $args[1]
+$uploadInventory = ""
+if ($args.Count -ge 3) {
+    $uploadInventory = $args[2]
+}
+$credentialsFileName = ""
+if ($args.Count -ge 4) {
+    $credentialsFileName = $args[3]
+}
+
+Get-VehicleInventoryForModels -DirectoryToRunIn $args[0] -PythonVENVPowershellActivateScript $args[1] -uploadInventory $uploadInventory -credentialsFileName $credentialsFileName

@@ -23,19 +23,18 @@ that looking for specific vehicles.  Whenever any inventory changes occur for
 that match criteria the program notifies the user via any user specified combination of sound, email, text.
 
 
-I do not currently run the github workflow to update and post the model inventory csv data files to git at this time.
+I do not currently run the github workflow to update and post the model inventory csv data files to Git at this time.
 I have been trying to get that github workflow to run for this but it seems like the main problem is that
-github is having problems communicating with the toyota website by either being blocked sometimes, or getting connection failures/forced closures, or continuous response timeouts.
+Github is having problems communicating with the toyota website by either being blocked sometimes, or getting connection failures/forced closures, or continuous response timeouts.
 Possibly the website has been in the past seeing too much traffic from github and is throttling it or blocking it sometimes.
-I don't seem to have these problems when running these updates on my desktop for just a few vehicle models. 
-Because of that, I have a power shell script, Get-ToyotaInventory.ps1 that when scheduled as a job does the same thing as the github workflow
-(short of the adding the resulting found inventory to git) and runs from the desktop.
-
-Additionally I decided that instead of adding the model inventory files to git, they would be added to a google drive
-so as to not worry about any history storage limitations on git as these files take up some 90MB total per push. 
-The program upload-files.py does this upload to a google drive, however
-I currently have this disabled in the power shell script, so if you want to use that you must enable it there. Also to use that
-you must use google developers to enable your google drive to be accessed via that, and must create credentials to be used
+I don't have these problems when running these updates manually on my desktop. 
+Because of that, I created a power shell script, Get-ToyotaInventory.ps1, that runs from the desktop, and when scheduled as a job 
+does the same thing as the Github workflow, with the exception it uploads the inventory files to a google drive and not Git.
+I decided that instead of adding the inventory files to Git, they would be added to a google drive
+so as to not worry about any history storage limitations on Git.
+There is an optional command line argument to the power shell script that indicates if you want to upload the
+inventory files to the google drive (default is not to upload). Note that in order to use that feature
+you must use google developers to create a project to enable your google drive to be accessed via that, and must create credentials to be used
 for that access.  This is the same as what must be done if you use gmail as the sender source for the email option when running searchForVehicles.py 
 
 See Invocation.txt as to how to invoke the various programs.

@@ -43,13 +43,16 @@ Note that to deactivate the virtual environment in Power Shell simply use the fo
 deactivate
 
 --------------------------------------------------------------------
-For running the Get-ToyotaInventory.ps1 script you need to supply two parameters       
+For running the Get-ToyotaInventory.ps1 script you need to supply the following parameters.  Optional ones are not required and can be completely left off.
 $DirectoryToRunIn  = "directory you want the script to run in"
 $PythonVENVPowershellActivateScript = "ps1 activate script name including path that activates the python virtual environment to be used for the run"
+optional $uploadInventory = "" if you don't want to upload the files to a google drive (the default),
+                            "upload"  if you do want to upload the files to a google drive folder named Vehicle_Inventory that you have setup for access
+optional $credentialsFileName = the full path file name of the google credentials file to be used if upload was specified.
 
 To just run the script
 Set-ExecutionPolicy -ExecutionPolicy Bypass -Scope Process -Force
-C:\Users\GregG\Documents\GitHub\yotagrabber\Get-ToyotaInventory.ps1 $DirectoryToRunIn $PythonVENVPowershellActivateScript
+C:\Users\GregG\Documents\GitHub\yotagrabber\Get-ToyotaInventory.ps1 $DirectoryToRunIn $PythonVENVPowershellActivateScript -uploadInventory $uploadInventory  -credentialsFileName $credentialsFileName
 
 To schedule this script to be run as a job use the following in a PowerShell adjusted to whatever schedule you want.
 Keep in mind that to much traffic to the toyota website could cause the website to block you or throttle you so 
@@ -57,10 +60,12 @@ in general requesting no more than once a day is recommended.
 # use default options
 $jobOptionsToUse = New-ScheduledJobOption -RunElevated
 $jobTriggersToUse = New-JobTrigger -Weekly -DaysOfWeek Monday, Wednesday, Friday -At "23:00"
-$DirectoryToRunIn  = "directory you want the script to run in"
-$PythonVENVPowershellActivateScript = "ps1 activate script name including path that activates the python virtual environment to be used for the run"
+$DirectoryToRunIn  = as described above
+$PythonVENVPowershellActivateScript = as described above
+optional $uploadInventory = as described above
+optional $credentialsFileName = as described above
 Set-ExecutionPolicy -ExecutionPolicy Bypass -Scope Process -Force
-Register-ScheduledJob -Name "GetToyotaModelsAndInventory" -FilePath "ps1 script name including path you want to run as a job" -Trigger $jobTriggersToUse -ScheduledJobOption $jobOptionsToUse -ArgumentList $DirectoryToRunIn, $PythonVENVPowershellActivateScript
+Register-ScheduledJob -Name "GetToyotaModelsAndInventory" -FilePath "ps1 script name including path you want to run as a job" -Trigger $jobTriggersToUse -ScheduledJobOption $jobOptionsToUse -ArgumentList $DirectoryToRunIn, $PythonVENVPowershellActivateScript, $uploadInventory, $credentialsFileName
 
 You can also force that scheduled job to start right away using
 Start-Job -DefinitionName "GetToyotaModelsAndInventory" 
@@ -83,8 +88,7 @@ enter the following commands that outputs to the console the contents of that lo
 $logfile = "the directory you wanted the script to run in"  + "\output\InventoryRunlog.txt"
 Get-Content -Path $logfile -Tail 0 -Wait
 
-The program upload-files.py does the upload of the inventory files to a google drive, however
-I currently have this disabled in the power shell script, so if you want to use that you must enable it there. Also to use that
+The program upload-files.py does the upload of the inventory files to a google drive. To use that
 you must use google developers to enable your google drive to be accessed via that, and must create credentials to be used
 for that access.  This is the same as what must be done if you use gmail as the sender source for the email option when running searchForVehicles.py
 upload-files.py takes 3 command line parameters which are directory where the inventory files are, googleDriveFolderName where
