@@ -38,16 +38,15 @@ function Get-VehicleInventoryForModelsA {
     $timeout = 60*3
     # Get a list of all the current models first
     $curDate = Get-Date
-    Write-Host "Started Power Shell Inventory search at" $curDate
+    Write-Host "Started Vehicle Inventory search at" $curDate
     Write-Host "Getting list of Vehicle Models"
     Get-VehicleModels
     if ($LASTEXITCODE -eq 0) {     
-        $models = Get-Content -Raw -Path "output/models.json" | ConvertFrom-Json
-        Write-Host "Sleeping $timeout seconds before next operation"
-        Start-Sleep -Seconds $timeout
-        
+        $models = Get-Content -Raw -Path "output/models.json" | ConvertFrom-Json       
         Write-Host "Getting list of Vehicle Inventory"
         foreach ($model in $models) {
+            Write-Host "Sleeping $timeout seconds before next operation"
+            Start-Sleep -Seconds $timeout
             # set environment variable that update_vehicles uses
             $env:MODEL = $model.modelCode
             # Update that models inventory
@@ -56,8 +55,6 @@ function Get-VehicleInventoryForModelsA {
             if ($LASTEXITCODE -ne 0) { 
                 Write-Host "Error: Failed to get inventory for model $MODEL"
             }    
-            Write-Host "Sleeping $timeout seconds before next operation"
-            Start-Sleep -Seconds $timeout
         }
         if ($uploadInventory -eq "upload") {
             if ($credentialsFileName -eq "") {
