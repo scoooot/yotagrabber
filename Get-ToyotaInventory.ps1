@@ -29,6 +29,8 @@ function Get-VehicleInventoryForModelsA {
         $uploadInventory = "",
         $credentialsFileName = ""
     )
+    $curDate = Get-Date
+    Write-Host "Started Vehicle Inventory search at" $curDate
     #Write-Host "uploadInventory is " $uploadInventory
     #Write-Host "credentialsFileName is " $credentialsFileName
     cd $DirectoryToRunIn
@@ -37,8 +39,6 @@ function Get-VehicleInventoryForModelsA {
     .$PythonVENVPowershellActivateScript
     $timeout = 60*3
     # Get a list of all the current models first
-    $curDate = Get-Date
-    Write-Host "Started Vehicle Inventory search at" $curDate
     Write-Host "Getting list of Vehicle Models"
     Get-VehicleModels
     if ($LASTEXITCODE -eq 0) {     

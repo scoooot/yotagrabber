@@ -67,6 +67,24 @@ optional $credentialsFileName = as described above
 Set-ExecutionPolicy -ExecutionPolicy Bypass -Scope Process -Force
 Register-ScheduledJob -Name "GetToyotaModelsAndInventory" -FilePath "ps1 script name including path you want to run as a job" -Trigger $jobTriggersToUse -ScheduledJobOption $jobOptionsToUse -ArgumentList $DirectoryToRunIn, $PythonVENVPowershellActivateScript, $uploadInventory, $credentialsFileName
 
+Note that for some unknown reason to get the task scheduler to run that script I need to add an initial set execution policy command ahead of the script
+(note that the jobOptionsToUse has the -RunElevated setting but that doesn't seem to matter to get the script to run)
+by running Windows Task Scheduler and then finding the folder  Task Scheduler Libarary ---> Microsoft ----> Windows  ----> PowerShell  
+---> Scheduled Jobs
+Then click on the GetToyotaModelsAndInventory job, and then in the right hand action pane click on Selected Items ----> Properties
+which pops up a properties window.  Go to the Actions tab, click on the Start Program line and then click on the Edit button.
+In the "Add Arguements (optional)"  line  find the 
+-Command "
+and then insert the following after the " including a space at the end of what is inserted below  (so ; and then space)
+Set-ExecutionPolicy -ExecutionPolicy Bypass -Scope Process -Force;
+
+Alternatively, but still requiring you manually modify the execution policy in Task scheduler, is to get into Task Scheduler as above 
+and to the Add Arguements line,  add
+-ExecutionPolicy Bypass
+ as the first arguement on the line 
+
+There may be an easier way to get this execution policy set for that script but I don't know how to do it.
+
 You can also force that scheduled job to start right away using
 Start-Job -DefinitionName "GetToyotaModelsAndInventory" 
 
