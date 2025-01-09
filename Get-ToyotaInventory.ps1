@@ -56,16 +56,20 @@ function Get-VehicleInventoryForModelsA {
                 Write-Host "Error: Failed to get inventory for model $MODEL"
             }    
         }
+        $curDate = Get-Date
+        Write-Host "Vehicle Inventory search Completed" $curDate
         if ($uploadInventory -eq "upload") {
             if ($credentialsFileName -eq "") {
                 $credentialsFileName = "inventory_credentials.json"
             }
+            Write-Host "Uploading Inventory to Google Drive Started"
             py src\upload-files.py ".\output"  "Vehicle_Inventory"  $credentialsFileName
+            Write-Host "Uploading Inventory to Google Drive Completed"
         }
     }
     else
     {
-        Write-Host "Error: Failed to get list of Vehicle Models"
+        Write-Host "Error: Failed to get list of Vehicle Models.  Aborting Search"
     }
     
 }
