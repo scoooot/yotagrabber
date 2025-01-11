@@ -1,5 +1,6 @@
 """Get a list of Toyota models from the Toyota website."""
 import json
+import datetime
 
 import pandas as pd
 import random
@@ -103,7 +104,12 @@ def update_models():
         .sort_values("title", ascending=True)
         .reset_index(drop=True)
     )
-
+    # Add in any old models we can still get which are not in the current models list
+    #if datetime.date.today().year <= 2025
+    new_model_row = pd.DataFrame({'modelCode': ['rav4prime'], 'title': ['RAV4 Prime']})
+    models = pd.concat([models, new_model_row], ignore_index=True)
+    models.drop_duplicates(subset=["modelCode"], inplace=True)
+    
     # Toyota uses different names for some models when you query the graphQL API.
     # https://github.com/major/yotagrabber/issues/32
     models.loc[models["modelCode"] == "gr86", "modelCode"] = "86"
