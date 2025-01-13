@@ -1,6 +1,6 @@
 This folder contains the dealer inventory for all Toyota vehicle models in the US (including Alaska, and Hawaii).
 
-Inventory updates typically show up each day at 4am CDT.
+Folder updates typically show up each day at 4am CDT.
 Each model's inventory is placed in a .csv file.  A raw pandas parquet file is also created which is 
 the raw inventory gotten from the Toyota website for the model before various fitlering is applied, such as only current and 
 last year vehicles, certain fields are removed, some field names and content are modified for readability, etc)
