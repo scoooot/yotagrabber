@@ -336,10 +336,20 @@ def update_vehicles_and_return_df(useLocalData = False):
     # df = df[df["Color"].notna()]  # don't remove entries with missing color as still want to see those vehicles.
     df["Color"] = df["Color"].str.replace(" [extra_cost_color]", "", regex=False)
 
-    # Calculate the dealer price + markup.
-    df["Dealer Price"] = df["Base MSRP"] + df["price.dioTotalDealerSellingPrice"]
-    df["Dealer Price"] = df["Dealer Price"].fillna(df["Base MSRP"])
-    df["Markup"] = df["Dealer Price"] - df["Base MSRP"]
+    # Calculate the various prices.
+    df["TMSRP plus DIO"] = df["Total MSRP"] + df["price.dioTotalDealerSellingPrice"]
+    df["TMSRP plus DIO"] = df["TMSRP plus DIO"].fillna(df["Total MSRP"])
+    # Set selling price to 0 if it was NAN
+    df["Selling Price"] = df["Selling Price"].fillna(0.0)
+    # Selling Price Incomplete indicates if the Selling Price did not include Dealer Discounts/Markups
+    # This occurs when the raw Selling Price value is 0 or NAN
+    df["Selling Price Incomplete"] = True
+    df["Selling Price Incomplete"] = df["Selling Price Incomplete"].where(df["Selling Price"] == 0, False)
+    # Selling price is the TMSRP + Dealer installed options + Dealer discounts/markups with the exception when Selling Price Incomplete is True as indicated above
+    df["Selling Price"] = df["Selling Price"].where(df["Selling Price Incomplete"] != True, df["TMSRP plus DIO"] )
+    # The Markup column is defined to show the cost of the Dealer Installed Options plus the actual dealer discount/markup
+    # i.e everything the dealer adds on to the TMSRP including discounts/markups
+    df["Markup"] = df["Selling Price"] - df["Total MSRP"]
     df.drop(columns=["price.dioTotalDealerSellingPrice"], inplace=True)
 
     # Remove any old models that might still be there.
@@ -374,8 +384,9 @@ def update_vehicles_and_return_df(useLocalData = False):
             "Base MSRP",
             "Total MSRP",
             "Selling Price",
+            "Selling Price Incomplete",
             "Markup",
-            "Dealer Price",
+            "TMSRP plus DIO",
             "Shipping Status",
             "Pre-Sold",
             "Hold Status",

@@ -43,7 +43,8 @@ Note that to deactivate the virtual environment in Power Shell simply use the fo
 deactivate
 
 --------------------------------------------------------------------
-For running the Get-ToyotaInventory.ps1 script you need to supply the following parameters.  Optional ones are not required and can be completely left off.
+For running the Get-ToyotaInventory.ps1 script you need to supply the following parameters in a Power shell run as an administrator.  
+Optional ones are not required and can be completely left off.
 $DirectoryToRunIn  = "directory you want the script to run in"
 $PythonVENVPowershellActivateScript = "ps1 activate script name including path that activates the python virtual environment to be used for the run"
 optional $uploadInventory = "" if you don't want to upload the files to a google drive (the default),
@@ -91,7 +92,7 @@ Start-Job -DefinitionName "GetToyotaModelsAndInventory"
 and then use
 Receive-Job -Name "GetToyotaModelsAndInventory" -Keep
 to see the console output of that running job up to that point.  
-Leaving off the -Keep will not retain all the output but ony show you the output since the last Receive-Job was run
+Leaving off the -Keep will not retain all the output but only show you the output since the last Receive-Job was run
 after the last Receive-Job was run.
 Othewise you can can use the Get-Content -Path $logfile -Tail 0 -Wait as described below
 
