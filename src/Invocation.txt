@@ -19,6 +19,29 @@ rem set MODEL=rav4pluginhybrid
 rem either py or python as the first word below
 py searchForVehicles.py SearchVehicles_config.yaml
 
+Note that you can run several different searchForVehicles searches at the same time by running each search 
+in its own command/terminal window (i.e. x searches in x command/terminal windows) and directory.
+Just make sure that
+ 
+1) You create a different directory for each search (that directory is where the search is invoked from), 
+and have a subdirectory in that directory named "output" that contains a copy of the models.json file in it.
+
+2) Have the yaml config file for that search in that search directory and modify the config file items
+resultsFileName, userMatchCriteriaFilterFileName, computerSoundNotificationFileName, authenticationAuthorizationPath,
+and notificationMsgPrefixString as needed.  Generally you will have the  resultsFileName, and userMatchCriteriaFilterFileName
+just refer to a file in the current directory (i.e. .\<name of file>), where the search is run, but you would probably use the 
+absolute pathname for the place where the existing computerSoundNotificationFileName file is (so you don't need to copy that file)
+and the absolute path name for authenticationAuthorizationPath where the credentials file is (again so you don't need
+to copy that file)
+
+3) Change to that new command window and change to that new directory.  Activate the python environment as before.
+Set the environment variables as needed for the model you are searching for
+(MODEL, optionally MODEL_SEARCH_ZIPCODE and MODEL_SEARCH_RADIUS)
+
+4) Invoke the program as follows:
+py <fullpath name of searchForVehicles.py> <name of yaml config file>
+
+
 --------------------------------------------------------------
 
 If you are running in a Windows Power shell then use the following
