@@ -33,12 +33,14 @@ import shutil
 import pandas as pd
 import numpy as np
 import importlib.util
+from timeit import default_timer as timer
+
 
 
 from yotagrabber import vehicles
 
 # Version
-searchForVehiclesVersionStr = "Ver 1.2.1 Nov 10 2024"  #
+searchForVehiclesVersionStr = "Ver 1.4 Jan 19 2025"  #
 
 class userMatchCriteria:
     def __init__(self):
@@ -148,6 +150,8 @@ minRandomTimeScaler = 1.0  #  secs between post, get sends
 lastUserMatchesDf = pd.DataFrame() # empty dataframe
 
 userMatchCriteriaFilterModule = ""
+
+dbgUsingLocalVehicleDataFile = False #TODO change this back to False once finish debug
 
 def import_from_path(module_name, file_path):
     spec = importlib.util.spec_from_file_location(module_name, file_path)
@@ -812,7 +816,7 @@ def getUserInput(promptStr, sleepTime):
         timedOut = True
     return (timedOut, userInput)
     
-def printUnitDetails(prefix, details, fileHandle = 0, printIt = True, suppressFixedUnitDetailsPrefix = False, sanitizeStrings = True, namesOfModifiedFieldsString = ""):
+def printUnitDetails(prefix, details, columnsToIgnore, fileHandle = 0, printIt = True, suppressFixedUnitDetailsPrefix = False, sanitizeStrings = True, namesOfModifiedFieldsString = ""):
     # details is a DataFrame of exactly 1 row
     global unitDetailsDelimiter
     detailsStr = ""
@@ -824,7 +828,8 @@ def printUnitDetails(prefix, details, fileHandle = 0, printIt = True, suppressFi
     detailsStr = prefix  + fixedUnitDetailsPrefix
     for index1 in details.index:
         for column1 in details:
-            detailsStr += unitDetailsDelimiter + str(column1) + ": " + unitDetailsDelimiter + str(details.at[index1,column1])
+            if not (column1 in columnsToIgnore):
+                detailsStr += unitDetailsDelimiter + str(column1) + ": " + unitDetailsDelimiter + str(details.at[index1,column1])
     if namesOfModifiedFieldsString:
         detailsStr += unitDetailsDelimiter + "Names Of Modified Fields: " + namesOfModifiedFieldsString
     if printIt:
@@ -847,7 +852,7 @@ def outputSearchingInfoToUser(matchCriteria):
     matchCriteria.print("", toConsole = True)
     print("Username:", username)
 
-def getNamesOfModifiedFieldsIntoString (details1, details2):
+def getNamesOfModifiedFieldsIntoString (details1, details2, columnsToIgnore):
     # returns the names of the modified fields (fields whose value changed between details1 and details) as well as the 
     # the current value and prior value of the field
     # Assumes both passed details have the exact same field names and are not empty
@@ -860,11 +865,13 @@ def getNamesOfModifiedFieldsIntoString (details1, details2):
     theSame = False
     columns1 = []
     for column1 in details1:
-        columns1.append(column1)
+        if not (column1 in columnsToIgnore):
+            columns1.append(column1)
     columns1.sort()
     columns2 = []
     for column2 in details2:
-        columns2.append(column2)
+        if not (column2 in columnsToIgnore):
+            columns2.append(column2)
     columns2.sort()
     #print("detailsAreTheSame columns1 == columns2, columns1, columns2", columns1 == columns2, columns1, columns2)
     if columns1 == columns2:
@@ -874,7 +881,7 @@ def getNamesOfModifiedFieldsIntoString (details1, details2):
             # both have same number of rows which should be 0 or 1.  We only compare the first row anyway
             for index1 in details1.index:
                 for index2 in details2.index:
-                    for column1 in details1:
+                    for column1 in columns1:
                         if details1.at[index1, column1] != details2.at[index2, column1]:
                             namesOfModifiedFieldsString += column1 + " :: " + str(details2.at[index2, column1]) + " --> " +  str(details1.at[index1, column1]) + " || "
                             #if debugEnabled:
@@ -895,8 +902,9 @@ def vinNumberIsTheSame(details1, details2):
     # !!!!!Assumes nan has been replaced with None in the passed DataFrames.
     global debugEnabled
     #if debugEnabled:
-    #    print("vinNumberIsTheSame details1", details1)
-    #    print("vinNumberIsTheSame details2", details2)
+    #timer_start = timer()
+    #print("vinNumberIsTheSame details1", details1)
+    #print("vinNumberIsTheSame details2", details2)
     #return False  # remove when implemented
     vinFieldName = "VIN"
     theSame = False
@@ -915,42 +923,42 @@ def vinNumberIsTheSame(details1, details2):
                     break
                 break
     #if debugEnabled:
-    #    print("vinNumberIsTheSame returning theSame as", theSame)
+    #print("vinNumberIsTheSame returning theSame as", theSame)
+    #print("Elapsed time", timer() - timer_start )
     return theSame
   
-def detailsAreTheSame(details1, details2):
-    # Determines if the single row or empty panda.dataframe details1 and single row or empty panda.dataframe details2 are the same 
-    # Compares all fields, i.e. columns of the dataframes.
+def detailsAreTheSame(details1, details2, columnsToIgnore):
+    # Determines if the single rows series are the same (same value in same column name is the same in each) ignoring the indicated column names
     # !!!!!Assumes nan has been replaced with None in the passed DataFrames.
     global debugEnabled
     #if debugEnabled:
-    #    print("detailsAreTheSame details1", details1)
-    #    print("detailsAreTheSame details2", details2)
+    #   print("detailsAreTheSame details1 type and contents", type(details1), details1)
+    #   print("detailsAreTheSame details2 type and contents", type(details2), details2)
+    #   print("detailsAreTheSame columnsToIgnore", columnsToIgnore)
     theSame = False
     columns1 = []
-    for column1 in details1:
-        columns1.append(column1)
+    for column1 in details1.index:
+        if not (column1 in columnsToIgnore):
+            columns1.append(column1)
     columns1.sort()
+    #if debugEnabled:
+    #   print("detailsAreTheSame columns in details1 sorted excluding ignores", columns1)
     columns2 = []
-    for column2 in details2:
-        columns2.append(column2)
+    for column2 in details2.index:
+        if not (column2 in columnsToIgnore):
+            columns2.append(column2)
     columns2.sort()
-    #print("detailsAreTheSame columns1 == columns2, columns1, columns2", columns1 == columns2, columns1, columns2)
+    #if debugEnabled:
+    #   print("detailsAreTheSame columns in details2 sorted excluding ignores", columns2)
+    #   print("detailsAreTheSame columns1 == columns2, columns1, columns2", columns1 == columns2, columns1, columns2)
     if columns1 == columns2:
         # both have all the exact same column labels (assumed to be unique)
-        #print("detailsAreTheSame details1.shape[0], details2.shape[0]", details1.shape[0], details2.shape[0])
-        if  details1.shape[0] == details2.shape[0]:
-            # both have same number of rows which should be 0 or 1.  We only compare the first row anyway
-            theSame = True
-            for index1 in details1.index:
-                for index2 in details2.index:
-                    for column1 in details1:
-                        if details1.at[index1, column1] != details2.at[index2, column1]:
-                            theSame = False
-                            #if debugEnabled:
-                            #    print("detailsAreTheSame index1, column1, index2, details1.at[index1, column1], details2.at[index2, column1]", index1, column1, index2, details1.at[index1, column1], details2.at[index2, column1])
-                            break
-                    break
+        theSame = True
+        for column1 in columns1:
+            if details1[column1] != details2[column1]:
+                theSame = False
+                #if debugEnabled:
+                #    print("detailsAreTheSame index1, column1, index2, details1.at[index1, column1], details2.at[index2, column1]", index1, column1, index2, details1.at[index1, column1], details2.at[index2, column1])
                 break
     #if debugEnabled:
     #    print("detailsAreTheSame returning theSame as", theSame)
@@ -1030,8 +1038,18 @@ def notifyWithSound(computerSoundFile = "", playCount = 5, playInBackground = Fa
             playsound(str(Path(computerSoundFile)))
     else:
         print("Error: notifyWithSound: sound file does not exist", str(Path(computerSoundFile)))
-
-
+        
+def updateMatchingVinIndex(rowSeries, lastUserMatchesDfCopy, columnsToIgnore):
+    if rowSeries["VinIsInLast"] == True:
+        vin = rowSeries["VIN"]
+        rowLastDf = lastUserMatchesDfCopy[lastUserMatchesDfCopy["VIN"] == vin]
+        rowLastIndex = rowLastDf.index[0]
+        rowLastSeries = rowLastDf.loc[rowLastIndex]
+        rowSeries["VinLastRowLoc"] = rowLastIndex
+        detailsSame = detailsAreTheSame(rowSeries, rowLastSeries, columnsToIgnore)  #TODO fix ignoring added columns
+        rowSeries["VinLastRowModified"] = not detailsSame
+    return rowSeries
+    
 def outputSearchResultsToUser(matchCriteria, dfMatches, lastUserMatchesDf):
     global outputResultsMethod
     global soundNotificationEvents
@@ -1043,35 +1061,45 @@ def outputSearchResultsToUser(matchCriteria, dfMatches, lastUserMatchesDf):
     # next we determine additions (new VIN number not in last results),
     # modifications where same VIN number in last results but any other field is different between current and last,
     # and removals (VIN number is now gone) compared to last results
+    dfMatchesCopyEmpty = True
+    lastUserMatchesDfCopyEmpty = True
+    dfMatchesCopy = dfMatches.copy()
+    dfMatchesCopy.reset_index()
+    lastUserMatchesDfCopy = lastUserMatchesDf.copy()
+    lastUserMatchesDfCopy.reset_index()  #So save off the unique index value of the item to reference it as needed and have it match the iloc value.
+    if len(dfMatchesCopy) and ("VIN" in dfMatchesCopy):
+        dfMatchesCopyEmpty = False
+        if len(lastUserMatchesDfCopy) and ("VIN" in lastUserMatchesDfCopy):
+            dfMatchesCopy["VinIsInLast"] = dfMatchesCopy["VIN"].isin(lastUserMatchesDfCopy["VIN"])
+        else:
+            dfMatchesCopy["VinIsInLast"] = False
+        dfMatchesCopy["VinLastRowLoc"] = -1
+        dfMatchesCopy["VinLastRowModified"] = False
+    if len(lastUserMatchesDf) and ("VIN" in lastUserMatchesDf):
+        lastUserMatchesDfCopyEmpty = False
+        if len(dfMatchesCopy) and ("VIN" in dfMatchesCopy):
+            lastUserMatchesDfCopy["VinIsInCurrent"] = lastUserMatchesDfCopy["VIN"].isin(dfMatchesCopy["VIN"])
+        else:
+            lastUserMatchesDfCopy["VinIsInCurrent"] = False
+    # !!!! Update the Ignore columns below if add any columns to dfMatchesCopy or lastUserMatchesDfCopy that are not in the non copies
+    detailsSameColumnsToIgnore = ["VinIsInLast", "VinLastRowLoc", "VinLastRowModified", "VinIsInCurrent" ]
+    
     addedUnitTo = False
-    for detailsCurIndex in dfMatches.index:
+    if (not dfMatchesCopyEmpty) and (not dfMatchesCopy["VinIsInLast"].all()):
         addedUnitTo = True
-        for detailsPreviousIndex in lastUserMatchesDf.index:
-            if vinNumberIsTheSame(dfMatches.loc[[detailsCurIndex]], lastUserMatchesDf.loc[[detailsPreviousIndex]]):
-            #if detailsAreTheSame(dfMatches.loc[[detailsCurIndex]], lastUserMatchesDf.loc[[detailsPreviousIndex]]):
-                addedUnitTo = False
-                break
-        if addedUnitTo:
-            break
+    
     removedUnitFrom = False
-    for detailsPreviousIndex in lastUserMatchesDf.index:
+    if (not lastUserMatchesDfCopyEmpty) and (not lastUserMatchesDfCopy["VinIsInCurrent"].all()):
         removedUnitFrom = True
-        for detailsCurIndex in dfMatches.index:
-            if vinNumberIsTheSame(dfMatches.loc[[detailsCurIndex]], lastUserMatchesDf.loc[[detailsPreviousIndex]]):
-                removedUnitFrom = False
-                break
-        if removedUnitFrom: # removed at least one unit
-            break
+    
     modifiedUnitTo = False
-    for detailsCurIndex in dfMatches.index:
-        modifiedUnitTo = False
-        for detailsPreviousIndex in lastUserMatchesDf.index:
-            if vinNumberIsTheSame(dfMatches.loc[[detailsCurIndex]], lastUserMatchesDf.loc[[detailsPreviousIndex]]) and not detailsAreTheSame(dfMatches.loc[[detailsCurIndex]], lastUserMatchesDf.loc[[detailsPreviousIndex]]):
-                modifiedUnitTo = True
-                break
-        if modifiedUnitTo:  #modified at least one unit
-            break
-    if addedUnitTo or modifiedUnitTo or (removedUnitFrom and ((outputResultsMethod == outputAllSearchResultsOnChange) or (outputResultsMethod == outputChangedSearchResultsOnChange))):
+    if (not dfMatchesCopyEmpty):
+        # TODO can we do the apply to a slice of the dfMatchesCopy and then copy it to the dfMatchesCopy?? (overwritting the same indexes) would that be faster (i.e ony entires we know are inboth)
+        dfMatchesCopy = dfMatchesCopy.apply(updateMatchingVinIndex, axis=1, args= (lastUserMatchesDfCopy, detailsSameColumnsToIgnore ))
+        if dfMatchesCopy["VinLastRowModified"].any():
+            modifiedUnitTo = True
+        
+    if addedUnitTo or (modifiedUnitTo and (outputResultsMethod != outputAddedSearchResultsOnChange))  or (removedUnitFrom and (outputResultsMethod in [outputAllSearchResultsOnChange, outputChangedSearchResultsOnChange])):
         # This section is only for log file and user text/email notifications.  We only update those when something has changed
         # This keeps from flooding text/email notifications when nothing changed and we have a small between searches delay,
         # as well as not sending text/email notifications when there are only removals
@@ -1086,72 +1114,64 @@ def outputSearchResultsToUser(matchCriteria, dfMatches, lastUserMatchesDf):
         else:
             resultsHeaderStr =  "The following list of matching units was found on: " + dateTimeWithTimeZoneStr
         f.write(resultsHeaderStr + "\n")
-        for detailsCurIndex in dfMatches.index:
-            addedUnit = True
-            for detailsPreviousIndex in lastUserMatchesDf.index:
-                if vinNumberIsTheSame(dfMatches.loc[[detailsCurIndex]], lastUserMatchesDf.loc[[detailsPreviousIndex]]):
-                    addedUnit = False
-                    break
+        for detailsCurIndex in dfMatchesCopy.index:
+            curRowSeries = dfMatchesCopy.loc[detailsCurIndex]
+            addedUnit = False
+            if not curRowSeries["VinIsInLast"]:
+                addedUnit = True
             modedUnit = False
             if not addedUnit:
                 # no need to check for modified if it was an added unit, as these are mutually exclusive
-                for detailsPreviousIndex in lastUserMatchesDf.index:
-                    if vinNumberIsTheSame(dfMatches.loc[[detailsCurIndex]], lastUserMatchesDf.loc[[detailsPreviousIndex]]) and not detailsAreTheSame(dfMatches.loc[[detailsCurIndex]], lastUserMatchesDf.loc[[detailsPreviousIndex]]):
-                        modedUnit = True
-                        break
-            if (outputResultsMethod == outputAllSearchResultsOnChange) or addedUnit or modedUnit:
+                if curRowSeries["VinLastRowModified"]:
+                    modedUnit = True
+            if (outputResultsMethod == outputAllSearchResultsOnChange) or addedUnit or (modedUnit and (outputResultsMethod != outputAddedSearchResultsOnChange)):
                 addedString = ":,           "
                 namesOfModifiedFieldsString = ""
                 if addedUnit:
                     addedString = ":,   ***ADDED"  # Use word Added to easily see what was added out of all the matches
                 elif modedUnit:
                     addedString = ":,   ***MODED"  # Use word Moded to easily see what was modified out of all the matches
-                    namesOfModifiedFieldsString = getNamesOfModifiedFieldsIntoString(dfMatches.loc[[detailsCurIndex]], lastUserMatchesDf.loc[[detailsPreviousIndex]]) 
-                printUnitDetails(dateTimeWithTimeZoneStr + addedString, dfMatches.loc[[detailsCurIndex]], f, printIt = False, suppressFixedUnitDetailsPrefix = False, sanitizeStrings = True, namesOfModifiedFieldsString = namesOfModifiedFieldsString)  #  use ":, " to make ultra edit filtering of non Went Unavailable strings easier
+                    namesOfModifiedFieldsString = getNamesOfModifiedFieldsIntoString(dfMatchesCopy.loc[[detailsCurIndex]], lastUserMatchesDfCopy.loc[[curRowSeries["VinLastRowLoc"]]], detailsSameColumnsToIgnore) 
+                printUnitDetails(dateTimeWithTimeZoneStr + addedString, dfMatchesCopy.loc[[detailsCurIndex]], detailsSameColumnsToIgnore, f, printIt = False, suppressFixedUnitDetailsPrefix = False, sanitizeStrings = True, namesOfModifiedFieldsString = namesOfModifiedFieldsString)  #  use ":, " to make ultra edit filtering of non Went Unavailable strings easier
         if outputResultsMethod == outputChangedSearchResultsOnChange:
             # also print units that disappeared
-            for detailsPreviousIndex in lastUserMatchesDf.index:
-                removedUnit = True
-                for detailsCurIndex in dfMatches.index:
-                    if vinNumberIsTheSame(dfMatches.loc[[detailsCurIndex]], lastUserMatchesDf.loc[[detailsPreviousIndex]]):
-                        removedUnit = False
-                        break
-                if removedUnit:
-                    printUnitDetails(dateTimeWithTimeZoneStr +  ":, ***REMOVED", lastUserMatchesDf.loc[[detailsPreviousIndex]], f, printIt = False)
+            removedUnit = False
+            if not lastUserMatchesDfCopyEmpty:
+                for detailsPreviousIndex in lastUserMatchesDfCopy.index:
+                    if not lastUserMatchesDfCopy.loc[detailsPreviousIndex]["VinIsInCurrent"]:
+                        removedUnit = True
+                        printUnitDetails(dateTimeWithTimeZoneStr +  ":, ***REMOVED", lastUserMatchesDfCopy.loc[[detailsPreviousIndex]], detailsSameColumnsToIgnore, f, printIt = False)
         f.close()
         # Append this file to the cumulative match history file
         with open(Path(resultsFileName), 'a+') as f1:
             with open(currentMatchesFileName, 'r') as f2:
                 f1.write(f2.read())
-        if addedUnitTo or modifiedUnitTo:
+        if addedUnitTo or (modifiedUnitTo and (outputResultsMethod != outputAddedSearchResultsOnChange)):
             # only notify user via text and emails if we added/modified something to the list compared to the prior list
             notifyRemoteUserOfMatches(currentMatchesFileName)
-    if not dfMatches.empty:
+    if not dfMatchesCopy.empty:
         # This section is for terminal output and sounding the computer alarm for matches
         resultsHeaderStr =  "The following list of matching units was found on " + dateTimeWithTimeZoneStr
         print(resultsHeaderStr)
-        for detailsCurIndex in dfMatches.index:
-            addedUnit = True
-            for detailsPreviousIndex in lastUserMatchesDf.index:
-                if vinNumberIsTheSame(dfMatches.loc[[detailsCurIndex]], lastUserMatchesDf.loc[[detailsPreviousIndex]]):
-                    addedUnit = False
-                    break
+        for detailsCurIndex in dfMatchesCopy.index:
+            curRowSeries = dfMatchesCopy.loc[detailsCurIndex]
+            addedUnit = False
+            if not curRowSeries["VinIsInLast"]:
+                addedUnit = True
             modedUnit = False
             if not addedUnit:
                 # no need to check for modified if it was an added unit, as these are mutually exclusive
-                for detailsPreviousIndex in lastUserMatchesDf.index:
-                    if vinNumberIsTheSame(dfMatches.loc[[detailsCurIndex]], lastUserMatchesDf.loc[[detailsPreviousIndex]]) and not detailsAreTheSame(dfMatches.loc[[detailsCurIndex]], lastUserMatchesDf.loc[[detailsPreviousIndex]]):
-                        modedUnit = True
-                        break
+                if curRowSeries["VinLastRowModified"]:
+                    modedUnit = True
             addedString = ":,         "
             namesOfModifiedFieldsString = ""
             if addedUnit:
                 addedString = ":, ***ADDED"  # Use word Added to easily see what was added out of all the matches
             elif modedUnit:
                 addedString = ":, ***MODED"  # Use word Moded to easily see what was modified out of all the matches
-                namesOfModifiedFieldsString = getNamesOfModifiedFieldsIntoString(dfMatches.loc[[detailsCurIndex]], lastUserMatchesDf.loc[[detailsPreviousIndex]]) 
-            printUnitDetails(dateTimeWithTimeZoneStr + addedString, dfMatches.loc[[detailsCurIndex]], fileHandle = 0 , printIt = True, suppressFixedUnitDetailsPrefix = False, sanitizeStrings = True, namesOfModifiedFieldsString = namesOfModifiedFieldsString )  #  use ":, " to make ultra edit filtering of non Went Unavailable strings easier
-        if computerSoundNotificationFileName and (matchesFoundEvent in soundNotificationEvents) and (addedUnitTo or modifiedUnitTo):
+                namesOfModifiedFieldsString = getNamesOfModifiedFieldsIntoString(dfMatchesCopy.loc[[detailsCurIndex]], lastUserMatchesDfCopy.loc[[curRowSeries["VinLastRowLoc"]]], detailsSameColumnsToIgnore) 
+            printUnitDetails(dateTimeWithTimeZoneStr + addedString, dfMatchesCopy.loc[[detailsCurIndex]], detailsSameColumnsToIgnore, fileHandle = 0 , printIt = True, suppressFixedUnitDetailsPrefix = False, sanitizeStrings = True, namesOfModifiedFieldsString = namesOfModifiedFieldsString )  #  use ":, " to make ultra edit filtering of non Went Unavailable strings easier
+        if computerSoundNotificationFileName and (matchesFoundEvent in soundNotificationEvents) and (addedUnitTo or (modifiedUnitTo and (outputResultsMethod != outputAddedSearchResultsOnChange))):
             notifyWithSound()
     else:
         print("No matches found")
@@ -1193,7 +1213,10 @@ def searchForVehicles(args):
             # get dataframe of all vehicles in US (this also writes them out to a .csv file)
             # Possibly as an enhancement can pass an optional zipcode and miles radius to search to reduce the search time and results
             print("Collecting list of vehicles to run match criteria against")
-            df = vehicles.update_vehicles_and_return_df()
+            if dbgUsingLocalVehicleDataFile:
+                print("Warning: Debugging using local vehicle inventory data file for the model selected instead of querying Web for it")
+                interruptibleSleep(3)
+            df = vehicles.update_vehicles_and_return_df(dbgUsingLocalVehicleDataFile)
             if df is not None:
                 #replace nan with None in the DataFrame to ease computations later on 
                 df = df.replace({np.nan: None})
