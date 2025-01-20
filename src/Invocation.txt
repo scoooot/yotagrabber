@@ -13,8 +13,6 @@ rem set MODEL_SEARCH_ZIPCODE=90210
 rem set MODEL_SEARCH_RADIUS=75
 rem Note that the toyota website only allows you to access a max of 40 pages at 250 vehicles per page of the search results for a single zip code search
 rem For 2025 and on rav4pluginhybrid is used instead of rav4prime
-rem To use rav4prime you need to manually modify the models.json file to add the rav4prime entry by hand 
-rem othewise the vehicles.py won't recognize that as a valid model since that is no longer listed as a model
 rem set MODEL=rav4pluginhybrid
 rem either py or python as the first word below
 py searchForVehicles.py SearchVehicles_config.yaml
@@ -54,7 +52,9 @@ $env:MODEL = 'rav4prime'
 # you can additionally specify environment variables
 # $env:MODEL_SEARCH_ZIPCODE = '90210'
 # $env:MODEL_SEARCH_RADIUS = '75'
-# Note that the toyota website only allows you to access a max of 40 pages at 250 vehicles per page of the search results for a single zip code search
+# Note that the toyota website only allows you to access a max of 40 pages at 250 vehicles per page of the search results 
+# for a single zip code search.  When no zip code is specified, this limitation is accounted for by 
+# the program searching many zipcodes across the US and combinging the results.
 # For 2025 and on rav4pluginhybrid is used instead of rav4prime
 # To use rav4prime you need to manually modify the models.json file to add the rav4prime entry by hand 
 # othewise the vehicles.py won't recognize that as a valid model since that is no longer listed as a model
@@ -79,7 +79,7 @@ Set-ExecutionPolicy -ExecutionPolicy Bypass -Scope Process -Force
 C:\Users\GregG\Documents\GitHub\yotagrabber\Get-ToyotaInventory.ps1 $DirectoryToRunIn $PythonVENVPowershellActivateScript -uploadInventory $uploadInventory  -credentialsFileName $credentialsFileName
 
 To schedule this script to be run as a job use the following in a PowerShell adjusted to whatever schedule you want.
-Keep in mind that to much traffic to the toyota website could cause the website to block you or throttle you so 
+Keep in mind that too much traffic to the toyota website could cause the website to block you or throttle you so 
 in general requesting no more than once a day is recommended.
 # use default options
 $jobOptionsToUse = New-ScheduledJobOption -RunElevated

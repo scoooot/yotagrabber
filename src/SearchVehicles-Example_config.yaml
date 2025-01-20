@@ -30,12 +30,21 @@ maxRandomAdderTimeBetweenSearches: 1800, # 60*30 secs
 userMatchCriteriaFilterFileName: '.\XSE_PP_CloseToIowa_UserMatchCriteriaFilter.py',
 
 
-# outputResultsMethod -  Determines how unfiltered match results are output to the running history file, and user notifications.
+# outputResultsMethod -  Determines how match results are output to the running history file, and user notifications.
 # Default is outputAllSearchResultsOnChange when commented out.
 # outputResultsMethod is one of the following values:
 # "outputAllSearchResultsOnChange" -  Outputs all the unfiltered search results to the history file and user notifications when changes occur 
 # "outputChangedSearchResultsOnChange" - Outputs only the changes in unfiltered search results to the history file and notifications when changes occur
-# "outputAddedSearchResultsOnChange"  - Outputs only the added units compared to the previous results (thus removals and stay the same not printed) when changes occur
+# "outputAddedSearchResultsOnChange"  - Outputs only the added units (new vins) compared to the previous results 
+# Thus removed, modified, and stay the same are not output when changes occur.  This option is useful if you
+# only want to be notified when new vins are added (usually allocated so not built yet) which typically is when you have the highest 
+# chance of seeing something before everyone else and calling the dealer to attempt to secure it (assuming no waiting lists in effect) 
+# Tips: If there is a large number of match results (Say over 30),  choosing the outputChangedSearchResultsOnChange may be
+# more useful as typically the changes in match results from one search to the next are small and thus you can quickly visually
+# see what changed in text file sent in the emails.
+# Note that regardless of the outputResultsMethod selected option,  you can always search for 
+# *ADDED, *MODED, *REMOVED in that email text file to quickly find those changes anyway.
+#  
 #outputResultsMethod: "outputAllSearchResultsOnChange",
 
 # For debugging set this to true
