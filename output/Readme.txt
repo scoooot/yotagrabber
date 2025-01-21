@@ -1,4 +1,4 @@
-This folder contains the dealer inventory for all Toyota vehicle models in the US (including Alaska, and Hawaii).
+This folder contains the inventory for all Toyota vehicle models in the US (including Alaska, and Hawaii).
 
 Folder updates typically show up each day at 4am CDT. Each model's inventory is placed in a .csv file.  A raw
 pandas parquet file is also created which is the raw inventory gotten from the Toyota website for the model
@@ -26,7 +26,7 @@ Column definitions that are not obvious or to remove any ambiguity are as follow
                              does not include the Dealer Markup/Discount as it was unknown.
 "Markup" - Dealer installed options plus Dealer Markup/Discount (i.e everything above the Total MSRP)
 "TMSRP plus DIO" -  Total MSRP plus Dealer installed options
-"Shipping Status" - "Factory to port" -  In production, or on the ship, or sitting at the port
+"Shipping Status" - "Factory to port" -  Allocated, or in production, or on the ship, or sitting at the port
                     "Port to dealer" -  Checked in at the port and in the process of moving from the port to the dealership lot.
                     Usually From and To Date will now appear.
                     "At dealer" - The car is at the dealer
