@@ -40,7 +40,7 @@ from timeit import default_timer as timer
 from yotagrabber import vehicles
 
 # Version
-searchForVehiclesVersionStr = "Ver 1.4 Jan 19 2025"  #
+searchForVehiclesVersionStr = "Ver 1.5 Jan 21 2025"  #
 
 class userMatchCriteria:
     def __init__(self):
@@ -148,6 +148,7 @@ minSleepTime = 1.0  #  secs between post, get sends
 minRandomTimeScaler = 1.0  #  secs between post, get sends
 
 lastUserMatchesDf = pd.DataFrame() # empty dataframe
+lastRunUserMatchesParquetFileName = "" #no last run parquet file
 
 userMatchCriteriaFilterModule = ""
 
@@ -1186,6 +1187,7 @@ def searchForVehicles(args):
     global lastUserMatchesDf
     global userMatchCriteriaFilterModule
     global userMatchCriteriaFilterFileName
+    global lastRunUserMatchesParquetFileName
     try:
         print("Search for Vehicles program", searchForVehiclesVersionStr)
         done = False
@@ -1206,6 +1208,14 @@ def searchForVehicles(args):
         notificationsAuthorization()
         notifyRemoteUserOfSearchStart()
         lastUserMatchesDf = pd.DataFrame()
+        lastRunUserMatchesParquetFileName = resultsFileName + ".lastUserMatches.parquet"
+        if Path(lastRunUserMatchesParquetFileName).exists():
+            # start from this file as the last matches that occurred so that if terminate program and start again we
+            # pick up where we left off in regards to the last matches.
+            logToResultsFile("Reading in last user matches file "  + lastRunUserMatchesParquetFileName, printIt = True)
+            lastUserMatchesDf = pd.read_parquet(lastRunUserMatchesParquetFileName)
+        else:
+            logToResultsFile("No last user matches file"  + lastRunUserMatchesParquetFileName + " , so starting from empty", printIt = True)
         matchCriteria = userMatchCriteria()
         outputSearchingInfoToUser(matchCriteria)
         while not done:
@@ -1226,6 +1236,11 @@ def searchForVehicles(args):
                 # output search results to user
                 outputSearchResultsToUser(matchCriteria, dfMatches, lastUserMatchesDf)
                 updatePreviousMatchingList(dfMatches)
+                # save off previous matching to parquet file in case the program is terminated and restarted so we pick
+                # up where we left off in regards to the last matches.
+                # Note that we save it off here after we have output all results to the user so we logs and notifications
+                # have gone out for this run.
+                lastUserMatchesDf.to_parquet(lastRunUserMatchesParquetFileName, index=False)
                 if debugEnabled:
                     print("searchForVehicles lastUserMatchesDf \n", lastUserMatchesDf)
             waitForNextSearchTime()
