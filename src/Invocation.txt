@@ -40,9 +40,9 @@ Set the environment variables as needed for the model you are searching for
 py <fullpath name of searchForVehicles.py> <name of yaml config file>
 
 
-Note:  The searchForVehicles program saves off the last matches found each time in a parquet file (based on
-the resultsFileName config item as the prefix of the filename so that the parquet file is associated with
-the resultsFileName.  Thus you can run several different config files with each having different resultsFileName
+Note:  The searchForVehicles program saves off the last matches(i.e. meeting the user match criteria) found each time in a 
+parquet file (based on the resultsFileName config item as the prefix of the filename so that the parquet file is associated with
+the resultsFileName).  Thus you can run several different config files with each having different resultsFileName
 in them and they are independent in regards to the last matches parquet file)
 The program will when started , use that parquet file to start from as the last matches.  
 Thus the program can be terminated and restarted and it will pick up in regards to the last matches.
