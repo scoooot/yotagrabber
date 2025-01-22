@@ -15,6 +15,7 @@ from pathlib import Path
 import unidecode
 import yaml
 import os.path
+import os
 from googleapiclient.discovery import build
 from google_auth_oauthlib.flow import InstalledAppFlow
 from google.auth.transport.requests import Request
@@ -40,7 +41,7 @@ from timeit import default_timer as timer
 from yotagrabber import vehicles
 
 # Version
-searchForVehiclesVersionStr = "Ver 1.6 Jan 21 2025"  #
+searchForVehiclesVersionStr = "Ver 1.7 Jan 21 2025"  #
 
 class userMatchCriteria:
     def __init__(self):
@@ -1204,7 +1205,11 @@ def searchForVehicles(args):
         # import the match criteria filter file
         userMatchCriteriaFilterModule = import_from_path("userMatchCriteriaFilter_Module", userMatchCriteriaFilterFileName)
         logToResultsFile("--------------------------------------------------------------------------", printIt = False, timestamp = False)        
-        logToResultsFile("Started Up Search For Vehicles program " + searchForVehiclesVersionStr + " ------------------------------------------", printIt = False)        
+        logToResultsFile("Started Up Search For Vehicles program " + searchForVehiclesVersionStr + " ------------------------------------------", printIt = False) 
+        inventoryModel = os.environ.get("MODEL")
+        inventoryZipCode = os.environ.get("MODEL_SEARCH_ZIPCODE")
+        inventoryZipCodeRadius = os.environ.get("MODEL_SEARCH_RADIUS")
+        logToResultsFile("Model: "  + inventoryModel + ", ZipCode: " + str(inventoryZipCode) + ", Radius: " + str(inventoryZipCodeRadius), printIt = True)
         notificationsInitialization()
         notificationsAuthorization()
         notifyRemoteUserOfSearchStart()
