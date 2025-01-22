@@ -8,13 +8,14 @@ Contains updates due to Toyota website changes and graphql field changes.
 The previously existing vehicles.py was also updated to fix an issue where it was not getting all the inventory for a given model,
 to make it more robust with retries and communication errors, 
 and to optionally allow searching for all vehicles within a specified distance from a specified zip code for a given model.
-Additionally added a dealers.py program that can generate the dealers.csv file that is used to lookup the dealer Id to
-dealer state, and website that vehicles.py uses.
+Also added a dealers.py program that can generate the dealers.csv file that is used to lookup the dealer Id to
+dealer state that vehicles.py uses.
 
 Additionally, added higher level search program searchForVehicles.py that can notify the user via any combination of sound, email, text
 whenever changes in the inventory data occur for a specified match criteria.  This allows a user to be alerted whenever what
-they are looking for has changed and then look at the attached log file to view the changes.  That program uses a config YAML file that 
-can specify how often to search, the match filter criteria filename, sound file options, texting options, email options, how changes are reported, log file options, etc.
+they are looking, i.e. the result of applying match criteria, has changed (new vins, modified fields, deleted vins)and then look at the attached log file to view 
+the changes.  That program uses a config YAML file that can specify how often to search, the match filter criteria filename, 
+sound file options, texting options, email options, how changes are reported, log file options, etc.
 See SearchVehicles-Example_config.yaml for all the configuration items that can be set
 
 searchForVehicles.py runs the vehicles.py update_vehicles() method to collect an inventory of all vehicles in the US for a desired model
