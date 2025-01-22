@@ -41,7 +41,7 @@ from timeit import default_timer as timer
 from yotagrabber import vehicles
 
 # Version
-searchForVehiclesVersionStr = "Ver 1.7 Jan 21 2025"  #
+searchForVehiclesVersionStr = "Ver 1.7.2 Jan 21 2025"  #
 
 class userMatchCriteria:
     def __init__(self):
@@ -851,6 +851,7 @@ def getOutputResultsMethodString(outputResultsMethod):
 def outputSearchingInfoToUser(matchCriteria):
     global username
     print("outputResultsMethod:", getOutputResultsMethodString(outputResultsMethod))
+    print(getModelToGetInfo())
     matchCriteria.print("", toConsole = True)
     print("Username:", username)
 
@@ -1058,6 +1059,7 @@ def outputSearchResultsToUser(matchCriteria, dfMatches, lastUserMatchesDf):
     global matchesFoundEvent
     global resultsFileName
     global unitDetailsDelimiter
+    modelInfoStr = getModelToGetInfo()
     # get date and time for timstamping this log entry
     dt = datetime.datetime.now().astimezone()  #local date time with timezone
     dateTimeWithTimeZoneStr = getDatetimeWithTzStr(dt, getFullTimeZoneString = True)
@@ -1110,10 +1112,11 @@ def outputSearchResultsToUser(matchCriteria, dfMatches, lastUserMatchesDf):
         f = open(currentMatchesFileName, "w")
         f.write("-------------------------------------------------------------------------- \n")
         f.write("outputResultsMethod: " + getOutputResultsMethodString(outputResultsMethod) + "\n")
+        f.write(modelInfoStr + "\n")
         matchCriteria.print("", f, toConsole = False)
         f.write("Username: " + username + "\n")
         if outputResultsMethod != outputAllSearchResultsOnChange:
-            resultsHeaderStr =  "The following DIFFERENCE list (new matching units not in prior search matching list, and vice versa if outputChangedSearchResultsOnChange) was found on " + dateTimeWithTimeZoneStr
+            resultsHeaderStr =  "The following Differences were found on " + dateTimeWithTimeZoneStr
         else:
             resultsHeaderStr =  "The following list of matching units was found on: " + dateTimeWithTimeZoneStr
         f.write(resultsHeaderStr + "\n")
@@ -1178,7 +1181,18 @@ def outputSearchResultsToUser(matchCriteria, dfMatches, lastUserMatchesDf):
             notifyWithSound()
     else:
         print("No matches found")
-    
+
+
+def getModelToGetInfo():
+    inventoryModel = os.environ.get("MODEL")
+    inventoryZipCode = os.environ.get("MODEL_SEARCH_ZIPCODE")
+    inventoryZipCodeRadius = os.environ.get("MODEL_SEARCH_RADIUS")
+    infoString = "Model: "  + str(inventoryModel) + ", ZipCode: " + str(inventoryZipCode) + ", Radius: " + str(inventoryZipCodeRadius)
+    return infoString
+
+def logModelToGetInfo():
+    infoString = getModelToGetInfo()
+    logToResultsFile(infoString, printIt = True)
 
 def searchForVehicles(args):
     """Searches for Vehicles continuously and reports results to user
@@ -1206,10 +1220,7 @@ def searchForVehicles(args):
         userMatchCriteriaFilterModule = import_from_path("userMatchCriteriaFilter_Module", userMatchCriteriaFilterFileName)
         logToResultsFile("--------------------------------------------------------------------------", printIt = False, timestamp = False)        
         logToResultsFile("Started Up Search For Vehicles program " + searchForVehiclesVersionStr + " ------------------------------------------", printIt = False) 
-        inventoryModel = os.environ.get("MODEL")
-        inventoryZipCode = os.environ.get("MODEL_SEARCH_ZIPCODE")
-        inventoryZipCodeRadius = os.environ.get("MODEL_SEARCH_RADIUS")
-        logToResultsFile("Model: "  + inventoryModel + ", ZipCode: " + str(inventoryZipCode) + ", Radius: " + str(inventoryZipCodeRadius), printIt = True)
+        logModelToGetInfo()
         notificationsInitialization()
         notificationsAuthorization()
         notifyRemoteUserOfSearchStart()
