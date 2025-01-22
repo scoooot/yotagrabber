@@ -40,7 +40,7 @@ from timeit import default_timer as timer
 from yotagrabber import vehicles
 
 # Version
-searchForVehiclesVersionStr = "Ver 1.5 Jan 21 2025"  #
+searchForVehiclesVersionStr = "Ver 1.6 Jan 21 2025"  #
 
 class userMatchCriteria:
     def __init__(self):
@@ -1056,6 +1056,7 @@ def outputSearchResultsToUser(matchCriteria, dfMatches, lastUserMatchesDf):
     global soundNotificationEvents
     global matchesFoundEvent
     global resultsFileName
+    global unitDetailsDelimiter
     # get date and time for timstamping this log entry
     dt = datetime.datetime.now().astimezone()  #local date time with timezone
     dateTimeWithTimeZoneStr = getDatetimeWithTzStr(dt, getFullTimeZoneString = True)
@@ -1133,7 +1134,7 @@ def outputSearchResultsToUser(matchCriteria, dfMatches, lastUserMatchesDf):
                 elif modedUnit:
                     addedString = ":,   ***MODED"  # Use word Moded to easily see what was modified out of all the matches
                     namesOfModifiedFieldsString = getNamesOfModifiedFieldsIntoString(dfMatchesCopy.loc[[detailsCurIndex]], lastUserMatchesDfCopy.loc[[curRowSeries["VinLastRowLoc"]]], detailsSameColumnsToIgnore) 
-                printUnitDetails(dateTimeWithTimeZoneStr + addedString, dfMatchesCopy.loc[[detailsCurIndex]], detailsSameColumnsToIgnore, f, printIt = False, suppressFixedUnitDetailsPrefix = False, sanitizeStrings = True, namesOfModifiedFieldsString = namesOfModifiedFieldsString)  #  use ":, " to make ultra edit filtering of non Went Unavailable strings easier
+                printUnitDetails(dateTimeWithTimeZoneStr + unitDetailsDelimiter + addedString, dfMatchesCopy.loc[[detailsCurIndex]], detailsSameColumnsToIgnore, f, printIt = False, suppressFixedUnitDetailsPrefix = False, sanitizeStrings = True, namesOfModifiedFieldsString = namesOfModifiedFieldsString)  #  use ":, " to make ultra edit filtering of non Went Unavailable strings easier
         if outputResultsMethod == outputChangedSearchResultsOnChange:
             # also print units that disappeared
             removedUnit = False
@@ -1141,7 +1142,7 @@ def outputSearchResultsToUser(matchCriteria, dfMatches, lastUserMatchesDf):
                 for detailsPreviousIndex in lastUserMatchesDfCopy.index:
                     if not lastUserMatchesDfCopy.loc[detailsPreviousIndex]["VinIsInCurrent"]:
                         removedUnit = True
-                        printUnitDetails(dateTimeWithTimeZoneStr +  ":, ***REMOVED", lastUserMatchesDfCopy.loc[[detailsPreviousIndex]], detailsSameColumnsToIgnore, f, printIt = False)
+                        printUnitDetails(dateTimeWithTimeZoneStr + unitDetailsDelimiter +  ":, ***REMOVED", lastUserMatchesDfCopy.loc[[detailsPreviousIndex]], detailsSameColumnsToIgnore, f, printIt = False)
         f.close()
         # Append this file to the cumulative match history file
         with open(Path(resultsFileName), 'a+') as f1:
@@ -1171,7 +1172,7 @@ def outputSearchResultsToUser(matchCriteria, dfMatches, lastUserMatchesDf):
             elif modedUnit:
                 addedString = ":, ***MODED"  # Use word Moded to easily see what was modified out of all the matches
                 namesOfModifiedFieldsString = getNamesOfModifiedFieldsIntoString(dfMatchesCopy.loc[[detailsCurIndex]], lastUserMatchesDfCopy.loc[[curRowSeries["VinLastRowLoc"]]], detailsSameColumnsToIgnore) 
-            printUnitDetails(dateTimeWithTimeZoneStr + addedString, dfMatchesCopy.loc[[detailsCurIndex]], detailsSameColumnsToIgnore, fileHandle = 0 , printIt = True, suppressFixedUnitDetailsPrefix = False, sanitizeStrings = True, namesOfModifiedFieldsString = namesOfModifiedFieldsString )  #  use ":, " to make ultra edit filtering of non Went Unavailable strings easier
+            printUnitDetails(dateTimeWithTimeZoneStr + unitDetailsDelimiter + addedString, dfMatchesCopy.loc[[detailsCurIndex]], detailsSameColumnsToIgnore, fileHandle = 0 , printIt = True, suppressFixedUnitDetailsPrefix = False, sanitizeStrings = True, namesOfModifiedFieldsString = namesOfModifiedFieldsString )  #  use ":, " to make ultra edit filtering of non Went Unavailable strings easier
         if computerSoundNotificationFileName and (matchesFoundEvent in soundNotificationEvents) and (addedUnitTo or (modifiedUnitTo and (outputResultsMethod != outputAddedSearchResultsOnChange))):
             notifyWithSound()
     else:
