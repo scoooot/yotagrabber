@@ -425,3 +425,15 @@ def extract_marketing_long_names(options_raw):
             else:
                 continue
     return " | ".join(sorted(options))
+    
+if __name__ == "__main__":
+    import sys
+    useLocalData = False
+    if len(sys.argv) > 1:
+        useLocalDatastr = sys.argv[1:][0]
+        #print("useLocalDatastr:" + useLocalDatastr + ":")
+        if useLocalDatastr ==  "useLocalData":
+            useLocalData = True
+    #print("useLocalData", useLocalData, "type", str(type(useLocalData)))
+    update_vehicles(useLocalData)
+

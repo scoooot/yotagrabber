@@ -3,12 +3,39 @@
 # resultsFileName is the file where match results are appended to.
 resultsFileName: '.\SearchVehiclesResults.txt',
 
+# useLocalInventoryFile -  Indicates to use the existing raw local vehicle inventory file for the model (parquet file) 
+# and not query the website to get current inventory.
+# Default is False
+# !!!!!  When true, the search program will only do one search and then exit the program, thus continuous searching is disabled.
+# !!!!!  Thus minWaitTimeBetweenSearches, and maxRandomAdderTimeBetweenSearches are not applicable in this case
+# This is typically used when a higher level script/batch program runs the vehicles.py program to get the current
+# inventory from the website for a given model (which creates that local inventory file for that model) and then runs IN SERIES
+# one or more searches that use different user match criteria on that model.
+# These different searches put their results in different results files (specified in the config file)
+# and the email/text notifications for each can use different prefixes (specified in the config file) to easily allow 
+# the user to see which match criteria the notification is for.
+# This can be used to reduce the amount of traffic the website receives for a given model by getting the current inventory once
+# and then running the several searches against it in series. 
+# This also allows the script/batch/powershell program to be more flexibly scheduled by the user via the OS
+# to run at whatever intervals/times the user wants
+#
+# Another alternative is the user can just run each search in a separate command/terminal window and directory, with 
+# useLocalInventoryFile to False in each config file. This maintains the separate search times, search results and 
+# unique notifications as above but does increase traffic to the website as each continuous search is 
+# requesting the inventory.
+#
+# Note that alternativley the user can always combine all the user criteria together(via Or logic), set useLocalInventoryFile
+# to False, and the search program will continuously search when started up. The disadvantge to that is it is 
+# harder to see which individual criteria matched in the search results logs, notifications and email/texts.
+#   
+#useLocalInventoryFile: False,
 
 # minWaitTimeBetweenSearches is the minimum time to wait between searches when nothing was found so as to not overload the website with requests.
 # maxRandomAdderTimeBetweenSearches is the max random time to add to the min time to get the total time between searches to provide some randomness
 # Time delay before next search  = minWaitTimeBetweenSearches + (random number between 0 and 1 * maxRandomAdderTimeBetweenSearches)
 # !!! Note that by hitting the return key you can end any current wait and immediately proceed
 # !!! Hitting Ctrl-C terminates the program
+# When useLocalInventoryFile is True these search times are not applicable.
 minWaitTimeBetweenSearches: 21600, # 60 * 60 * 6 secs
 maxRandomAdderTimeBetweenSearches: 1800, # 60*30 secs
 

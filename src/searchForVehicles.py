@@ -41,7 +41,7 @@ from timeit import default_timer as timer
 from yotagrabber import vehicles
 
 # Version
-searchForVehiclesVersionStr = "Ver 1.7.2 Jan 21 2025"  #
+searchForVehiclesVersionStr = "Ver 1.8 Jan 22 2025"  #
 
 class userMatchCriteria:
     def __init__(self):
@@ -104,6 +104,8 @@ unitDetailsDelimiter = chr(9) #tab char to easily separate fields of information
 #                                       Default User Specified Config items begin
 # -----------------------------------------------------------------------
 debugEnabled = False
+
+useLocalInventoryFile = False
 
 minWaitTimeBetweenSearches = 60*20 #secs
 maxRandomAdderTimeBetweenSearches = 60*10 #secs
@@ -210,6 +212,7 @@ configParametersInfo = {
 "username": configParameterInfo(),
 "resultsFileName": configParameterInfo(),
 "userMatchCriteriaFilterFileName": configParameterInfo(),
+"useLocalInventoryFile": configParameterInfo(),
 "minWaitTimeBetweenSearches": configParameterInfo(),
 "maxRandomAdderTimeBetweenSearches": configParameterInfo(),
 "debugEnabled": configParameterInfo(),
@@ -245,6 +248,7 @@ def parseConfigFile(fileName):
     global username
     global resultsFileName
     global userMatchCriteriaFilterFileName
+    global useLocalInventoryFile
     global minWaitTimeBetweenSearches
     global maxRandomAdderTimeBetweenSearches
     global debugEnabled
@@ -294,6 +298,8 @@ def parseConfigFile(fileName):
                             username = paramsDic[paramName]
                         elif paramName == "resultsFileName":
                             resultsFileName = paramsDic[paramName]
+                        elif paramName == "useLocalInventoryFile":
+                            useLocalInventoryFile = paramsDic[paramName]
                         elif paramName == "userMatchCriteriaFilterFileName":
                             userMatchCriteriaFilterFileName = paramsDic[paramName]
                         elif paramName == "minWaitTimeBetweenSearches":
@@ -1184,10 +1190,16 @@ def outputSearchResultsToUser(matchCriteria, dfMatches, lastUserMatchesDf):
 
 
 def getModelToGetInfo():
+    global useLocalInventoryFile
     inventoryModel = os.environ.get("MODEL")
-    inventoryZipCode = os.environ.get("MODEL_SEARCH_ZIPCODE")
-    inventoryZipCodeRadius = os.environ.get("MODEL_SEARCH_RADIUS")
-    infoString = "Model: "  + str(inventoryModel) + ", ZipCode: " + str(inventoryZipCode) + ", Radius: " + str(inventoryZipCodeRadius)
+    if not useLocalInventoryFile:
+        inventoryZipCode = os.environ.get("MODEL_SEARCH_ZIPCODE")
+        inventoryZipCodeRadius = os.environ.get("MODEL_SEARCH_RADIUS")
+    else:
+        # when using local inventory file all we know is the Model which is what vehicles.py uses in that case to find that local file
+        inventoryZipCode = None
+        inventoryZipCodeRadius = None
+    infoString = "Model: "  + str(inventoryModel) + ", ZipCode: " + str(inventoryZipCode) + ", Radius: " + str(inventoryZipCodeRadius) + ", useLocalInventoryFile: " + str(useLocalInventoryFile)
     return infoString
 
 def logModelToGetInfo():
@@ -1204,6 +1216,7 @@ def searchForVehicles(args):
     global userMatchCriteriaFilterModule
     global userMatchCriteriaFilterFileName
     global lastRunUserMatchesParquetFileName
+    global useLocalInventoryFile
     try:
         print("Search for Vehicles program", searchForVehiclesVersionStr)
         done = False
@@ -1234,6 +1247,8 @@ def searchForVehicles(args):
         else:
             logToResultsFile("No last user matches file"  + lastRunUserMatchesParquetFileName + " , so starting from empty", printIt = True)
         matchCriteria = userMatchCriteria()
+        logToResultsFile(matchCriteria.print("", toConsole = False), printIt = False, timestamp = False)
+        logToResultsFile("--------------------------------------------------------------------------", printIt = False, timestamp = False)        
         outputSearchingInfoToUser(matchCriteria)
         while not done:
             outputSearchingInfoToUser(matchCriteria)
@@ -1243,7 +1258,7 @@ def searchForVehicles(args):
             if dbgUsingLocalVehicleDataFile:
                 print("Warning: Debugging using local vehicle inventory data file for the model selected instead of querying Web for it")
                 interruptibleSleep(3)
-            df = vehicles.update_vehicles_and_return_df(dbgUsingLocalVehicleDataFile)
+            df = vehicles.update_vehicles_and_return_df(dbgUsingLocalVehicleDataFile or useLocalInventoryFile)
             if df is not None:
                 #replace nan with None in the DataFrame to ease computations later on 
                 df = df.replace({np.nan: None})
@@ -1260,6 +1275,8 @@ def searchForVehicles(args):
                 lastUserMatchesDf.to_parquet(lastRunUserMatchesParquetFileName, index=False)
                 if debugEnabled:
                     print("searchForVehicles lastUserMatchesDf \n", lastUserMatchesDf)
+            if useLocalInventoryFile:
+                break
             waitForNextSearchTime()
             # Reauthorize notifications often enough to meet expiration dates..
             notificationsAuthorization()

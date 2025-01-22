@@ -39,6 +39,10 @@ Set the environment variables as needed for the model you are searching for
 4) Invoke the program as follows:
 py <fullpath name of searchForVehicles.py> <name of yaml config file>
 
+5) Note that each search will request inventory from the website so be careful as to the amount of traffic
+the website is receiving so that you don't get blocked or throttled.  Was to avoid this are to make the
+search time interval larger or use the methods described in useLocalInventoryFile config file item 
+in the SearchVehicles-Example_config.yaml 
 
 Note:  The searchForVehicles program saves off the last matches(i.e. meeting the user match criteria) found each time in a 
 parquet file (based on the resultsFileName config item as the prefix of the filename so that the parquet file is associated with
@@ -46,7 +50,12 @@ the resultsFileName).  Thus you can run several different config files with each
 in them and they are independent in regards to the last matches parquet file)
 The program will when started , use that parquet file to start from as the last matches.  
 Thus the program can be terminated and restarted and it will pick up in regards to the last matches.
-If you want the program to start from empty matches for your criteria, then simply delete the associated parquet file
+If you want the program to start from empty matches for your criteria, then simply delete the associated lastuser matches
+parquet file
+
+For scenarios where the user is looking for inventory for several other people with different matching criteria,
+see the useLocalInventoryFile config file item in the SearchVehicles-Example_config.yaml for other options to do that.
+ 
 --------------------------------------------------------------
 
 If you are running in a Windows Power shell then use the following
