@@ -56,6 +56,9 @@ parquet file
 For scenarios where the user is looking for inventory for several other people with different matching criteria,
 see the useLocalInventoryFile config file item in the SearchVehicles-Example_config.yaml for other options to do that.
 -----------------------
+If you have a large amount of output lines on the Windows cmd window and you want to see it all by scrolling, you can set 
+the Windows cmd window screen buffer size to 9999 lines  (assuming your output is not larger than this)
+
 If you want to capture all terminal output of searchForVehicles.py and see the terminal output at the same time do the following
 (there may be other programs that allow this to work in a single terminal window but didn't see any at the time):
 Note that the set PYTHONUNBUFFERED=1 allows the terminal output to show up right away on the program that follows the output file.
