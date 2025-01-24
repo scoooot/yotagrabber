@@ -193,7 +193,7 @@ def get_all_pages():
         pagesToGet = maxPagesToGet
         recordsToGet = maxRecordsToGet
         if page_number > maxPagesToGet:
-            print("Error: Prematurely terminating due to limit of max pages can get of ", maxPagesToGet, ". All vehicles were not found!")
+            print("Error: Prematurely terminating due to limit of max pages can get of ", maxPagesToGet, ". All vehicles were not found! Model ", MODEL)
             break
         # The WAF bypass expires every 5 minutes, so we refresh about every 4 minutes.
         elapsed_time = timer() - timer_start
@@ -241,10 +241,10 @@ def get_all_pages():
         #if len(df) == last_run_counter:
         if len(df) >= recordsToGet:
             # we found total records indicated by any one request, which is all the records we are looking for.
-            print("All vehicles found.")
+            print("All vehicles found. Model ", MODEL)
             break
         elif page_number >= pagesToGet:
-            print("Error: Reached total pages for this vehicle (or page limit) of", page_number, ". All vehicles were not found! , missing ", recordsToGet - len(df), "vehicles")
+            print("Error: Reached total pages for this vehicle (or page limit) of", page_number, ". All vehicles were not found! Model " , MODEL ,  "missing ", recordsToGet - len(df), "vehicles")
             break
         last_run_counter = len(df)
         page_number += 1

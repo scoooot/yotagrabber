@@ -77,7 +77,7 @@ def fileIsInDriveFolder(service, folder_id, filename):
     else:
         return ""
 
-def upload_inventory_files(directory, googleDriveFolderName, credentialsFileName = "inventory_credentials.json"):
+def upload_inventory_files(directory, googleDriveFolderName, credentialsFileName = "inventory_credentials.json", onlyForModel = ""):
     """
     uploads the vehicle inventory files and logs from directory to the googleDriveFolderName 
     """
@@ -95,7 +95,7 @@ def upload_inventory_files(directory, googleDriveFolderName, credentialsFileName
     # create or replace the files in that folder
     files = os.listdir( directory )
     for filename in files:
-        if (os.path.isfile(Path(directory + "/" + filename))) and ((os.path.splitext(filename)[1] in [".csv", ".parquet"]) or (filename in ["InventoryRunlog.txt", "models.json", "models_raw.json"] )):
+        if ((onlyForModel == "") or (onlyForModel ==  os.path.splitext(filename)[0])) and (os.path.isfile(Path(directory + "/" + filename))) and ((os.path.splitext(filename)[1] in [".csv", ".parquet"]) or (filename in ["InventoryRunlog.txt", "models.json", "models_raw.json"] )):
             fileid = fileIsInDriveFolder(service, folder_id, filename)
             if fileid:
                 # filename already exists in that google drive folder
@@ -119,4 +119,7 @@ if __name__ == '__main__':
     directory = sys.argv[1]
     googleDriveFolderName = sys.argv[2]
     credentialsFileName = sys.argv[3]
-    upload_inventory_files(directory, googleDriveFolderName, credentialsFileName)
+    onlyForModel = ""
+    if len(sys.argv) > 4:
+        onlyForModel = sys.argv[4]
+    upload_inventory_files(directory, googleDriveFolderName, credentialsFileName, onlyForModel)
