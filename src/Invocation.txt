@@ -55,6 +55,22 @@ parquet file
 
 For scenarios where the user is looking for inventory for several other people with different matching criteria,
 see the useLocalInventoryFile config file item in the SearchVehicles-Example_config.yaml for other options to do that.
+-----------------------
+If you want to capture all terminal output of searchForVehicles.py and see the terminal output at the same time do the following
+(there may be other programs that allow this to work in a single terminal window but didn't see any at the time):
+Note that the set PYTHONUNBUFFERED=1 allows the terminal output to show up right away on the program that follows the output file.
+Note that if there is an input required from the user it must be done in the window the searchForVehicles.py was started in
+and echo of that input will show up in that window only.
+
+set PYTHONUNBUFFERED=1
+py <fullpath name of searchForVehicles.py> <name of yaml config file> > runlog.txt
+
+and then in a power shell window use the following to follow that file
+ Get-Content -Path runlog.txt -Tail 0 -Wait
+ 
+or in a cygwin/linux terminal use the following:
+
+tail -F runlog.txt
  
 --------------------------------------------------------------
 
@@ -72,8 +88,6 @@ $env:MODEL = 'rav4prime'
 # for a single zip code search.  When no zip code is specified, this limitation is accounted for by 
 # the program searching many zipcodes across the US and combinging the results.
 # For 2025 and on rav4pluginhybrid is used instead of rav4prime
-# To use rav4prime you need to manually modify the models.json file to add the rav4prime entry by hand 
-# othewise the vehicles.py won't recognize that as a valid model since that is no longer listed as a model
 # $env:MODEL = 'rav4pluginhybrid'
 # either py or python as the first word below
 py searchForVehicles.py SearchVehicles_config.yaml
