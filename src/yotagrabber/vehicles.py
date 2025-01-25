@@ -194,15 +194,15 @@ def get_all_pages():
     # Set a last run counter.
     last_run_counter = 0
     # Perform the queries for the model
+    # Toyota's API won't return any vehicles past past 40.
+    maxPagesToGet = 40
+    maxRecordsToGet =  100000 # limit this to the max vehicles we will ever get from all the pages
+    # Note that there may be more records than this since there may be more pages than maxPagesToGet,
+    # but we can only access maxPagesToGet pages of records.
+    pagesToGet = maxPagesToGet
+    recordsToGet = maxRecordsToGet
     while True:
         
-        # Toyota's API won't return any vehicles past past 40.
-        maxPagesToGet = 40
-        maxRecordsToGet = maxPagesToGet * 250 * 5 # 250 records pre page for a single request,  5 different locality requests.
-        # Note that there may be more records than this since there may be more pages than maxPagesToGet,
-        # but we can only access maxPagesToGet pages of records.
-        pagesToGet = maxPagesToGet
-        recordsToGet = maxRecordsToGet
         if page_number > maxPagesToGet:
             print("Error: Prematurely terminating due to limit of max pages can get of ", maxPagesToGet, ". All vehicles were not found! Model ", MODEL)
             break
@@ -222,25 +222,28 @@ def get_all_pages():
         # (and this is indicated in the log file)
         # This could be corrected by adding more spread out locales
         print(f"Getting page {page_number} of {MODEL} vehicles")
-        
+        firstPageInfoForThisPageNumber = True
         for queryDetailString in vehicleQueryObjects:
             result = query_toyota(page_number, vehicleQueryObjects[queryDetailString], headers)
-            pages = 1
-            records = 1
             if result and "vehicleSummary" in result:
                 pages = result["pagination"]["totalPages"]
                 gotPageInfoAtLeastOnce = True
                 records = result["pagination"]["totalRecords"]
+                if firstPageInfoForThisPageNumber:
+                    firstPageInfoForThisPageNumber = False
+                    # reset pages and records to get to this as the maximum and let the actual pages gotten for this page number reduce it as needed. 
+                    pagesToGet = pages
+                    recordsToGet = records
                 print(queryDetailString + ":    ", len(result["vehicleSummary"]))
                 adderDfNormalized = pd.json_normalize(result["vehicleSummary"])
                 if PAGE_FILES_DEBUG_ENABLED:
                     adderDfNormalized.to_csv(f"output/pages/{MODEL}{queryDetailString}_raw_page{page_number}.csv", index=False)
                 df = pd.concat([df, adderDfNormalized])
                 #df = pd.concat([df, pd.json_normalize(result["vehicleSummary"])])
-            if pagesToGet > pages:
-                pagesToGet = pages
-            if recordsToGet > records:
-                recordsToGet = records
+                if pagesToGet > pages:
+                    pagesToGet = pages
+                if recordsToGet > records:
+                    recordsToGet = records
             elapsed_time = timer() - timer_start
             if elapsed_time > 4 * 60:
                 print("  >>> Refreshing WAF bypass >>>\n")
