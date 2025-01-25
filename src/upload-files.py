@@ -95,7 +95,7 @@ def upload_inventory_files(directory, googleDriveFolderName, credentialsFileName
     # create or replace the files in that folder
     files = os.listdir( directory )
     for filename in files:
-        if ((onlyForModel == "") or (onlyForModel ==  os.path.splitext(filename)[0])) and (os.path.isfile(Path(directory + "/" + filename))) and ((os.path.splitext(filename)[1] in [".csv", ".parquet"]) or (filename in ["InventoryRunlog.txt", "models.json", "models_raw.json"] )):
+        if ((onlyForModel == "") or (onlyForModel ==  os.path.splitext(filename)[0][:len(onlyForModel)])) and (os.path.isfile(Path(directory + "/" + filename))) and ((os.path.splitext(filename)[1] in [".csv", ".parquet"]) or (filename in ["InventoryRunlog.txt", "models.json", "models_raw.json"] ) or (filename[-16:] == "_StatusInfo.json") ):
             fileid = fileIsInDriveFolder(service, folder_id, filename)
             if fileid:
                 # filename already exists in that google drive folder

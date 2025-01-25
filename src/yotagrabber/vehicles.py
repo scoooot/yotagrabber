@@ -22,7 +22,6 @@ DEBUG_ENABLED = False
 
 PAGE_FILES_DEBUG_ENABLED = False
 
-
 # Get the model that we should be searching for.
 MODEL = os.environ.get("MODEL")
 # optional search parameters to use when want a single location search
@@ -96,10 +95,19 @@ def get_vehicle_query_Objects():
 
 
 def read_local_data():
-    """Read local raw data from the disk instead of querying Toyota."""
-    return pd.read_parquet(f"output/{MODEL}_raw.parquet")
+    """Read local raw data from the disk instead of querying Toyota, and also the Status Info and return them"""
+    statusFileName = f"output/{MODEL}_StatusInfo.json"
+    with open(statusFileName, "r") as f:
+        statusOfGetAllPages = json.load(f)
+    # TODO do we need to convert fields that are int strings to ints, and what about booleans?
+    df = pd.read_parquet(f"output/{MODEL}_raw.parquet")
+    return (df , statusOfGetAllPages )
 
-
+def writeCompletionStatusToFile(statusOfGetAllPages):
+    statusFileName = f"output/{MODEL}_StatusInfo.json"
+    with open(statusFileName, "w") as f:
+        json.dump(statusOfGetAllPages, f, indent=4)
+    
 def query_toyota(page_number, query, headers):
     """Query Toyota for a list of vehicles."""
     global forceQueryRspFailureTest
@@ -180,6 +188,9 @@ def get_all_pages():
     # Start a timer.
     timer_start = timer()
     
+    recordsToGet = -1
+    numberRawVehiclesMissing = -1
+    gotPageInfoAtLeastOnce = False
     # Set a last run counter.
     last_run_counter = 0
     # Perform the queries for the model
@@ -214,8 +225,11 @@ def get_all_pages():
         
         for queryDetailString in vehicleQueryObjects:
             result = query_toyota(page_number, vehicleQueryObjects[queryDetailString], headers)
+            pages = 1
+            records = 1
             if result and "vehicleSummary" in result:
                 pages = result["pagination"]["totalPages"]
+                gotPageInfoAtLeastOnce = True
                 records = result["pagination"]["totalRecords"]
                 print(queryDetailString + ":    ", len(result["vehicleSummary"]))
                 adderDfNormalized = pd.json_normalize(result["vehicleSummary"])
@@ -250,25 +264,45 @@ def get_all_pages():
         page_number += 1
         sleep(10)
         continue
-    return df
+    completionMsg = ""
+    if gotPageInfoAtLeastOnce:
+        numberRawVehiclesFound = len(df)
+        numberRawVehiclesMissing = recordsToGet - len(df)
+        if numberRawVehiclesMissing < 0:
+            numberRawVehiclesMissing = 0
+    else:
+        completionMsg = "Did not get any vehicle pages"
+        numberRawVehiclesMissing = -1
+        numberRawVehiclesFound = -1
+    statusInfo = {"completedOk": gotPageInfoAtLeastOnce, "numberRawVehiclesFound": numberRawVehiclesFound, "numberRawVehiclesMissing": numberRawVehiclesMissing, "completionMsg": completionMsg, "date": str(datetime.datetime.now())}
+    return (df, statusInfo )
 
 
 def update_vehicles_and_return_df(useLocalData = False):
-    """Generate a curated database file for the given vehicle model environment variable, as well as returning that database as a dataframe as the function return value."""
+    """Generate a curated database file for the given vehicle model environment variable, as well as 
+    returning that database as a dataframe and status of the inventory Get.
+    Returns:  a tuple   (dataframe, status ) where dataframe is a pandas dataframe and 
+    status is a dictionary of ("completedOk", "numberRawVehiclesFound", "numberRawVehiclesMissing", "completionMsg")
+    """    
     if not MODEL:
         sys.exit("Set the MODEL environment variable first")
-
-    df = read_local_data() if (USE_LOCAL_DATA_ONLY or useLocalData) else get_all_pages()
-
+    
+    if (USE_LOCAL_DATA_ONLY or useLocalData):
+        df, statusOfGetAllPages = read_local_data()
+    else:
+        df, statusOfGetAllPages = get_all_pages()
+        
     # Stop here if there are no vehicles to list.
     if df.empty:
         print(f"No vehicles found for model: {MODEL}")
-        return
+        emptyDfWithFinalColumns = pd.DataFrame(columns = ["vin", "dealerCategory", "price.baseMsrp", "price.totalMsrp", "price.sellingPrice", "price.dioTotalDealerSellingPrice", "isPreSold", "holdStatus", "year", "drivetrain.code", "model.marketingName", "extColor.marketingName", "dealerMarketingName", "dealerWebsite", "Dealer State", "options", "eta.currFromDate", "eta.currToDate"])
+        return (emptyDfWithFinalColumns, statusOfGetAllPages)
 
     # Write the raw data to a file.
     if (not USE_LOCAL_DATA_ONLY) and (not useLocalData):
         df.sort_values("vin", inplace=True)
         df.to_parquet(f"output/{MODEL}_raw.parquet", index=False)
+        writeCompletionStatusToFile(statusOfGetAllPages)
 
     # Add dealer data.  Note that without a dtype parameter the line below will automatically convert unquoted dealerId field to numeric thus removing any leading 0s the dealerId has 
     dealers = pd.read_csv(f"{config.BASE_DIRECTORY}/data/dealers.csv")[
@@ -404,7 +438,7 @@ def update_vehicles_and_return_df(useLocalData = False):
     # Write the data to a file.
     df.sort_values(by=["VIN"], inplace=True)
     df.to_csv(f"output/{MODEL}.csv", index=False)
-    return df
+    return (df, statusOfGetAllPages )
 
 def update_vehicles(useLocalData = False):
     """Generate a curated database file for the given vehicle model environment variable."""

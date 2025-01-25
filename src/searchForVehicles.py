@@ -38,10 +38,10 @@ from timeit import default_timer as timer
 
 
 
-from yotagrabber import vehicles
+from yotagrabber import vehiclesTest as vehicles  # TODO put in correct import vehicles once done testing
 
 # Version
-searchForVehiclesVersionStr = "Ver 1.8 Jan 22 2025"  #
+searchForVehiclesVersionStr = "Ver 1.10 Jan 25 2025"  #
 
 class userMatchCriteria:
     def __init__(self):
@@ -51,7 +51,10 @@ class userMatchCriteria:
             print("userMatchCriteria.filterDataFrame df is \n ", df)
             print("userMatchCriteria.filterDataFrame df.columns", df.columns)
             self.print("")
-        dfFiltered = userMatchCriteriaFilterModule.filterDataFrame(df)
+        if len(df) == 0:
+            dfFiltered = df
+        else:
+            dfFiltered = userMatchCriteriaFilterModule.filterDataFrame(df)
         if debugEnabled:
             print("userMatchCriteria.filterDataFrame dfFiltered is \n", dfFiltered)
         return dfFiltered
@@ -1059,7 +1062,7 @@ def updateMatchingVinIndex(rowSeries, lastUserMatchesDfCopy, columnsToIgnore):
         rowSeries["VinLastRowModified"] = not detailsSame
     return rowSeries
     
-def outputSearchResultsToUser(matchCriteria, dfMatches, lastUserMatchesDf):
+def outputSearchResultsToUser(matchCriteria, dfMatches, lastUserMatchesDf, updateVehiclesStatusMsg = ""):
     global outputResultsMethod
     global soundNotificationEvents
     global matchesFoundEvent
@@ -1119,6 +1122,7 @@ def outputSearchResultsToUser(matchCriteria, dfMatches, lastUserMatchesDf):
         f.write("-------------------------------------------------------------------------- \n")
         f.write("outputResultsMethod: " + getOutputResultsMethodString(outputResultsMethod) + "\n")
         f.write(modelInfoStr + "\n")
+        f.write(updateVehiclesStatusMsg + "\n")
         matchCriteria.print("", f, toConsole = False)
         f.write("Username: " + username + "\n")
         if outputResultsMethod != outputAllSearchResultsOnChange:
@@ -1205,7 +1209,11 @@ def getModelToGetInfo():
 def logModelToGetInfo():
     infoString = getModelToGetInfo()
     logToResultsFile(infoString, printIt = True)
-
+    
+def createUpdateVehiclesStatusMsg(updateVehiclesCompletionStatus):
+    updateVehiclesStatusMsg = "updateVehiclesCompletionStatus: completedOk: " + str(updateVehiclesCompletionStatus["completedOk"]) + ", numberRawVehiclesFound: " +  str(updateVehiclesCompletionStatus["numberRawVehiclesFound"]) + ", numberRawVehiclesMissing: " +  str(updateVehiclesCompletionStatus["numberRawVehiclesMissing"]) +  ", completionMsg: " + updateVehiclesCompletionStatus["completionMsg"] + ", date: " + str(updateVehiclesCompletionStatus["date"])
+    return updateVehiclesStatusMsg
+    
 def searchForVehicles(args):
     """Searches for Vehicles continuously and reports results to user
     """
@@ -1258,15 +1266,17 @@ def searchForVehicles(args):
             if dbgUsingLocalVehicleDataFile:
                 print("Warning: Debugging using local vehicle inventory data file for the model selected instead of querying Web for it")
                 interruptibleSleep(3)
-            df = vehicles.update_vehicles_and_return_df(dbgUsingLocalVehicleDataFile or useLocalInventoryFile)
-            if df is not None:
+            df, updateVehiclesCompletionStatus = vehicles.update_vehicles_and_return_df(dbgUsingLocalVehicleDataFile or useLocalInventoryFile)
+            updateVehiclesStatusMsg = createUpdateVehiclesStatusMsg(updateVehiclesCompletionStatus)
+            print(updateVehiclesStatusMsg)
+            if (df is not None) and updateVehiclesCompletionStatus["completedOk"] and (updateVehiclesCompletionStatus["numberRawVehiclesMissing"] < 15):
                 #replace nan with None in the DataFrame to ease computations later on 
                 df = df.replace({np.nan: None})
                 # Filter the dataframe against user defined match criteria
                 print("Determining matches from criteria")
                 dfMatches = matchCriteria.filterDataFrame(df)
                 # output search results to user
-                outputSearchResultsToUser(matchCriteria, dfMatches, lastUserMatchesDf)
+                outputSearchResultsToUser(matchCriteria, dfMatches, lastUserMatchesDf, updateVehiclesStatusMsg = updateVehiclesStatusMsg)
                 updatePreviousMatchingList(dfMatches)
                 # save off previous matching to parquet file in case the program is terminated and restarted so we pick
                 # up where we left off in regards to the last matches.
@@ -1275,6 +1285,8 @@ def searchForVehicles(args):
                 lastUserMatchesDf.to_parquet(lastRunUserMatchesParquetFileName, index=False)
                 if debugEnabled:
                     print("searchForVehicles lastUserMatchesDf \n", lastUserMatchesDf)
+            else:
+                logToResultsFile(updateVehiclesStatusMsg, printIt = False)
             if useLocalInventoryFile:
                 break
             waitForNextSearchTime()
