@@ -15,14 +15,15 @@ resultsFileName: '.\SearchVehiclesResults.txt',
 # and the email/text notifications for each can use different prefixes (specified in the config file) to easily allow 
 # the user to see which match criteria the notification is for.
 # This can be used to reduce the amount of traffic the website receives for a given model by getting the current inventory once
-# and then running the several searches against it in series. 
+# for one or more models and then running the several searches against it in series. 
 # This also allows the script/batch/powershell program to be more flexibly scheduled by the user via the OS
 # to run at whatever intervals/times the user wants
 #
 # Another alternative is the user can just run each search in a separate command/terminal window and directory, with 
 # useLocalInventoryFile to False in each config file. This maintains the separate search times, search results and 
 # unique notifications as above but does increase traffic to the website as each continuous search is 
-# requesting the inventory.
+# requesting the inventory at the same time and could potentially overload the toyota website causing it
+# to throttle or block you.
 #
 # Note that alternativley the user can always combine all the user criteria together(via Or logic), set useLocalInventoryFile
 # to False, and the search program will continuously search when started up. The disadvantge to that is it is 
@@ -30,12 +31,20 @@ resultsFileName: '.\SearchVehiclesResults.txt',
 #   
 #useLocalInventoryFile: False,
 
+# runOnceAndExit - Indicates to run the search program for one pass and then exit. i.e. it is not run continuosly
+# Default is False
+# This is typically used when running several searches in sequence (serially) via a higher level
+# script/batch file/power shell to avoid potentially overloading the toyota 
+# website causing it to throttle or block you.
+# 
+# runOnceAndExit: False,
+
 # minWaitTimeBetweenSearches is the minimum time to wait between searches when nothing was found so as to not overload the website with requests.
 # maxRandomAdderTimeBetweenSearches is the max random time to add to the min time to get the total time between searches to provide some randomness
 # Time delay before next search  = minWaitTimeBetweenSearches + (random number between 0 and 1 * maxRandomAdderTimeBetweenSearches)
 # !!! Note that by hitting the return key you can end any current wait and immediately proceed
 # !!! Hitting Ctrl-C terminates the program
-# When useLocalInventoryFile is True these search times are not applicable.
+# When useLocalInventoryFile is True or runOnceAndExit is True these search times are not applicable.
 minWaitTimeBetweenSearches: 21600, # 60 * 60 * 6 secs
 maxRandomAdderTimeBetweenSearches: 1800, # 60*30 secs
 

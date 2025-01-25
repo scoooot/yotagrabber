@@ -38,10 +38,10 @@ from timeit import default_timer as timer
 
 
 
-from yotagrabber import vehiclesTest as vehicles  # TODO put in correct import vehicles once done testing
+from yotagrabber import vehicles
 
 # Version
-searchForVehiclesVersionStr = "Ver 1.10 Jan 25 2025"  #
+searchForVehiclesVersionStr = "Ver 1.11 Jan 25 2025"  #
 
 class userMatchCriteria:
     def __init__(self):
@@ -109,6 +109,8 @@ unitDetailsDelimiter = chr(9) #tab char to easily separate fields of information
 debugEnabled = False
 
 useLocalInventoryFile = False
+
+runOnceAndExit = False
 
 minWaitTimeBetweenSearches = 60*20 #secs
 maxRandomAdderTimeBetweenSearches = 60*10 #secs
@@ -216,6 +218,7 @@ configParametersInfo = {
 "resultsFileName": configParameterInfo(),
 "userMatchCriteriaFilterFileName": configParameterInfo(),
 "useLocalInventoryFile": configParameterInfo(),
+"runOnceAndExit": configParameterInfo(),
 "minWaitTimeBetweenSearches": configParameterInfo(),
 "maxRandomAdderTimeBetweenSearches": configParameterInfo(),
 "debugEnabled": configParameterInfo(),
@@ -252,6 +255,7 @@ def parseConfigFile(fileName):
     global resultsFileName
     global userMatchCriteriaFilterFileName
     global useLocalInventoryFile
+    global runOnceAndExit
     global minWaitTimeBetweenSearches
     global maxRandomAdderTimeBetweenSearches
     global debugEnabled
@@ -303,6 +307,8 @@ def parseConfigFile(fileName):
                             resultsFileName = paramsDic[paramName]
                         elif paramName == "useLocalInventoryFile":
                             useLocalInventoryFile = paramsDic[paramName]
+                        elif paramName == "runOnceAndExit":
+                            runOnceAndExit = paramsDic[paramName]
                         elif paramName == "userMatchCriteriaFilterFileName":
                             userMatchCriteriaFilterFileName = paramsDic[paramName]
                         elif paramName == "minWaitTimeBetweenSearches":
@@ -860,6 +866,7 @@ def getOutputResultsMethodString(outputResultsMethod):
 def outputSearchingInfoToUser(matchCriteria):
     global username
     print("outputResultsMethod:", getOutputResultsMethodString(outputResultsMethod))
+    print("runOnceAndExit: ", runOnceAndExit)
     print(getModelToGetInfo())
     matchCriteria.print("", toConsole = True)
     print("Username:", username)
@@ -1225,6 +1232,7 @@ def searchForVehicles(args):
     global userMatchCriteriaFilterFileName
     global lastRunUserMatchesParquetFileName
     global useLocalInventoryFile
+    global runOnceAndExit
     try:
         print("Search for Vehicles program", searchForVehiclesVersionStr)
         done = False
@@ -1287,7 +1295,7 @@ def searchForVehicles(args):
                     print("searchForVehicles lastUserMatchesDf \n", lastUserMatchesDf)
             else:
                 logToResultsFile(updateVehiclesStatusMsg, printIt = False)
-            if useLocalInventoryFile:
+            if useLocalInventoryFile or runOnceAndExit:
                 break
             waitForNextSearchTime()
             # Reauthorize notifications often enough to meet expiration dates..

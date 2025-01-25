@@ -17,6 +17,15 @@ rem set MODEL=rav4pluginhybrid
 rem either py or python as the first word below
 py searchForVehicles.py SearchVehicles_config.yaml
 
+!!!!!!!!!!!!!!!!!!!!!!!!!!  WARNING
+Warning: It is strongly suggested that to reduce traffic to the toyota website and reduce the possiblity of responses
+being throttled or you being completely blocked that you don't run multiple searchForVehicles in parallel.
+Generally running them one at a time in sequence by using a higher level script/batch file/power shell works better
+See useLocalInventoryFile and the runOnceAndExit config file items in the SearchVehicles-Example_config.yaml
+for further info on this. 
+!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+To run searchForVehicles in parallel do the following:
 Note that you can run several different searchForVehicles searches at the same time by running each search 
 in its own command/terminal window (i.e. x searches in x command/terminal windows) and directory.
 Just make sure that
@@ -40,9 +49,9 @@ Set the environment variables as needed for the model you are searching for
 py <fullpath name of searchForVehicles.py> <name of yaml config file>
 
 5) Note that each search will request inventory from the website so be careful as to the amount of traffic
-the website is receiving so that you don't get blocked or throttled.  Was to avoid this are to make the
-search time interval larger or use the methods described in useLocalInventoryFile config file item 
-in the SearchVehicles-Example_config.yaml 
+the website is receiving so that you don't get blocked or throttled.  Ways to avoid this are to make the
+search time interval larger or use the methods described in useLocalInventoryFile , and runOnceAndExit
+config file items  in the SearchVehicles-Example_config.yaml 
 
 Note:  The searchForVehicles program saves off the last matches(i.e. meeting the user match criteria) found each time in a 
 parquet file (based on the resultsFileName config item as the prefix of the filename so that the parquet file is associated with
