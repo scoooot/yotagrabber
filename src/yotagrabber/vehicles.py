@@ -31,7 +31,7 @@ MODEL_SEARCH_RADIUS = os.environ.get("MODEL_SEARCH_RADIUS")
 forceQueryRspFailureTest = 0 # set to > 0 to perform tests related to forcing a query response failure to test query request retry
 
 totalPageRetries= 0
-MAX_TOTAL_PAGE_RETIRES_FOR_MODEL = 2 * 40 # 2 retries max  per location page (10 secs avg added/retry),  say allow at most 40 location pages of max retries per page
+MAX_TOTAL_PAGE_RETIRES_FOR_MODEL = 2 * 3 * 30 # say on avg 3 groups of 2 retries per page (10 sec avg per retry) over 30 pages  giving 30 minutes extra worst case per model
 
 @cache
 def get_vehicle_query_Objects():
@@ -47,7 +47,7 @@ def get_vehicle_query_Objects():
         query = query.replace("LEADIDUUID", str(uuid.uuid4()))
         vehicleQueryObjects["SingleZipCode_" + MODEL_SEARCH_ZIPCODE + "_RadiusMiles_" + MODEL_SEARCH_RADIUS] = query        
     else:
-        if MODEL in [ "camry", "tacoma", "tundra", "rav4hybrid", "rav4"]:
+        if MODEL in [ "camry", "tacoma", "tundra", "rav4hybrid", "rav4", "corolla"]:
             # note that the tacoma is the largest number of vehicles (some 44,000 for the last 2 years), followed by tundra, camry, rav4hybrid, rav4
             vehicleQueryZonesToUse = ["alaska", "hawaii", "west", "central", "midIllinois", "east", "atlanta", "topLeftCornerContlUS", "portlandOregon", "bottomLeftCornerContlUS", "midCalifornia", "upperCalifornia", "topRightCornerContlUS", "midPennsylvania", "rochesterNewYork", "albanyNewYork", "bostonMA", "midTennessee", "midOhio", "richmondVA", "bottomRightCornerContlUS", "panhandleFlorida", "midFlorida", "bottomCenterContlUS", "midTexas", "midArizona", "renoNevada", "topCenterContlUS" ]
         elif MODEL in ["grandhighlander" ]:
