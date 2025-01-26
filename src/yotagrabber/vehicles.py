@@ -30,6 +30,9 @@ MODEL_SEARCH_RADIUS = os.environ.get("MODEL_SEARCH_RADIUS")
 
 forceQueryRspFailureTest = 0 # set to > 0 to perform tests related to forcing a query response failure to test query request retry
 
+totalPageRetries= 0
+MAX_TOTAL_PAGE_RETIRES_FOR_MODEL = 2 * 40 # 2 retries max  per location page (10 secs avg added/retry),  say allow at most 40 location pages of max retries per page
+
 @cache
 def get_vehicle_query_Objects():
     """Read vehicle query from a file and create the query objects."""
@@ -44,9 +47,13 @@ def get_vehicle_query_Objects():
         query = query.replace("LEADIDUUID", str(uuid.uuid4()))
         vehicleQueryObjects["SingleZipCode_" + MODEL_SEARCH_ZIPCODE + "_RadiusMiles_" + MODEL_SEARCH_RADIUS] = query        
     else:
-        if MODEL in [ "camry", "tacoma", "tundra", "rav4hybrid", "rav4" ]:
+        if MODEL in [ "camry", "tacoma", "tundra", "rav4hybrid", "rav4"]:
             # note that the tacoma is the largest number of vehicles (some 44,000 for the last 2 years), followed by tundra, camry, rav4hybrid, rav4
             vehicleQueryZonesToUse = ["alaska", "hawaii", "west", "central", "midIllinois", "east", "atlanta", "topLeftCornerContlUS", "portlandOregon", "bottomLeftCornerContlUS", "midCalifornia", "upperCalifornia", "topRightCornerContlUS", "midPennsylvania", "rochesterNewYork", "albanyNewYork", "bostonMA", "midTennessee", "midOhio", "richmondVA", "bottomRightCornerContlUS", "panhandleFlorida", "midFlorida", "bottomCenterContlUS", "midTexas", "midArizona", "renoNevada", "topCenterContlUS" ]
+        elif MODEL in ["grandhighlander" ]:
+            # some zone seem to almost never work so removed them and seemed to cause more problems in others.
+            # Still get lots of retries so not sure this even fixes getting all the vehicles
+            vehicleQueryZonesToUse = ["alaska", "hawaii", "west", "central", "midIllinois", "topLeftCornerContlUS", "portlandOregon", "bottomLeftCornerContlUS", "midCalifornia", "upperCalifornia", "topRightCornerContlUS", "midPennsylvania", "rochesterNewYork", "albanyNewYork", "bostonMA", "midOhio", "richmondVA", "bottomCenterContlUS", "midTexas", "midArizona", "renoNevada", "topCenterContlUS" ]
         else:
             vehicleQueryZonesToUse = ["alaska", "hawaii", "west", "central", "east"]
         zip_codes = {
@@ -111,10 +118,11 @@ def writeCompletionStatusToFile(statusOfGetAllPages):
 def query_toyota(page_number, query, headers):
     """Query Toyota for a list of vehicles."""
     global forceQueryRspFailureTest
+    global totalPageRetries
     # Replace the page number in the query
     query = query.replace("PAGENUMBER", str(page_number))
 
-    tryCount = 4
+    tryCount = 3
     result = None
     # TODO: still getting many query failures even with this retry method (goes through all retires withuot success)
     # and not sure why?  Printed resp.text does not seem to contain any readable ascii text.
@@ -160,10 +168,12 @@ def query_toyota(page_number, query, headers):
         except (requests.exceptions.ReadTimeout) as inst:
             print ("query_toyota: Exception occurred :", str(type(inst)) + " "  + str(inst))
         tryCount -= 1
-        print("Trying query again for page number: " + str(page_number),  ", tryCount = " + str(tryCount))
         tm = 7 + (6 * random.random())
         print("sleeping", tm, " secs")
         sleep(tm)
+        if tryCount:
+            print("Trying query again for page number: " + str(page_number),  ", tryCount = " + str(tryCount))
+            totalPageRetries += 1
     if not result or "vehicleSummary" not in result:
         print("Result is None, or vehicleSummary field not present in results")
         if resp is not None:
@@ -175,6 +185,9 @@ def query_toyota(page_number, query, headers):
 
 def get_all_pages():
     """Get all pages of results for a query to Toyota."""
+    global totalPageRetries
+    totalPageRetries = 0
+    
     df = pd.DataFrame()
     page_number = 1
     
@@ -263,6 +276,9 @@ def get_all_pages():
         elif page_number >= pagesToGet:
             print("Error: Reached total pages for this vehicle (or page limit) of", page_number, ". All vehicles were not found! Model " , MODEL ,  "missing ", recordsToGet - len(df), "vehicles")
             break
+        elif totalPageRetries > MAX_TOTAL_PAGE_RETIRES_FOR_MODEL:
+            print("Error: Reached total page retries limit", totalPageRetries, ". All vehicles were not found! Model " , MODEL ,  "missing ", recordsToGet - len(df), "vehicles")
+            break 
         last_run_counter = len(df)
         page_number += 1
         sleep(10)
