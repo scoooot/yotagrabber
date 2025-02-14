@@ -68,8 +68,8 @@
     "title":"Prius"
   },
   {
-    "modelCode":"priusprime",
-    "title":"Prius Prime"
+    "modelCode":"priuspluginhybrid",
+    "title":"Prius Plug-in Hybrid"
   },
   {
     "modelCode":"rav4",
@@ -116,11 +116,11 @@
     "title":"Tundra i-FORCE MAX"
   },
   {
-    "modelCode":"venza",
-    "title":"Venza"
-  },
-  {
     "modelCode":"bz4x",
     "title":"bZ4X"
+  },
+  {
+    "modelCode":"rav4prime",
+    "title":"RAV4 Prime"
   }
 ]
