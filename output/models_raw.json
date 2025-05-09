@@ -9,7 +9,7 @@
     ],
     "families":[
       {
-        "seqNo":8,
+        "seqNo":9,
         "familiyType":"Crossovers &amp; SUVs"
       }
     ],
@@ -42,11 +42,11 @@
     ],
     "families":[
       {
-        "seqNo":10,
+        "seqNo":6,
         "familiyType":"Crossovers &amp; SUVs"
       },
       {
-        "seqNo":13,
+        "seqNo":8,
         "familiyType":"Electrified"
       }
     ],
@@ -72,7 +72,7 @@
     "asShownDisclaimer":null,
     "asShown":"$35,825 as shown [global_msrp_as_shown_disclaimer]",
     "cityMPG":"53",
-    "disclaimer":"[global_epa_2025_camry_disclaimer]",
+    "disclaimer":"[global_mpg_2025_camry_disclaimer]",
     "family":[
       "Cars &amp; Minivan",
       "Electrified"
@@ -83,7 +83,7 @@
         "familiyType":"Cars &amp; Minivan"
       },
       {
-        "seqNo":6,
+        "seqNo":5,
         "familiyType":"Electrified"
       }
     ],
@@ -96,7 +96,7 @@
     "shortDescription":null,
     "title":"Camry",
     "year":"2025",
-    "mpgDisclaimerCode":"[global_epa_2025_camry_disclaimer]",
+    "mpgDisclaimerCode":"[global_mpg_2025_camry_disclaimer]",
     "mpgeDisclaimerCode":"",
     "msrpDisclaimerCode":"[global_msrp_starting_disclaimer]",
     "mpge":null,
@@ -184,7 +184,7 @@
         "familiyType":"Crossovers &amp; SUVs"
       },
       {
-        "seqNo":5,
+        "seqNo":4,
         "familiyType":"Electrified"
       }
     ],
@@ -242,7 +242,7 @@
     "asShownDisclaimer":null,
     "asShown":"$27,665 as shown [global_msrp_as_shown_disclaimer]",
     "cityMPG":"53",
-    "disclaimer":"[global_epa_2025_corolla_disclaimer]",
+    "disclaimer":"[global_mpg_2025_corolla_disclaimer]",
     "family":[
       "Cars &amp; Minivan",
       "Electrified"
@@ -253,7 +253,7 @@
         "familiyType":"Cars &amp; Minivan"
       },
       {
-        "seqNo":2,
+        "seqNo":1,
         "familiyType":"Electrified"
       }
     ],
@@ -266,7 +266,7 @@
     "shortDescription":null,
     "title":"Corolla Hybrid",
     "year":"2025",
-    "mpgDisclaimerCode":"[global_epa_2025_corolla_disclaimer]",
+    "mpgDisclaimerCode":"[global_mpg_2025_corolla_disclaimer]",
     "mpgeDisclaimerCode":"",
     "msrpDisclaimerCode":"[global_msrp_starting_disclaimer]",
     "mpge":null,
@@ -354,7 +354,7 @@
         "familiyType":"Crossovers &amp; SUVs"
       },
       {
-        "seqNo":14,
+        "seqNo":12,
         "familiyType":"Electrified"
       }
     ],
@@ -450,7 +450,7 @@
     ],
     "families":[
       {
-        "seqNo":6,
+        "seqNo":7,
         "familiyType":"Crossovers &amp; SUVs"
       }
     ],
@@ -483,11 +483,11 @@
     ],
     "families":[
       {
-        "seqNo":7,
+        "seqNo":8,
         "familiyType":"Crossovers &amp; SUVs"
       },
       {
-        "seqNo":10,
+        "seqNo":13,
         "familiyType":"Electrified"
       }
     ],
@@ -513,18 +513,18 @@
     "asShownDisclaimer":null,
     "asShown":"$61,820 as shown [global_msrp_as_shown_disclaimer]",
     "cityMPG":"22",
-    "disclaimer":"[global_epa_2025_land_cruiser_disclaimer]",
+    "disclaimer":"[global_mpg_2025_land_cruiser_disclaimer]",
     "family":[
       "Crossovers &amp; SUVs",
       "Electrified"
     ],
     "families":[
       {
-        "seqNo":15,
+        "seqNo":14,
         "familiyType":"Crossovers &amp; SUVs"
       },
       {
-        "seqNo":17,
+        "seqNo":16,
         "familiyType":"Electrified"
       }
     ],
@@ -537,7 +537,7 @@
     "shortDescription":null,
     "title":"Land Cruiser",
     "year":"2025",
-    "mpgDisclaimerCode":"[global_epa_2025_land_cruiser_disclaimer]",
+    "mpgDisclaimerCode":"[global_mpg_2025_land_cruiser_disclaimer]",
     "mpgeDisclaimerCode":"",
     "msrpDisclaimerCode":"[global_msrp_starting_disclaimer]",
     "mpge":null,
@@ -561,7 +561,7 @@
         "familiyType":"Cars &amp; Minivan"
       },
       {
-        "seqNo":15,
+        "seqNo":14,
         "familiyType":"Electrified"
       }
     ],
@@ -598,7 +598,7 @@
         "familiyType":"Cars &amp; Minivan"
       },
       {
-        "seqNo":3,
+        "seqNo":2,
         "familiyType":"Electrified"
       }
     ],
@@ -635,7 +635,7 @@
         "familiyType":"Cars &amp; Minivan"
       },
       {
-        "seqNo":4,
+        "seqNo":3,
         "familiyType":"Electrified"
       }
     ],
@@ -704,7 +704,7 @@
         "familiyType":"Crossovers &amp; SUVs"
       },
       {
-        "seqNo":7,
+        "seqNo":6,
         "familiyType":"Electrified"
       }
     ],
@@ -741,7 +741,7 @@
         "familiyType":"Crossovers &amp; SUVs"
       },
       {
-        "seqNo":8,
+        "seqNo":7,
         "familiyType":"Electrified"
       }
     ],
@@ -767,18 +767,18 @@
     "asShownDisclaimer":null,
     "asShown":"$80,860 as shown [global_msrp_as_shown_disclaimer]",
     "cityMPG":"21",
-    "disclaimer":"[global_epa_2025_sequoia_disclaimer]",
+    "disclaimer":"[global_mpg_2025_sequoia_disclaimer]",
     "family":[
       "Crossovers &amp; SUVs",
       "Electrified"
     ],
     "families":[
       {
-        "seqNo":16,
+        "seqNo":15,
         "familiyType":"Crossovers &amp; SUVs"
       },
       {
-        "seqNo":18,
+        "seqNo":17,
         "familiyType":"Electrified"
       }
     ],
@@ -791,7 +791,7 @@
     "shortDescription":null,
     "title":"Sequoia",
     "year":"2025",
-    "mpgDisclaimerCode":"[global_epa_2025_sequoia_disclaimer]",
+    "mpgDisclaimerCode":"[global_mpg_2025_sequoia_disclaimer]",
     "mpgeDisclaimerCode":"",
     "msrpDisclaimerCode":"[global_msrp_starting_disclaimer]",
     "mpge":null,
@@ -871,9 +871,9 @@
   },
   {
     "asShownDisclaimer":null,
-    "asShown":"$63,735 as shown [global_msrp_as_shown_disclaimer]",
+    "asShown":"$63,235 as shown [global_msrp_as_shown_disclaimer]",
     "cityMPG":"23",
-    "disclaimer":"[global_prelim_mpg_2025_disclaimer]",
+    "disclaimer":"[global_mpg_2025_tacoma_disclaimer]",
     "family":[
       "Trucks",
       "Electrified"
@@ -884,7 +884,7 @@
         "familiyType":"Trucks"
       },
       {
-        "seqNo":19,
+        "seqNo":18,
         "familiyType":"Electrified"
       }
     ],
@@ -897,7 +897,7 @@
     "shortDescription":null,
     "title":"Tacoma i-FORCE MAX",
     "year":"2025",
-    "mpgDisclaimerCode":"[global_prelim_mpg_2025_disclaimer]",
+    "mpgDisclaimerCode":"[global_mpg_2025_tacoma_disclaimer]",
     "mpgeDisclaimerCode":"",
     "msrpDisclaimerCode":"[global_msrp_starting_disclaimer]",
     "mpge":null,
@@ -921,7 +921,7 @@
         "familiyType":"Cars &amp; Minivan"
       },
       {
-        "seqNo":11,
+        "seqNo":10,
         "familiyType":"Electrified"
       }
     ],
@@ -958,7 +958,7 @@
         "familiyType":"Crossovers &amp; SUVs"
       },
       {
-        "seqNo":12,
+        "seqNo":11,
         "familiyType":"Electrified"
       }
     ],
@@ -1016,7 +1016,7 @@
     "asShownDisclaimer":null,
     "asShown":"$72,510 as shown [global_msrp_a_shown_disclaimer]",
     "cityMPG":"20",
-    "disclaimer":"[global_epa_2025_tundra_disclaimer]",
+    "disclaimer":"[global_mpg_2025_tundra_disclaimer]",
     "family":[
       "Trucks",
       "Electrified"
@@ -1027,7 +1027,7 @@
         "familiyType":"Trucks"
       },
       {
-        "seqNo":20,
+        "seqNo":19,
         "familiyType":"Electrified"
       }
     ],
@@ -1040,7 +1040,7 @@
     "shortDescription":null,
     "title":"Tundra i-FORCE MAX",
     "year":"2025",
-    "mpgDisclaimerCode":"[global_epa_2025_tundra_disclaimer]",
+    "mpgDisclaimerCode":"[global_mpg_2025_tundra_disclaimer]",
     "mpgeDisclaimerCode":"",
     "msrpDisclaimerCode":"[global_msrp_starting_disclaimer]",
     "mpge":null,
