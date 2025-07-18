@@ -144,43 +144,6 @@
   },
   {
     "asShownDisclaimer":null,
-    "asShown":"$37,770 as shown [global_msrp_as_shown_disclaimer]",
-    "cityMPG":"28",
-    "disclaimer":"[global_prelim_mpg_2024_camry_disclaimer]",
-    "family":[
-      "Cars &amp; Minivan",
-      "Electrified"
-    ],
-    "families":[
-      {
-        "seqNo":6,
-        "familiyType":"Cars &amp; Minivan"
-      },
-      {
-        "seqNo":5,
-        "familiyType":"Electrified"
-      }
-    ],
-    "hoverImage":null,
-    "hwyMPG":"39",
-    "image":"https:\/\/tmna.aemassets.toyota.com\/is\/image\/toyota\/toyota\/jellies\/relative\/2024\/camry\/base.png?fmt=png-alpha",
-    "modelCode":"camry",
-    "msrp":"26420",
-    "series":"Camry",
-    "shortDescription":null,
-    "title":"Camry",
-    "year":"2024",
-    "mpgDisclaimerCode":"[global_prelim_mpg_2024_camry_disclaimer]",
-    "mpgeDisclaimerCode":"",
-    "msrpDisclaimerCode":"[global_msrp_starting_disclaimer]",
-    "mpge":null,
-    "range":"",
-    "topLabel.iconField":null,
-    "topLabel.textField":"AWD Available",
-    "bottomLabel.textField":""
-  },
-  {
-    "asShownDisclaimer":null,
     "asShown":"$27,150 as shown [global_msrp_as_shown_disclaimer]",
     "cityMPG":"32",
     "disclaimer":"[global_epa_2025_corolla_disclaimer]",
