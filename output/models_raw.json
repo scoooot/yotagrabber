@@ -9,7 +9,7 @@
     ],
     "families":[
       {
-        "seqNo":9,
+        "seqNo":11,
         "familiyType":"Crossovers &amp; SUVs"
       }
     ],
@@ -42,11 +42,11 @@
     ],
     "families":[
       {
-        "seqNo":10,
+        "seqNo":12,
         "familiyType":"Crossovers &amp; SUVs"
       },
       {
-        "seqNo":15,
+        "seqNo":16,
         "familiyType":"Electrified"
       }
     ],
@@ -120,7 +120,7 @@
         "familiyType":"Cars &amp; Minivan"
       },
       {
-        "seqNo":5,
+        "seqNo":4,
         "familiyType":"Electrified"
       }
     ],
@@ -209,7 +209,7 @@
   {
     "asShownDisclaimer":null,
     "asShown":"$33,530 as shown [global_msrp_as_shown_disclaimer]",
-    "cityMPG":"45",
+    "cityMPG":"46",
     "disclaimer":"[global_mpg_2026_corolla_cross_disclaimer]",
     "family":[
       "Crossovers &amp; SUVs",
@@ -221,12 +221,12 @@
         "familiyType":"Crossovers &amp; SUVs"
       },
       {
-        "seqNo":4,
+        "seqNo":5,
         "familiyType":"Electrified"
       }
     ],
     "hoverImage":null,
-    "hwyMPG":"38",
+    "hwyMPG":"39",
     "image":"https:\/\/tmna.aemassets.toyota.com\/is\/image\/toyota\/toyota\/jellies\/relative\/2026\/corollacrosshybrid\/base.png?fmt=png-alpha",
     "modelCode":"corollacrosshybrid",
     "msrp":"28995",
@@ -322,7 +322,7 @@
     ],
     "families":[
       {
-        "seqNo":9,
+        "seqNo":7,
         "familiyType":"Cars &amp; Minivan"
       }
     ],
@@ -354,7 +354,7 @@
     ],
     "families":[
       {
-        "seqNo":11,
+        "seqNo":9,
         "familiyType":"Crossovers &amp; SUVs"
       }
     ],
@@ -387,7 +387,7 @@
     ],
     "families":[
       {
-        "seqNo":12,
+        "seqNo":10,
         "familiyType":"Crossovers &amp; SUVs"
       },
       {
@@ -423,7 +423,7 @@
     ],
     "families":[
       {
-        "seqNo":10,
+        "seqNo":8,
         "familiyType":"Cars &amp; Minivan"
       }
     ],
@@ -455,7 +455,7 @@
     ],
     "families":[
       {
-        "seqNo":11,
+        "seqNo":9,
         "familiyType":"Cars &amp; Minivan"
       }
     ],
@@ -524,7 +524,7 @@
         "familiyType":"Crossovers &amp; SUVs"
       },
       {
-        "seqNo":13,
+        "seqNo":14,
         "familiyType":"Electrified"
       }
     ],
@@ -561,7 +561,7 @@
         "familiyType":"Crossovers &amp; SUVs"
       },
       {
-        "seqNo":16,
+        "seqNo":17,
         "familiyType":"Electrified"
       }
     ],
@@ -594,11 +594,11 @@
     ],
     "families":[
       {
-        "seqNo":8,
+        "seqNo":12,
         "familiyType":"Cars &amp; Minivan"
       },
       {
-        "seqNo":14,
+        "seqNo":15,
         "familiyType":"Electrified"
       }
     ],
@@ -815,7 +815,7 @@
         "familiyType":"Crossovers &amp; SUVs"
       },
       {
-        "seqNo":17,
+        "seqNo":19,
         "familiyType":"Electrified"
       }
     ],
@@ -848,7 +848,7 @@
     ],
     "families":[
       {
-        "seqNo":12,
+        "seqNo":10,
         "familiyType":"Cars &amp; Minivan"
       },
       {
@@ -921,7 +921,7 @@
         "familiyType":"Trucks"
       },
       {
-        "seqNo":18,
+        "seqNo":13,
         "familiyType":"Electrified"
       }
     ],
@@ -954,7 +954,7 @@
     ],
     "families":[
       {
-        "seqNo":7,
+        "seqNo":11,
         "familiyType":"Cars &amp; Minivan"
       },
       {
@@ -1064,7 +1064,7 @@
         "familiyType":"Trucks"
       },
       {
-        "seqNo":19,
+        "seqNo":18,
         "familiyType":"Electrified"
       }
     ],
