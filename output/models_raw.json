@@ -912,14 +912,9 @@
     "cityMPG":"23",
     "disclaimer":"[global_mpg_2025_tacoma_disclaimer]",
     "family":[
-      "Trucks",
       "Electrified"
     ],
     "families":[
-      {
-        "seqNo":2,
-        "familiyType":"Trucks"
-      },
       {
         "seqNo":13,
         "familiyType":"Electrified"
@@ -1055,14 +1050,9 @@
     "cityMPG":"20",
     "disclaimer":"[global_mpg_2026_tundra_disclaimer]",
     "family":[
-      "Trucks",
       "Electrified"
     ],
     "families":[
-      {
-        "seqNo":4,
-        "familiyType":"Trucks"
-      },
       {
         "seqNo":18,
         "familiyType":"Electrified"
