@@ -1,9 +1,9 @@
 [
   {
     "asShownDisclaimer":null,
-    "asShown":"$55,535 as shown [global_msrp_as_shown_disclaimer]",
+    "asShown":"$55,885 as shown [global_msrp_as_shown_disclaimer]",
     "cityMPG":"20",
-    "disclaimer":"[global_mpg_2025_4runner_disclaimer]",
+    "disclaimer":"[global_mpg_2026_4runner_disclaimer]",
     "family":[
       "Crossovers &amp; SUVs"
     ],
@@ -15,14 +15,14 @@
     ],
     "hoverImage":null,
     "hwyMPG":"26",
-    "image":"https:\/\/tmna.aemassets.toyota.com\/is\/image\/toyota\/toyota\/jellies\/relative\/2025\/4runner\/base.png?fmt=png-alpha",
+    "image":"https:\/\/tmna.aemassets.toyota.com\/is\/image\/toyota\/toyota\/jellies\/relative\/2026\/4runner\/base.png?fmt=png-alpha",
     "modelCode":"4runner",
-    "msrp":"41270",
+    "msrp":"41570",
     "series":"4Runner",
     "shortDescription":null,
     "title":"4Runner",
-    "year":"2025",
-    "mpgDisclaimerCode":"[global_mpg_2025_4runner_disclaimer]",
+    "year":"2026",
+    "mpgDisclaimerCode":"[global_mpg_2026_4runner_disclaimer]",
     "mpgeDisclaimerCode":"",
     "msrpDisclaimerCode":"[global_msrp_starting_disclaimer]",
     "mpge":null,
@@ -33,9 +33,9 @@
   },
   {
     "asShownDisclaimer":null,
-    "asShown":"$67,400 as shown [global_msrp_as_shown_disclaimer]",
+    "asShown":"$68,595 as shown [global_msrp_as_shown_disclaimer]",
     "cityMPG":"23",
-    "disclaimer":"[global_mpg_2025_4runner_disclaimer]",
+    "disclaimer":"[global_mpg_2026_4runner_disclaimer]",
     "family":[
       "Crossovers &amp; SUVs",
       "Electrified"
@@ -52,14 +52,14 @@
     ],
     "hoverImage":null,
     "hwyMPG":"24",
-    "image":"https:\/\/tmna.aemassets.toyota.com\/is\/image\/toyota\/toyota\/jellies\/relative\/2025\/4runnerhybrid\/base.png?fmt=png-alpha",
+    "image":"https:\/\/tmna.aemassets.toyota.com\/is\/image\/toyota\/toyota\/jellies\/relative\/2026\/4runnerhybrid\/base.png?fmt=png-alpha",
     "modelCode":"4runnerhybrid",
-    "msrp":"52490",
+    "msrp":"52790",
     "series":"4Runner i-FORCE MAX",
     "shortDescription":null,
     "title":"4Runner i-FORCE MAX",
-    "year":"2025",
-    "mpgDisclaimerCode":"[global_mpg_2025_4runner_disclaimer]",
+    "year":"2026",
+    "mpgDisclaimerCode":"[global_mpg_2026_4runner_disclaimer]",
     "mpgeDisclaimerCode":"",
     "msrpDisclaimerCode":"[global_msrp_starting_disclaimer]",
     "mpge":null,
@@ -176,7 +176,7 @@
   },
   {
     "asShownDisclaimer":null,
-    "asShown":"$30,035 as shown [global_msrp_as_shown_disclaimer]",
+    "asShown":"$30,335 as shown [global_msrp_as_shown_disclaimer]",
     "cityMPG":"31",
     "disclaimer":"[global_mpg_2026_corolla_cross_disclaimer]",
     "family":[
@@ -192,7 +192,7 @@
     "hwyMPG":"33",
     "image":"https:\/\/tmna.aemassets.toyota.com\/is\/image\/toyota\/toyota\/jellies\/relative\/2026\/corollacross\/base.png?fmt=png-alpha",
     "modelCode":"corollacross",
-    "msrp":"24635",
+    "msrp":"24935",
     "series":"Corolla Cross",
     "shortDescription":null,
     "title":"Corolla Cross",
@@ -208,7 +208,7 @@
   },
   {
     "asShownDisclaimer":null,
-    "asShown":"$33,530 as shown [global_msrp_as_shown_disclaimer]",
+    "asShown":"$33,830 as shown [global_msrp_as_shown_disclaimer]",
     "cityMPG":"46",
     "disclaimer":"[global_mpg_2026_corolla_cross_disclaimer]",
     "family":[
@@ -229,7 +229,7 @@
     "hwyMPG":"39",
     "image":"https:\/\/tmna.aemassets.toyota.com\/is\/image\/toyota\/toyota\/jellies\/relative\/2026\/corollacrosshybrid\/base.png?fmt=png-alpha",
     "modelCode":"corollacrosshybrid",
-    "msrp":"28995",
+    "msrp":"29295",
     "series":"Corolla Cross Hybrid",
     "shortDescription":null,
     "title":"Corolla Cross Hybrid",
@@ -839,9 +839,9 @@
   },
   {
     "asShownDisclaimer":null,
-    "asShown":"$47,415 as shown [global_msrp_as_shown_disclaimer]",
+    "asShown":"$48,520 as shown [global_msrp_as_shown_disclaimer]",
     "cityMPG":"36",
-    "disclaimer":"[global_epa_2025_sienna_disclaimer]",
+    "disclaimer":"[global_mpg_2026_sienna_disclaimer]",
     "family":[
       "Cars &amp; Minivan",
       "Electrified"
@@ -858,14 +858,14 @@
     ],
     "hoverImage":null,
     "hwyMPG":"36",
-    "image":"https:\/\/tmna.aemassets.toyota.com\/is\/image\/toyota\/toyota\/jellies\/relative\/2025\/sienna\/base.png?fmt=png-alpha",
+    "image":"https:\/\/tmna.aemassets.toyota.com\/is\/image\/toyota\/toyota\/jellies\/relative\/2026\/sienna\/base.png?fmt=png-alpha",
     "modelCode":"sienna",
-    "msrp":"39485",
+    "msrp":"40120",
     "series":"Sienna",
     "shortDescription":null,
     "title":"Sienna",
-    "year":"2025",
-    "mpgDisclaimerCode":"[global_epa_2025_sienna_disclaimer]",
+    "year":"2026",
+    "mpgDisclaimerCode":"[global_mpg_2026_sienna_disclaimer]",
     "mpgeDisclaimerCode":"",
     "msrpDisclaimerCode":"[global_msrp_starting_disclaimer]",
     "mpge":null,
@@ -903,7 +903,7 @@
     "mpge":null,
     "range":"",
     "topLabel.iconField":null,
-    "topLabel.textField":"",
+    "topLabel.textField":"Hybrid EV Available",
     "bottomLabel.textField":""
   },
   {
@@ -1022,7 +1022,7 @@
     ],
     "families":[
       {
-        "seqNo":3,
+        "seqNo":2,
         "familiyType":"Trucks"
       }
     ],
@@ -1041,7 +1041,7 @@
     "mpge":null,
     "range":"",
     "topLabel.iconField":null,
-    "topLabel.textField":"",
+    "topLabel.textField":"Hybrid EV Available",
     "bottomLabel.textField":""
   },
   {
