@@ -318,9 +318,14 @@
     "cityMPG":"21",
     "disclaimer":"[global_mpg_2026_gr86_disclaimer]",
     "family":[
+      "Performance",
       "Cars &amp; Minivan"
     ],
     "families":[
+      {
+        "seqNo":1,
+        "familiyType":"Performance"
+      },
       {
         "seqNo":7,
         "familiyType":"Cars &amp; Minivan"
@@ -419,9 +424,14 @@
     "cityMPG":"21",
     "disclaimer":"[global_mpg_2026_grcorolla_disclaimer]",
     "family":[
+      "Performance",
       "Cars &amp; Minivan"
     ],
     "families":[
+      {
+        "seqNo":2,
+        "familiyType":"Performance"
+      },
       {
         "seqNo":8,
         "familiyType":"Cars &amp; Minivan"
@@ -451,9 +461,14 @@
     "cityMPG":"22",
     "disclaimer":"[global_mpg_2026_supra_disclaimer]",
     "family":[
+      "Performance",
       "Cars &amp; Minivan"
     ],
     "families":[
+      {
+        "seqNo":3,
+        "familiyType":"Performance"
+      },
       {
         "seqNo":9,
         "familiyType":"Cars &amp; Minivan"
