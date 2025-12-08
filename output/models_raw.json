@@ -9,7 +9,7 @@
     ],
     "families":[
       {
-        "seqNo":11,
+        "seqNo":7,
         "familiyType":"Crossovers &amp; SUVs"
       }
     ],
@@ -28,7 +28,7 @@
     "mpge":null,
     "range":"",
     "topLabel.iconField":null,
-    "topLabel.textField":"",
+    "topLabel.textField":"Hybrid EV Available",
     "bottomLabel.textField":""
   },
   {
@@ -37,14 +37,9 @@
     "cityMPG":"23",
     "disclaimer":"[global_mpg_2026_4runner_disclaimer]",
     "family":[
-      "Crossovers &amp; SUVs",
       "Electrified"
     ],
     "families":[
-      {
-        "seqNo":12,
-        "familiyType":"Crossovers &amp; SUVs"
-      },
       {
         "seqNo":16,
         "familiyType":"Electrified"
@@ -79,7 +74,7 @@
     ],
     "families":[
       {
-        "seqNo":6,
+        "seqNo":4,
         "familiyType":"Crossovers &amp; SUVs"
       },
       {
@@ -171,7 +166,7 @@
     "mpge":null,
     "range":"",
     "topLabel.iconField":null,
-    "topLabel.textField":"",
+    "topLabel.textField":"Hybrid EV Available",
     "bottomLabel.textField":""
   },
   {
@@ -203,7 +198,7 @@
     "mpge":null,
     "range":"",
     "topLabel.iconField":null,
-    "topLabel.textField":"",
+    "topLabel.textField":"Hybrid EV Available",
     "bottomLabel.textField":""
   },
   {
@@ -212,14 +207,9 @@
     "cityMPG":"46",
     "disclaimer":"[global_mpg_2026_corolla_cross_disclaimer]",
     "family":[
-      "Crossovers &amp; SUVs",
       "Electrified"
     ],
     "families":[
-      {
-        "seqNo":2,
-        "familiyType":"Crossovers &amp; SUVs"
-      },
       {
         "seqNo":5,
         "familiyType":"Electrified"
@@ -281,14 +271,9 @@
     "cityMPG":"53",
     "disclaimer":"[global_mpg_2026_corolla_disclaimer]",
     "family":[
-      "Cars &amp; Minivan",
       "Electrified"
     ],
     "families":[
-      {
-        "seqNo":2,
-        "familiyType":"Cars &amp; Minivan"
-      },
       {
         "seqNo":1,
         "familiyType":"Electrified"
@@ -359,7 +344,7 @@
     ],
     "families":[
       {
-        "seqNo":9,
+        "seqNo":6,
         "familiyType":"Crossovers &amp; SUVs"
       }
     ],
@@ -378,7 +363,7 @@
     "mpge":null,
     "range":"",
     "topLabel.iconField":null,
-    "topLabel.textField":"",
+    "topLabel.textField":"Hybrid EV Available",
     "bottomLabel.textField":""
   },
   {
@@ -387,14 +372,9 @@
     "cityMPG":"37",
     "disclaimer":"[global_mpg_2026_grand_highlander_disclaimer]",
     "family":[
-      "Crossovers &amp; SUVs",
       "Electrified"
     ],
     "families":[
-      {
-        "seqNo":10,
-        "familiyType":"Crossovers &amp; SUVs"
-      },
       {
         "seqNo":12,
         "familiyType":"Electrified"
@@ -502,7 +482,7 @@
     ],
     "families":[
       {
-        "seqNo":7,
+        "seqNo":5,
         "familiyType":"Crossovers &amp; SUVs"
       }
     ],
@@ -521,7 +501,7 @@
     "mpge":null,
     "range":"",
     "topLabel.iconField":null,
-    "topLabel.textField":"",
+    "topLabel.textField":"Hybrid EV Available",
     "bottomLabel.textField":""
   },
   {
@@ -530,14 +510,9 @@
     "cityMPG":"35",
     "disclaimer":"[global_mpg_2026_highlander_disclaimer]",
     "family":[
-      "Crossovers &amp; SUVs",
       "Electrified"
     ],
     "families":[
-      {
-        "seqNo":8,
-        "familiyType":"Crossovers &amp; SUVs"
-      },
       {
         "seqNo":14,
         "familiyType":"Electrified"
@@ -719,7 +694,7 @@
     ],
     "families":[
       {
-        "seqNo":3,
+        "seqNo":2,
         "familiyType":"Crossovers &amp; SUVs"
       }
     ],
@@ -738,7 +713,7 @@
     "mpge":null,
     "range":"",
     "topLabel.iconField":null,
-    "topLabel.textField":"",
+    "topLabel.textField":"Hybrid EV Available",
     "bottomLabel.textField":""
   },
   {
@@ -747,14 +722,9 @@
     "cityMPG":"41",
     "disclaimer":"[global_epa_2025_rav4_disclaimer]",
     "family":[
-      "Crossovers &amp; SUVs",
       "Electrified"
     ],
     "families":[
-      {
-        "seqNo":4,
-        "familiyType":"Crossovers &amp; SUVs"
-      },
       {
         "seqNo":6,
         "familiyType":"Electrified"
@@ -789,7 +759,7 @@
     ],
     "families":[
       {
-        "seqNo":5,
+        "seqNo":3,
         "familiyType":"Crossovers &amp; SUVs"
       },
       {
