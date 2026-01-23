@@ -588,21 +588,21 @@
         "familiyType":"Cars &amp; Minivan"
       },
       {
-        "seqNo":15,
+        "seqNo":16,
         "familiyType":"Electrified"
       }
     ],
     "hoverImage":null,
     "hwyMPG":"71",
-    "image":"https:\/\/tmna.aemassets.toyota.com\/is\/image\/toyota\/toyota\/jellies\/relative\/2025\/mirai\/base.png?fmt=png-alpha",
+    "image":"https:\/\/tmna.aemassets.toyota.com\/is\/image\/toyota\/toyota\/jellies\/relative\/2026\/mirai\/base.png?fmt=png-alpha",
     "modelCode":"mirai",
     "msrp":"51795",
     "series":"Mirai",
     "shortDescription":null,
     "title":"Mirai",
-    "year":"2025",
+    "year":"2026",
     "mpgDisclaimerCode":"",
-    "mpgeDisclaimerCode":"[global_mpge_2025_mirai_disclaimer]",
+    "mpgeDisclaimerCode":"[global_mpge_2026_mirai_disclaimer]",
     "msrpDisclaimerCode":"[global_msrp_starting_disclaimer]",
     "mpge":null,
     "range":"",
@@ -625,21 +625,21 @@
         "familiyType":"Cars &amp; Minivan"
       },
       {
-        "seqNo":16,
+        "seqNo":15,
         "familiyType":"Electrified"
       }
     ],
     "hoverImage":null,
     "hwyMPG":"71",
-    "image":"https:\/\/tmna.aemassets.toyota.com\/is\/image\/toyota\/toyota\/jellies\/relative\/2026\/mirai\/base.png?fmt=png-alpha",
+    "image":"https:\/\/tmna.aemassets.toyota.com\/is\/image\/toyota\/toyota\/jellies\/relative\/2025\/mirai\/base.png?fmt=png-alpha",
     "modelCode":"mirai",
     "msrp":"51795",
     "series":"Mirai",
     "shortDescription":null,
     "title":"Mirai",
-    "year":"2026",
+    "year":"2025",
     "mpgDisclaimerCode":"",
-    "mpgeDisclaimerCode":"[global_mpge_2026_mirai_disclaimer]",
+    "mpgeDisclaimerCode":"[global_mpge_2025_mirai_disclaimer]",
     "msrpDisclaimerCode":"[global_msrp_starting_disclaimer]",
     "mpge":null,
     "range":"",
